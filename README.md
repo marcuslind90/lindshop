@@ -20,7 +20,7 @@ Installation
    pip install lindshop
 ```
 
-.. todo:: This is currently on the to-do list and will supported when the project go into Beta. Currently you have to manually download the source from Github and add it to your project.
+**_This is currently on the to-do list and will supported when the project go into Beta. Currently you have to manually download the source from Github and add it to your project._**
 
 2. Add all the mandatory applications to your `INSTALLED_APPS` directory in the `settings.py` file of your Django project.
 
