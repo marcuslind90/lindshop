@@ -2,7 +2,7 @@ Lindshop - An Ecommerce Platform For Django
 ============================================
 
 Introduction
-^^^^^^^^^^^^
+------------
 
 Lindshop is a Django application that handles all the basic features of an ecommerce websites such as Products, Carts, Orders, Payments and so on. Lindshop is made to be easy to extend and customize to the type of ecommerce website that you're looking to build, no matter if it's a normal store with a few categories and products, or if it's an online subscription service with a single product.
 
@@ -12,20 +12,19 @@ Lindshop is a Django application that handles all the basic features of an ecomm
 
 
 Installation
-^^^^^^^^^^^^
+------------
 
-1. Install the application using :code:`pip` in the following way:
+1. Install the application using `pip` in the following way:
 
-.. code-block:: python
-
+```
    pip install lindshop
+```
 
 .. todo:: This is currently on the to-do list and will supported when the project go into Beta. Currently you have to manually download the source from Github and add it to your project.
 
-2. Add all the mandatory applications to your :code:`INSTALLED_APPS` directory in the :code:`settings.py` file of your Django project.
+2. Add all the mandatory applications to your `INSTALLED_APPS` directory in the `settings.py` file of your Django project.
 
-.. code-block:: python
-
+```
    INSTALLED_APPS = (
        'django.contrib.admin',
        'django.contrib.auth',
@@ -51,26 +50,27 @@ Installation
        'lindshop.core.breadcrumbs',  # Required
        'sorl.thumbnail',             # Required
    )
+```
 
-3. Add URL routing to your projects main :code:`urls.py` file.
+3. Add URL routing to your projects main `urls.py` file.
 
-.. code-block:: python
-
+```
    urlpatterns = [
        url(r'^admin/', include(admin.site.urls)),
        url(r'^', include('lindshop.urls', namespace="shop")),  # Required
    ]
+```
 
-4. To configure and change settings of your store, add a directory called :code:`LINDSHOP = {}` to your :code:`settings.py` file. All the settings relevant to the core functionality of Lindshop will go into this dictionary.
+4. To configure and change settings of your store, add a directory called `LINDSHOP = {}` to your `settings.py` file. All the settings relevant to the core functionality of Lindshop will go into this dictionary.
 
 Import Demo Data
-^^^^^^^^^^^^^^^^
+------------
 
 There's a build in management command for importing demo data to your database if you want to demo and try out Lindshop.
 
-.. code-block:: python
-
+```
 	python manage.py import_defaults
+```
 
 The command will import the following to your database:
 
