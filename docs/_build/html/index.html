@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Lindshop 0.0.1 documentation" href="#" />
-    <link rel="next" title="Developer Guidelines" href="developer.html" /> 
+    <link rel="next" title="Installation" href="install.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -34,7 +34,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="developer.html" title="Developer Guidelines"
+          <a href="install.html" title="Installation"
              accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Lindshop 0.0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -55,107 +55,35 @@
 <li>Github: <a class="reference external" href="https://github.com/marcuslind90/lindshop">https://github.com/marcuslind90/lindshop</a></li>
 <li>Read-The-Docs: <a class="reference external" href="http://lindshop.readthedocs.org/en/latest/">http://lindshop.readthedocs.org/en/latest/</a></li>
 </ul>
-</div>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li>Install the application using <code class="code docutils literal"><span class="pre">pip</span></code> in the following way:</li>
-</ol>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">pip</span> <span class="n">install</span> <span class="n">lindshop</span>
-</pre></div>
-</div>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">This is currently on the to-do list and will supported when the project go into Beta. Currently you have to manually download the source from Github and add it to your project.</p>
-</div>
-<ol class="arabic simple" start="2">
-<li>Add all the mandatory applications to your <code class="code docutils literal"><span class="pre">INSTALLED_APPS</span></code> directory in the <code class="code docutils literal"><span class="pre">settings.py</span></code> file of your Django project.</li>
-</ol>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.sessions&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.messages&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.staticfiles&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;lindshop&#39;</span><span class="p">,</span>                   <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.attribute&#39;</span><span class="p">,</span>    <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.cart&#39;</span><span class="p">,</span>         <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.category&#39;</span><span class="p">,</span>     <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.checkout&#39;</span><span class="p">,</span>     <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.customer&#39;</span><span class="p">,</span>     <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.dashboard&#39;</span><span class="p">,</span>    <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.order&#39;</span><span class="p">,</span>        <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.payment&#39;</span><span class="p">,</span>      <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.pricing&#39;</span><span class="p">,</span>      <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.product&#39;</span><span class="p">,</span>      <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.shipping&#39;</span><span class="p">,</span>     <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.stock&#39;</span><span class="p">,</span>        <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.subscription&#39;</span><span class="p">,</span> <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.menu&#39;</span><span class="p">,</span>         <span class="c1"># Required</span>
-    <span class="s1">&#39;lindshop.core.breadcrumbs&#39;</span><span class="p">,</span>  <span class="c1"># Required</span>
-    <span class="s1">&#39;sorl.thumbnail&#39;</span><span class="p">,</span>             <span class="c1"># Required</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="3">
-<li>Add URL routing to your projects main <code class="code docutils literal"><span class="pre">urls.py</span></code> file.</li>
-</ol>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="s1">r&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">)),</span>
-    <span class="n">url</span><span class="p">(</span><span class="s1">r&#39;^&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;lindshop.urls&#39;</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;shop&quot;</span><span class="p">)),</span>  <span class="c1"># Required</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="4">
-<li>To configure and change settings of your store, add a directory called <code class="code docutils literal"><span class="pre">LINDSHOP</span> <span class="pre">=</span> <span class="pre">{}</span></code> to your <code class="code docutils literal"><span class="pre">settings.py</span></code> file. All the settings relevant to the core functionality of Lindshop will go into this dictionary.</li>
-</ol>
-</div>
-<div class="section" id="import-demo-data">
-<h2>Import Demo Data<a class="headerlink" href="#import-demo-data" title="Permalink to this headline">¶</a></h2>
-<p>There&#8217;s a build in management command for importing demo data to your database if you want to demo and try out Lindshop.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">import_defaults</span>
-</pre></div>
-</div>
-<p>The command will import the following to your database:</p>
-<ul class="simple">
-<li>Categories</li>
-<li>Countries</li>
-<li>Currencies</li>
-<li>Tax rules</li>
-<li>Products</li>
-<li>Product Images</li>
-<li>Subscription Plans</li>
-<li>Prices</li>
-<li>Carriers</li>
-<li>Carrier Pricings</li>
-<li>Attributes (Color, Size etc) of products</li>
-<li>Attribute Choices (Red, Blue, Small, Large) of attributes</li>
-</ul>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#import-demo-data">Import Demo Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#configuring-your-store">Configuring Your Store</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#available-settings">Available Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="admin.html">Administration and Dashboard</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="admin.html#management-dashboard">Management Dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin.html#create-dashboard-administrator">Create Dashboard Administrator</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Guidelines</a></li>
-<li class="toctree-l1"><a class="reference internal" href="admin.html">Admin</a></li>
-<li class="toctree-l1"><a class="reference internal" href="subscriptions.html">Subscriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Help</a></li>
 <li class="toctree-l1"><a class="reference internal" href="payment.html">Payment</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="payment.html#payment-modules">Payment Modules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="payment.html#vouchers">Vouchers</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shipping.html">Shipping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stock.html">Stock</a></li>
-<li class="toctree-l1"><a class="reference internal" href="help.html">Help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subscriptions.html">Subscriptions</a></li>
 </ul>
 </div>
 </div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
-</ul>
 </div>
 
 
@@ -168,16 +96,13 @@
   <ul>
 <li><a class="reference internal" href="#">Lindshop - An Ecommerce Platform For Django</a><ul>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#import-demo-data">Import Demo Data</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="developer.html"
-                        title="next chapter">Developer Guidelines</a></p>
+  <p class="topless"><a href="install.html"
+                        title="next chapter">Installation</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -209,7 +134,7 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="developer.html" title="Developer Guidelines"
+          <a href="install.html" title="Installation"
              >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Lindshop 0.0.1 documentation</a> &raquo;</li> 
       </ul>

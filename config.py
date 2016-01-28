@@ -7,7 +7,7 @@ google_webmastertools	= settings.LINDSHOP.get('google_webmastertools', None)
 # Shop General Settings
 shop_name 				= settings.LINDSHOP.get('shop_name', 'Lindshop')
 shop_logo 				= settings.LINDSHOP.get('shop_logo', None)
-shop_base_template 		= settings.LINDSHOP.get('shop_base_template', 'shop/base.html')
+shop_base_template 		= settings.LINDSHOP.get('shop_base_template', 'lindshop/base.html')
 
 
 # Cart Settings
