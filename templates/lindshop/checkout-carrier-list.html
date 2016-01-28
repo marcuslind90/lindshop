@@ -1,0 +1,39 @@
+{% load product_tags %}
+{% load i18n %}
+{% if carriers %}
+{% for carrier in carriers %}
+<div class="radio">
+	<label>
+		<div class="row">
+			<div class="col-xs-2">
+				<input type="radio" name="carrier" value="{{carrier.id}}" {% if cart.carrier %}{% if carriers|length < 2 %}checked{% elif cart.carrier == carrier %}checked{% endif %}{% else %}{% if carrier.default %}checked{% endif %}{% endif %}>
+			</div>
+			{% if carrier.logo %}
+			<div class="col-xs-4">
+				<img src="{{carrier.logo.url}}" alt="{{carrier.name}}" class="img-responsive">
+			</div>
+			{% else %}
+			<div class="col-xs-4">
+				<span>{{carrier.name}}</span>
+			</div>
+			{% endif %}
+			<div class="col-xs-3">
+				<span>{{carrier.delivery_text}} {% trans "days" %}</span>
+			</div>
+			<div class="col-xs-3 text-right">
+				{% if carrier.carrierpricing_set.all.0 %}
+					{% if carrier.carrierpricing_set.all.0.get_total > 0 %}
+						{% format_price carrier.carrierpricing_set.all.0.get_total %}
+					{% else %}
+						{% trans "Free Shipping!" %}
+					{% endif %}
+				{% endif %}
+			</div>
+		</div>
+	</label>
+</div>
+{% endfor %}
+{% else %}
+<p>No Carriers Set</p>
+<div class="alert alert-warning">{% trans "This shop does not ship to that country." %}</div>
+{% endif %}

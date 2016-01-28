@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block css_sheets %}{% endblock %}
+
+{% block title %}{% blocktrans %}Find your new home with Condopilot{% endblocktrans %}{% endblock %}
+
+{% block navbar %}
+	{% include "cart-dropdown.html" %}
+{% endblock %}
+
+{% block article %}
+<div class="jumbotron">
+	<div class="container">
+		<h1>{% trans "Find your new home" %}</h1>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+	<div class="page-header firstheader text-center">
+		<h2>{% trans "Popular products" %}</h2>
+	</div>
+	<div class="row">
+		{% for product in products %}
+		{% include "product/product-list-item.html" with product=product %}
+		{% if forloop.counter|divisibleby:config.products_per_row %}
+	</div>
+	<div class="row">
+		{% endif %}
+		{% endfor %}
+	</div>
+
+{% endblock %}
+
+{% block footer %}
+{% include "lindshop/cart-modal.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+	var get_lang = "{{LANGUAGE_CODE}}";
+	var csrf = "{{csrf_token}}";
+</script>
+{% endblock %}

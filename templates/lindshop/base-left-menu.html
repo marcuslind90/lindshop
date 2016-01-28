@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-3">
+		{% block left-content %}
+			{% include "category/category-tree.html" %}
+		{% endblock %}
+	</div>
+	<div class="col-sm-9">{% block right-content %}{% endblock %}</div>
+</div>
+{% endblock %}

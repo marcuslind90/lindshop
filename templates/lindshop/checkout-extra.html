@@ -1,0 +1,13 @@
+{% load i18n %}
+<h2>{% trans "Tell Us About Your Dog" %}</h2>
+<div class="alert alert-danger personal-error" style="display:none;"></div>
+<div class="form-group">
+	<div class="row">
+		<div class="col-xs-6">
+			<input type="text" name="dog_name" class="form-control input-lg" placeholder="{% trans "Dog Name" %}" value="{% if cart.user.dog_name %}{{cart.user.dog_name}}{% endif %}">
+		</div>
+		<div class="col-xs-6">
+			<input type="text" name="date_of_birth" class="form-control input-lg" placeholder="{% trans "Dog Birthday (YYYY-MM-DD)" %}" value="{% if cart.user.date_of_birth %}{{cart.user.date_of_birth|date:"Y-m-d"}}{% endif %}">
+		</div>
+	</div>
+</div>

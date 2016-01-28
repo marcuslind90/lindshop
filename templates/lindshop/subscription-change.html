@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Change Your Subscription | Tailbay" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-sm-8 col-sm-offset-2 text-center">
+		{% if request.GET.error %}
+			<div class="alert alert-danger text-left">
+				{% if request.GET.error == 'email_nofound' %}
+					<strong>{% trans "Email Error." %}</strong>
+					{% trans "There are no active plans of the email you provided." %}
+				{% endif %}
+			</div>
+		{% elif request.GET.success %}
+			<div class="alert alert-success text-left">
+				{% if request.GET.success == 'email_send' %}
+					<strong>{% trans "Success." %}</strong>
+					{% trans "An email with instructions of how to cancel our plan has been send to you." %}
+				{% elif request.GET.success == 'unsubscribed' %}
+					<strong>{% trans "Successfully Unsubscribed." %}</strong>
+					{% trans "You have now unsubscribed all subscriptions with us." %}
+				{% endif %}
+			</div>
+		{% endif %}
+		<div class="page-header">
+			<h1>{% trans "Cancel Your Subscription" %}</h1>
+		</div>
+		<p>
+			{% blocktrans %}If you wish to cancel your subscription on TailBay, enter your email in the form below and an email will be send to you with the instructions of how to cancel your plan.{% endblocktrans %}
+		</p>
+
+		<form method="post" action="" id="cancelplan">
+			{% csrf_token %}
+			<div class="form-group">
+				<input type="email" name="cancel_email" class="form-control input-lg" placeholder="{% trans "Enter Your Email" %}">
+			</div>
+			<button class="btn btn-success btn-lg">{% trans "Send Cancelation Email" %}</button>
+		</form>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+	var csrf = "{{csrf_token}}";
+</script>
+{% endblock %}

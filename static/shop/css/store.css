@@ -1,0 +1,36 @@
+/*div.product-list-item {
+	height: 360px;
+}
+
+div.product-list-item a {
+	display: block;
+}
+
+div.product-image-container {
+	position: relative;
+	height: 245px;
+	overflow: hidden;
+}
+
+div.product-image-container img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+}*/
+
+p.price {
+	font-size: 2em;
+	font-weight: 600;
+	margin: 20px 0;
+}
+
+div.product-attributes select {
+	/*margin-bottom: 20px;*/
+}
+
+.tabs-container {
+	margin-top: 20px;
+}

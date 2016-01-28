@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load product_tags %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block navbar %}
+	{% if config.cart_display_top %}
+		{% include "lindshop/cart-dropdown.html" %}
+	{% endif %}
+{% endblock %}
+
+{% block title %}
+	{% trans "Checkout And Complete Your Dog Box Subscription | Tailbay" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-sm-4" id="checkout-cart">
+		<h2>{% trans "Your Cart" %}</h2>
+		{% if cart_items %}
+			<ul class="checkout-cart-list">
+			{% for item in cart_items %}
+				{% include "lindshop/cart-dropdown-item.html" with item=item %}	
+			{% endfor %}
+			</ul>
+		{% endif %}
+		<div class="cart-price-summary">
+			<ul>
+				<li class="summary">
+					<label>{% trans "Summary" %}</label>
+					<span>{% format_price cart.get_total "decimals" %}</span>
+				</li>
+				<li class="shipping">
+					<label>{% trans "Shipping" %}</label>
+					<span>{% if cart.get_shipping > 0 %}{% format_price cart.get_shipping "decimals" %}{% else %}{% trans "Free Shipping!" %}{% endif %}</span>
+				</li>
+				{% if config.checkout_show_vat %}
+				<li class="vat">
+					<label>{% trans "VAT" %}</label>
+					<span>{% format_price cart.get_total_vat "decimals" %}</span>
+				</li>
+				{% endif %}
+				<li class="voucher" {% if not cart.voucher %}style="display:none;"{% endif %}>
+					<label>{% trans "Discount" %}</label>
+					<span>-{% format_price cart.get_total_discount "decimals" %}</span>
+				</li>
+				<li class="total">
+					<label>{% trans "To Pay" %}</label>
+					<span>{% format_price cart.get_to_pay "decimals" %}</span>
+				</li>
+			</ul>
+		</div>
+
+		<div class="voucher-box">
+			<div class="btn-box">
+				<div class="voucher-field" style="display: none;">
+					<input type="text" name="voucher" class="form-control input-lg" placeholder="{% trans "Your voucher code" %}">
+					<button class="btn btn-primary" name="add" style="display: none">{% trans "Add" %}</button>
+					<button class="btn btn-default" name="close">{% trans "Close" %}</button>
+				</div>
+				<button class="btn btn-default btn-voucher">{% trans "Add Voucher" %}</button>
+			</div>
+			<div class="alert alert-danger voucher-danger" style="display: none;"></div>
+			<div class="alert alert-success voucher-success" style="display: none;"></div>
+		</div>
+
+	</div>
+	<div class="col-sm-offset-1 col-sm-7" id="checkout">
+		{% if request.GET.error %}
+		<div class="alert alert-danger">
+			{% if request.GET.error == "card_declined" %}
+			<strong>{% trans "Card Error!" %}</strong> {% trans "Your credit card was declined." %}
+			{% else %}
+			<strong>{% trans "Payment Error!" %}</strong> {% trans "Please make sure your card information is correct." %}
+			{% endif %}
+		</div>
+		{% endif %}
+		{% if errors %}
+			<div class="alert alert-danger">
+				<strong>{% trans "Please fix the errors below before completing your checkout." %}</strong>
+				<ul>
+					{% for error in errors %}
+					<li>{{error}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+		<form id="checkout-form" method="post" action="{% url "shop:process-checkout" %}">
+			{% csrf_token %}
+			<div id="personal-info" class="form-box">
+				{% include "lindshop/checkout-personal-info.html" %}
+				{% if countries %}
+				<div class="form-group">
+					<select name="country" class="form-control input-lg">
+						{% for country in countries %}
+						<option value="{{country.id}}" {% if country == cart.user.address_set.all.0.country %}selected{% endif %}>{% trans country.name %}</option>
+						{% endfor %}
+					</select>
+				</div>
+				{% endif %}
+			</div>
+			<div id="shipping-info" class="form-box" {% if config.checkout_shipping_hide and carriers|length < 2 %}style="display: none;"{% endif %}>
+				<h2>{% trans "Shipping" %}</h2>
+				<div class="form-group" id="carriers">
+					{% include "lindshop/checkout-carrier-list.html" with carriers=carriers %}
+				</div>
+			</div>
+			<div id="payment-info" class="form-box">
+				<h2>{% trans "Payment" %}</h2>
+				{% if payments|length > 1 %}
+					{% for key, payment in payments.items reversed %}
+					<div class="form-group">
+						<div class="radio">
+							<label>
+								<div class="row">
+									<div class="col-xs-2">
+										<input type="radio" name="payment-option" value="{{payment.id}}" {% if forloop.counter == 1 %}checked{% endif %}>
+									</div>
+									<div class="col-xs-10">
+										{{payment.label}}
+									</div>
+								</div>
+							</label>
+						</div>
+						{% if payment.get_form %}
+						<div class="payment-form">
+							{% if forloop.counter == 1 %}
+								{{payment.get_form}}
+							{% endif %}
+						</div>
+						{% endif %}
+
+					</div>
+					{% endfor %}
+				{% else %}
+					{% for key, payment in payments.items reversed %}
+						{{payment.get_form}}
+						<input type="hidden" name="payment-option" value="{{payment.id}}">
+					{% endfor %}
+				{% endif %}
+			</div>
+			<div id="extra-info" class="form-box">
+				{% include "lindshop/checkout-extra.html" %}
+			</div>
+			<div class="btn-group">
+				<button type="submit" class="btn btn-lg btn-success btn-checkout"><i class="fa fa-shopping-cart"></i> {% trans "Complete Checkout" %}</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{% include "lindshop/cart-modal.html" %}
+{% endblock %}
+
+{% block css_sheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'shop/css/checkout.css' %}" />
+{% endblock %}
+
+{% block scripts %}
+<script>
+	var get_lang = "{{LANGUAGE_CODE}}";
+	var csrf = "{{csrf_token}}";
+</script>
+{% for key, payment in payments.items reversed %}
+	{% for payment_js in payment.js %}
+		{% if payment_js.0 == 'url' %}
+		<script type="text/javascript" src="{{payment_js.1}}"></script>
+		{% else %}
+		<script type="text/javascript" src="{% static payment_js.1 %}"></script>
+		{% endif %}
+	{% endfor %}
+{% endfor %}
+{% endblock %}

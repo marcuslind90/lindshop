@@ -1,0 +1,11 @@
+{% extends "mail/base-mail.html" %}
+{% load product_tags %}
+{% load i18n %}
+{% block content %}
+	<h1 style="font-size: 24px;font-weight:bold;">{% trans "Cancel Your Subscription" %}</h1>
+	<p>{% trans "You are getting this email because you have informed us that you want to cancel your subscription. If you want to cancel the subscription, click on the button below. If you want to continue your subscription, you can ignore this email." %}</p>
+{% endblock %}
+
+{% block footer %}
+<p style="text-align: center;"><i>{% trans "We hope your dog is as sad to see you leave as we are." %}</i></p>
+{% endblock %}

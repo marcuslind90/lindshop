@@ -1,0 +1,124 @@
+p {
+    font-size: 1.15em;
+}
+
+.page-header.first-header {
+    margin-top: 0;
+}
+
+.page-header.first-header h1, .page-header.first-header h2, .page-header.first-header h3 {
+    margin-top: 0;
+}
+
+.navbar .dropdown {
+    float: right;
+    margin-left: 15px;
+    margin-top: 8px;
+}
+.cart-dropdown {
+    height: 34px;
+}
+.cart-dropdown .dropdown-menu {
+    margin-top: 0;
+    width: 380px;
+}
+.dropdown-menu-left {
+    right: 0;
+    left: auto;
+}
+.cart-dropdown .dropdown-menu > div {
+    overflow: hidden;
+}
+.empty-cart {
+    display: none;
+    text-align: left;
+    padding: 0 5px;
+}
+.cart-dropdown .btn-menu {
+    text-align: center;
+}
+.dropdown .btn.dropdown-toggle:hover + .dropdown-menu, .dropdown a.dropdown-toggle:hover + .dropdown-menu, .dropdown-menu:hover{
+	display: block !important;
+}
+.dropdown-menu li.dropdown-product {
+    overflow: hidden;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+.dropdown-menu .dropdown-header, .cart-summary label.total_price {
+    text-transform: uppercase;
+    color: #999;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 0.8em;
+}
+.dropdown-product > .row {
+    padding-bottom: 5px;
+}
+.row.nomargin {
+    margin-left: 0;
+    margin-right: 0;
+}
+.dropdown-product .input-sm {
+    width: 70%;
+    float: left;
+}
+.dropdown-product .remove-product {
+    float: right;
+    margin: 4px 0;
+}
+.cart-summary {
+    text-align: center;
+}
+.cart-summary label.total_price {
+    border: none;
+}
+.cart-summary p.total_price {
+    font-size: 2em;
+    margin-top: 0;
+    line-height: 0.7em;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+.cart-dropdown .btn-group {
+    padding: 20px 0;
+    text-align: center;
+    display: block;
+}
+.cart-dropdown .btn-group .btn {
+    border-radius: 60px;
+    width: 80%;
+    float: none;
+}
+.cart-dropdown .dropdown-toggle .badge{
+    background: #449d44;
+    position: absolute;
+    top: -3px;
+    left: -5px;
+    height: 18px;
+    line-height: 18px;
+    min-width: 18px;
+    border-radius: 100%;
+    padding: 0 0 0 0px;
+}
+.col-small-padding {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.center {
+    margin: 0 auto;
+}
+
+.btn-50 {
+    width: 50%;
+}
+
+@media(max-width: 737px) {
+
+    .btn-50 {
+        width: auto;
+    }
+}

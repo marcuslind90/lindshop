@@ -1,0 +1,4 @@
+iso_code;format;default;language
+THB;%s THB;True;th
+SEK;%s kr;False;sv
+USD;$%s;False;en

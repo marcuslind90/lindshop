@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load product_tags %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block title %}
+	{% trans "Thank You For Shopping With Us | Tailbay" %}
+{% endblock %}
+
+{% block article %}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-sm-12 text-center">
+		<h1 style="font-weight: bold;font-size: 5em;">{% trans "Thank Your For Shopping!" %}</h1>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block css_sheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'shop/css/checkout.css' %}" />
+{% endblock %}
+
+{% block scripts %}
+<script>
+	var get_lang = "{{LANGUAGE_CODE}}";
+	var csrf = "{{csrf_token}}";
+</script>
+{% endblock %}

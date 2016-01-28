@@ -1,0 +1,40 @@
+{% load i18n %}
+{% load product_tags %}
+{% for item in items %}
+<li class="dropdown-product" data-id="{{item.product.id}}">
+	<div class="row nomargin">
+		<div class="col-xs-6 col-small-padding">
+			<div class="row">
+				<div class="col-xs-4">
+					<img src="{{item.product.get_featured.image.url}}" class="img-responsive img-thumbnail">
+				</div>
+				<div class="col-xs-8 col-small-padding">
+					<div class="row">
+						<div class="col-sm-12">
+							<a href="{{item.product.get_featured.image.url}}">{{item.product.name}}</a>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">{% format_price item.product.get_price %}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-3 col-small-padding">
+			<input type="text" name="amount" value="{{item.amount}}" class="form-control input-sm"/>
+			<a name="remove" href="#" class="remove-product">
+				<i class="fa fa-trash"></i>
+			</a>
+		</div>
+		<div class="col-xs-3 col-small-padding text-right">
+			{% format_price item.get_total %}
+		</div>
+	</div>
+</li>
+{% endfor %}
+{% if cart %}
+<li class="cart-summary">
+<label class="total_price">{% trans "Total" %}</label>
+<p class="total_price">{% format_price cart.get_total %}</p>
+</li>
+{% endif %}

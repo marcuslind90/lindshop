@@ -1,0 +1,38 @@
+{% extends "mail/base-mail.html" %}
+{% load product_tags %}
+{% load i18n %}
+{% block content %}
+	<h1 style="font-size: 24px;font-weight:bold;">{% blocktrans with id_order=order.id %}New Order #{{id_order}}{% endblocktrans %}</h1>
+	<p>{% blocktrans with date_created=order.date_created %}Order was placed {{date_created}}.{% endblocktrans %}</p>
+
+	<table style="width: 100%; margin: 0; padding: 0;">
+		<thead>
+			<tr>
+				<th style="text-align: left;">{% trans "Product" %}</th>
+				<th style="text-align: left;">{% trans "Amount" %}</th>
+				<th style="text-align: left;">{% trans "Price per unit" %}</th>
+				<th style="text-align: left;">{% trans "Total" %}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in order.cart.cartitem_set.all %}
+			<tr>
+				<td>
+				{% if item.product %}
+					{{item.product.name}}
+				{% else %}
+					{{item.plan.name}}
+				{% endif %}
+				</td>
+				<td>{{item.amount}}</td>
+				<td>{% format_price item.get_product_price "decimals" %}</td>
+				<td>{% format_price item.get_total "decimals" %}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<p><b>{% trans "Total:" %} {% format_price order.cart.get_to_pay "decimals" %}</b></p>
+{% endblock %}
+
+{% block footer %}{% endblock %}

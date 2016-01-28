@@ -1,0 +1,11 @@
+{% if menu %}
+<nav class="navbar navbar-default">
+	<ul class="nav navbar-nav">
+		{% for item in menu_items %}
+		<li>
+			<a href="{{item.url}}">{{item.label}}</a>
+		</li>
+		{% endfor %}
+	</ul>
+</nav>
+{% endif %}

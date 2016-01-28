@@ -1,0 +1,19 @@
+<div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" data-backdrop="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Varukorgen</h4>
+      </div>
+      <div class="modal-body">
+        {% if cart_items %}
+		{% include "lindshop/cart-dropdown-items.html" with items=cart_items %}
+		{% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <a class="btn btn-warning" href="{% url "shop:checkout" %}" id="checkout-link"><i class="fa fa-shopping-cart" style="margin-right: 3px;"></i> Gå till kassan</a>
+      </div>
+    </div>
+  </div>
+</div>

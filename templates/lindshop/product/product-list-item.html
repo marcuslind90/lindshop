@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load thumbnail %}
+{% load shop_tags %}
+{% load product_tags %}
+<div class="{{config.products_per_row_mobile|get_column:"xs"}} {{config.products_per_row|get_column:"sm"}} text-center product-list-item">
+	<a href="{% url "shop:product" product.pk product.slug %}">
+		<div class="product-image-container">
+			{% thumbnail product.get_featured.image config.product_thumbnail_size crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class="img-responsive">
+			{% endthumbnail %}
+		</div>
+		<h4>{{product.name}}</h4>
+		<span class="price">{% format_price product.get_price %}</span>
+	</a>
+	{% if config.category_add_to_cart %}
+	<button class="btn btn-warning" name="add-product" data-id="{{product.pk}}"><i class="fa fa-shopping-cart"></i> {% trans "Buy" %}</button>
+	{% endif %}
+</div>

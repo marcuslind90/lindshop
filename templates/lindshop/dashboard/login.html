@@ -1,0 +1,50 @@
+{% load staticfiles %}
+{% load product_tags %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>{% trans "Sign In To Your Store" %}</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="{% static "shop/css/bootstrap.css" %}" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="{% static "shop/css/dashboard.css" %}" rel="stylesheet">
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+
+	<div class="container" style="width: 360px;">
+
+	  <form class="form-signin" method="post" action="">
+	  	{% csrf_token %}
+		<h2 class="form-signin-heading">{% trans "Please Sign In" %}</h2>
+		<label for="inputEmail" class="sr-only">{% trans "Username" %}</label>
+		<input type="text" name="username" id="inputEmail" class="form-control" placeholder="{% trans "Username" %}" required autofocus>
+		<label for="inputPassword" class="sr-only">{% trans "Password" %}</label>
+		<input type="password" name="password" id="inputPassword" class="form-control" placeholder="{% trans "Password" %}" required>
+		<div class="checkbox">
+		  <label>
+			<input type="checkbox" value="remember-me"> {% trans "Remember me" %}
+		  </label>
+		</div>
+		<button class="btn btn-lg btn-success btn-block" type="submit">{% trans "Sign in" %}</button>
+	  </form>
+
+	</div> <!-- /container -->
+  </body>
+</html>

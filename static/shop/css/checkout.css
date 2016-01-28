@@ -1,0 +1,156 @@
+#checkout-cart h2 {
+	text-transform: uppercase;
+    text-align: center;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 10px 0;
+    font-size: 0.875em;
+    color: #666;
+    font-weight: 600;
+}
+
+.checkout-cart-list {
+	margin-top: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+
+.cart-price-summary ul {
+    list-style: none;
+    padding: 0;
+}
+
+.cart-price-summary ul li label {
+    font-weight: normal;
+}
+
+.cart-price-summary ul li span {
+    text-align: right;
+    float: right;
+}
+.cart-price-summary ul li.vat {
+	border-bottom: 1px solid #e5e5e5;
+}
+.cart-price-summary ul li.total {
+	margin: 10px 0;
+}
+.cart-price-summary ul li.voucher {
+	padding: 6px 0 3px;
+	border-bottom: 1px solid #e5e5e5;
+    color: #41ab3d;
+}
+
+.cart-price-summary ul li.total label, .cart-price-summary ul li.total span {
+    font-weight: 600;
+}
+
+ul.checkout-cart-list {
+	padding: 0;
+	list-style: none;
+}
+
+ul.checkout-cart-list li {
+	border-bottom: 1px solid #e5e5e5;
+	padding: 5px 0;
+	margin: 5px 0;
+}
+
+.cart-price-summary {
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 20px;
+}
+
+.voucher-box .btn-box {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.btn-voucher {
+	border-radius: 30px;
+}
+
+#checkout .btn-group {
+    text-align: center;
+    display: block;
+}
+
+#checkout .form-group label {
+	color: #9f9f9f;
+}
+#checkout .form-group img {
+	max-height: 50px;
+}
+#checkout .form-group .radio label {
+	width: 100%;
+}
+
+#checkout .radio .row > div {
+    height: 50px;
+    line-height: 50px;
+}
+
+#checkout .radio {
+    background-color: #f9f9f9;
+    padding: 0 20px;
+    border-bottom: 1px solid #e9e9e9;
+    margin: 0;
+}
+
+#checkout .radio input[type="radio"] {
+	position: static;
+}
+
+.btn.btn-checkout {
+	float: none;
+	border-radius: 50px;
+	width: 50%;
+}
+
+.voucher-field {
+	position: relative;
+}
+
+.voucher-field .btn {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+    border-radius: 20px;
+}
+
+.relative {
+    position: relative;
+}
+.input-divider {
+    position: absolute;
+    right: -3px;
+    top: 12px;
+}
+
+.form-box {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+}
+
+.form-box h2 {
+    margin: 0;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+i.input-icon {
+    position: absolute;
+    top: 13px;
+    left: 35px;
+    font-size: 1.5em;
+}
+
+input.input-icon {
+    padding-left: 45px;
+}
+
+.payment-form {
+    margin: 20px 0;
+}

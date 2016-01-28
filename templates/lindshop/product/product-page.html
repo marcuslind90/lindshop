@@ -1,0 +1,67 @@
+{% extends "base-left-menu.html" %}
+{% load i18n %}
+{% load product_tags %}
+
+{% block title %}
+{{product.title}}
+{% endblock %}
+
+{% block right-content %}
+{% include "breadcrumbs/breadcrumbs.html" %}
+<div class="row">
+	<div class="col-sm-6">
+		<div class="product-images">
+			<img src="{{product.get_featured.image.url}}" class="img-responsive">
+		</div>
+
+	</div>
+	<div class="col-sm-6">
+		<div class="page-header first-header">
+			<h1>{{product.name}}</h1>
+		</div>
+		<p>{{product.short_description|linebreaks}}</p>
+		<p class="price">{% format_price product.get_price %}</p>
+
+		<form method="post" action="" id="add-product">
+			{% csrf_token %}
+			{% if product.attributes.all %}
+			<div class="product-attributes">
+				{% for attribute in product.attributes.all %}
+				<div class="form-group">
+					<select name="attribute-{{attribute.slug}}" class="form-control">
+						{% for choice in attribute.attributechoice_set.all %}
+						<option value="{{choice.slug}}">{{choice.value}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				{% endfor %}
+			</div>
+			{% endif %}
+			<input type="hidden" name="id_product" value="{{product.pk}}">
+			<input type="hidden" name="action" value="add-product">
+			<button class="btn btn-warning btn-lg" type="submit">
+				<i class="fa fa-shopping-cart"></i> {% trans "Add to cart" %}
+			</button>
+		</form>
+	</div>
+</div>
+<div class="row tabs-container">
+	<div class="col-xs-12">
+
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active">
+				<a href="#description" aria-controls="description" role="tab" data-toggle="tab">{% trans "Description" %}</a>
+			</li>
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="description">
+				<p>{{product.description|linebreaks}}</p>
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock %}

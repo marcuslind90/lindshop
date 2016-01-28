@@ -1,0 +1,42 @@
+{% load i18n %}
+{% load product_tags %}
+<div class="btn-group dropdown cart-dropdown">
+	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+		{% if cart_items|length > 0 %}
+		<span class="badge">{{cart_items|length}}</span>
+		{% else %}
+		<span class="badge" style="display: none;">0</span>
+		{% endif %}
+		<i class="fa fa-shopping-cart"></i> {% trans "Cart" %}
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu dropdown-menu-left" role="menu" aria-labelledby="dropdownMenu1">
+		<li class="dropdown-header">
+			<div class="row">
+				<div class="col-xs-6 col-small-padding">{% trans "Product" %}</div>
+				<div class="col-xs-3 col-small-padding">{% trans "Amount" %}</div>
+				<div class="col-xs-3 text-right col-small-padding">{% trans "Price" %}</div>
+			</div>
+		</li>
+		<li class="empty-cart" {% if not cart_items %}style="display: list-item;"{% endif %}><div class="alert alert-warning">{% trans "Your cart is empty!" %}</div></li>
+		<div class="itemlist">
+		{% if cart_items %}
+			{% for item in cart_items %}
+				{% include "lindshop/cart-dropdown-item.html" with item=item %}	
+			{% endfor %}
+		{% endif %}
+		</div>
+		{% if cart %}
+		<div class="cart-summary">
+			<label class="total_price">{% trans "Total" %}</label>
+			<p class="total_price">{% format_price cart.get_total %}</p>
+		</div>
+		{% endif %}
+		<li class="btn-menu">
+			<div class="btn-group">
+				<a class="btn btn-lg btn-success" href="{% url "shop:checkout" %}" id="checkout-link"><i class="fa fa-shopping-cart" style="margin-right: 3px;"></i> {% trans "Go to Checkout" %}</a>
+			</div>
+		</li>
+		<i class="fa fa-spinner fa-spin" style="display: none"></i>
+	</ul>
+</div>

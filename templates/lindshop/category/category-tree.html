@@ -1,0 +1,11 @@
+{% load shop_tags %}
+<ul>
+{% for category in categories %}
+	<li>
+		<a href="{{category.get_absolute_url}}" title="{{category.name}}">{{category.name}}</a>
+		{% if category.category_set.all %}
+		{% include "category/category-tree.html" with categories=category.category_set.all|order_category %}
+		{% endif %}
+	</li>
+{% endfor %}
+</ul>

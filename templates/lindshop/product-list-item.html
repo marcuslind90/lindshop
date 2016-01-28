@@ -1,0 +1,9 @@
+{% load i18n %}
+{% load shop_tags %}
+<div class="{{config.products_per_row_mobile|get_column:"xs"}} {{config.products_per_row|get_column:"sm"}} text-center">
+	<a href="{% url "shop:product" product.pk product.slug %}">
+		<img src="{{product.get_featured.image.url}}" alt="{{product.get_featured.alt}}" class="img-responsive">
+		<h4>{{product.name}}</h4>
+	</a>
+	<button class="btn btn-warning" name="add-product" data-id="{{product.pk}}"><i class="fa fa-shopping-cart"></i> {% trans "Buy" %}</button>
+</div>
