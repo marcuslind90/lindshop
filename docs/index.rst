@@ -6,6 +6,8 @@ Installation
 
 Installation is done in the following way:
 
+.. code-block::
+
     pip install lindshop
 
 .. toctree::
