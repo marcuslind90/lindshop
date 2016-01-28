@@ -1,15 +1,15 @@
-.. Lindshop documentation master file, created by
-   sphinx-quickstart on Thu Jan 28 16:45:33 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Lindshop - An Ecommerce Plattform For Django
+============================================
 
-Welcome to Lindshop's documentation!
-====================================
+Installation
+^^^^^^^^^^^^
 
-Contents:
+Installation is done in the following way:
+    pip install lindshop
 
 .. toctree::
    :maxdepth: 2
+   help
 
 
 
@@ -19,4 +19,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
