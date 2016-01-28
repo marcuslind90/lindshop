@@ -5,6 +5,7 @@ Installation
 ^^^^^^^^^^^^
 
 Installation is done in the following way:
+
     pip install lindshop
 
 .. toctree::
