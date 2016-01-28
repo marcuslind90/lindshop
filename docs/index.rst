@@ -91,13 +91,14 @@ The command will import the following to your database:
 .. toctree::
    :maxdepth: 2
 
-   developer
    admin
-   subscriptions
+   developer
+   help
    payment
+   templates
    shipping
    stock
-   help
+   subscriptions
 
 
 
