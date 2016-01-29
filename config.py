@@ -40,4 +40,4 @@ product_thumbnail_size	= "%sx%s" % (product_thumbnail_width, product_thumbnail_h
 category_add_to_cart	= settings.LINDSHOP.get('category_add_to_cart', False)
 category_order_by		= settings.LINDSHOP.get('category_order_by', 'name')
 
-# This is a temporary comment to test Branches in Git.
+subscription_payment	= settings.LINDSHOP.get('subscription_payment', None)

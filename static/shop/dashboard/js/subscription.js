@@ -12,7 +12,7 @@ $('a#check-payments').click(function(e){
 	$(this).attr('disabled', true);
 	$('i.fa', this).addClass('fa-spin');
 
-	$.post("/en/dashboard/check-payments/", {csrfmiddlewaretoken: csrf}, function(data){
+	$.post("/dashboard/check-payments/", {csrfmiddlewaretoken: csrf}, function(data){
 		location.removeClass('disabled');
 		location.attr('disabled', false);
 		$('i.fa', location).removeClass('fa-spin');

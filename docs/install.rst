@@ -258,3 +258,13 @@ Available Settings
    Type: String
    
    Default: 'name'
+
+.. attribute:: subscription_payment
+
+   Set the class of the subscription payment module. Unlike the setting for normal payment modules where you can define a list of multiple different payment options, with subscription_payment you can only define a single payment option.
+
+   The string is formated as :code:`lindshop-stripe.wrapper.StripeWrapper`.
+
+   Type: String
+   
+   Default: None

@@ -5,10 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.utils import timezone
-
-#from lindshop.core.payment.stripewrapper import StripeWrapper
+from django.utils.module_loading import import_string
 
 from lindshop.core.dashboard import *
+from lindshop import config
 
 """
 View that display login form. If user is logged in
@@ -118,12 +118,16 @@ def plans(request):
 def check_payments(request):
 	orders = Order.objects.filter(Q(subscription=True) | Q(subscription_enddate__gte=timezone.now()), subscription_status="active")
 	subscriptions = []
-	sw = StripeWrapper()
+
+	# Get the payment class from the configuration and initiate a class.
+	payment_module = import_string(config.subscription_payment)
+	payment_class = payment_module()
+
 	# Test if each subscription is still a subscriber with the Payment Gateway
 	for order in orders:
 		# Use the stored payment reference ID and check with the payment gateway
 		# if tha reference is still subscribed and paying.
-		result = sw.checkSubscription(order)
+		result = payment_class.checkSubscription(order)
 		print "%s == %s" % (order.payment_reference, result)
 		if result == 'active': # If active, meaning payments are successful. Do nothing
 			pass

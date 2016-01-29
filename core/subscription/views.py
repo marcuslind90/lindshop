@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.core.mail import send_mail
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_GET
+from django.utils.module_loading import import_string
 
 from lindshop.core.product.models import Product
 from lindshop.core.cart.models import Cart, CartItem
@@ -14,7 +15,7 @@ from lindshop.core.customer.models import CustomerProfile, Address
 from lindshop.core.cart.views import addProduct
 from lindshop.core.shipping.models import Carrier
 from lindshop.core.subscription.models import Plan
-#from lindshop.core.payment.stripewrapper import StripeWrapper
+
 from lindshop.core.attribute.models import Attribute
 from lindshop import config
 
@@ -32,9 +33,12 @@ def subscription_cancel(request):
 	orders = customer.order_set.filter(subscription_status="active")
 	if len(orders) > 0:
 
-		sw = StripeWrapper()
+		# Get the payment class from the configuration and initiate a class.
+		payment_module = import_string(config.subscription_payment)
+		payment_class = payment_module()
+
 		for order in orders:
-			if sw.unsubscribe(order.payment_reference, order.payment_id):
+			if payment_class.unsubscribe(order.payment_reference, order.payment_id):
 				order.subscription_status = "canceled"
 				order.save()
 
