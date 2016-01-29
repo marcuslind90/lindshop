@@ -11,9 +11,9 @@ class ViewTests(TestCase):
 
 	@classmethod
 	def setUpTestData(cls):
-		cls.cart 	= Cart.objects.create()
 		cls.country = Country.objects.create(name="Thailand", slug="thailand", default=True)
-		cls.currency = Currency.objects.create(name="SEK", format="%s kr", default=True)
+		cls.currency = Currency.objects.create(iso_code="SEK", format="%s kr", default=True)
+		cls.cart 	= Cart.objects.create(currency=cls.currency)
 		cls.taxrule = Taxrule.objects.create(name="25 Standard", percentage=25)
 		cls.category = Category.objects.create(name="Men Shirts", slug="men-shirts")
 		cls.product1 = Product.objects.create(name="Green T-shirt", slug="green-tshirt", category=cls.category, active=True)

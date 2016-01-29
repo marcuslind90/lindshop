@@ -12,9 +12,10 @@ class ViewTests(TestCase):
 
 	@classmethod
 	def setUpTestData(cls):
+		cls.currency = Currency.objects.create(iso_code="SEK", format="%s kr", default=True)
 		cls.user = get_user_model().objects.create_user(username="marcuslind90", email="marcuslind90@gmail.com", password="helloworld")
 		cls.address = Address.objects.create(user=cls.user)
-		cls.cart 	= Cart.objects.create(user=cls.user)
+		cls.cart 	= Cart.objects.create(user=cls.user, currency=cls.currency)
 		cls.country = Country.objects.create(name="Thailand", slug="thailand", default=True)
 
 		cls.factory = RequestFactory()

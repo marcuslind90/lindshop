@@ -15,7 +15,7 @@ class CartTests(TestCase):
 	
 	@classmethod
 	def setUpTestData(cls):
-		cls.currency = Currency.objects.create(name="SEK", format="%s kr")
+		cls.currency = Currency.objects.create(iso_code="SEK", format="%s kr", default=True)
 		cls.taxrule = Taxrule.objects.create(name="25 Standard", percentage=25)
 		cls.category = Category.objects.create(name="Men Shirts", slug="men-shirts")
 		cls.product1 = Product.objects.create(name="Green T-shirt", slug="green-tshirt", category=cls.category, active=True)
@@ -26,7 +26,7 @@ class CartTests(TestCase):
 		cls.factory = RequestFactory()
 
 	def test_AddProductToCart(self):
-		cart = Cart()
+		cart = Cart(currency=self.currency)
 		cart.save()
 
 		self.factory.session = {'id_cart': cart.pk} # Just make sure the factory got a session object.
@@ -45,7 +45,7 @@ class CartTests(TestCase):
 		self.assertEqual(len(cart.cartitem_set.all()), 1)
 
 	def test_updateAmount(self):
-		cart = Cart()
+		cart = Cart(currency=self.currency)
 		cart.save()
 
 		self.factory.session = {'id_cart': cart.pk} # Just make sure the factory got a session object.
@@ -60,7 +60,7 @@ class CartTests(TestCase):
 
 	def test_removeProduct(self):
 		from django.core.exceptions import ObjectDoesNotExist
-		cart = Cart()
+		cart = Cart(currency=self.currency)
 		cart.save()
 
 		self.factory.session = {'id_cart': cart.pk} # Just make sure the factory got a session object.

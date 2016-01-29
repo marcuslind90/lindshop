@@ -10,7 +10,7 @@ class ProductTests(TestCase):
 	
 	@classmethod
 	def setUpTestData(cls):
-		cls.currency 	= Currency.objects.create(name="SEK", format="%s kr", default=True)
+		cls.currency = Currency.objects.create(iso_code="SEK", format="%s kr", default=True)
 		cls.taxrule 	= Taxrule.objects.create(name="25 Standard", percentage=25)
 		cls.category 	= Category.objects.create(name="Men Shirts", slug="men-shirts")
 		cls.product 	= Product.objects.create(name="Green T-shirt", slug="green-tshirt", active=True)
