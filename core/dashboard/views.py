@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.utils import timezone
 
-from lindshop.core.payment.stripewrapper import StripeWrapper
+#from lindshop.core.payment.stripewrapper import StripeWrapper
 
 from lindshop.core.dashboard import *
 

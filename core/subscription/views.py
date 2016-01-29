@@ -14,7 +14,7 @@ from lindshop.core.customer.models import CustomerProfile, Address
 from lindshop.core.cart.views import addProduct
 from lindshop.core.shipping.models import Carrier
 from lindshop.core.subscription.models import Plan
-from lindshop.core.payment.stripewrapper import StripeWrapper
+#from lindshop.core.payment.stripewrapper import StripeWrapper
 from lindshop.core.attribute.models import Attribute
 from lindshop import config
 
