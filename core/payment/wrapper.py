@@ -10,11 +10,18 @@ class PaymentModule(object):
 		html = render_to_string('lindshop/payment-form.html')
 		return html
 
+	def do_transaction(self, request, order):
+		result = {
+				'status': 'pending', 
+				'payment_status': 'paid'
+			}
+		return result
+
 	"""
 	Function run when an order is successfully saved.
 	"""
 	def order_success(self, order):
-		pass
+		return None
 
 class SubscriptionPaymentModule(PaymentModule):
 	def __init__(self, *args, **kwargs):

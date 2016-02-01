@@ -3,7 +3,7 @@ from lindshop.core.product.models import Product, ProductImage
 from lindshop.core.category.models import Category
 from lindshop.core.stock.models import Warehouse, Stock
 from lindshop.core.pricing.models import Currency, Taxrule, Voucher, Pricing, Discount
-from lindshop.core.order.models import Order, Notification
+from lindshop.core.order.models import Order, Notification, CustomField, CustomFieldValue
 from lindshop.core.customer.models import CustomerProfile, Country, Address
 from lindshop.core.cart.models import Cart, CartItem
 from lindshop.core.shipping.models import Carrier, CarrierPricing
@@ -22,6 +22,8 @@ admin.site.register(Voucher)
 admin.site.register(Pricing)
 admin.site.register(Order)
 admin.site.register(Notification)
+admin.site.register(CustomField)
+admin.site.register(CustomFieldValue)
 admin.site.register(CustomerProfile)
 admin.site.register(Country)
 admin.site.register(Address)

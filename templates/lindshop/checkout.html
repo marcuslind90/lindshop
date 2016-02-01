@@ -142,9 +142,11 @@
 					{% endfor %}
 				{% endif %}
 			</div>
+			{% if custom_fields %}
 			<div id="extra-info" class="form-box">
 				{% include "lindshop/checkout-extra.html" %}
 			</div>
+			{% endif %}
 			<div class="btn-group">
 				<button type="submit" class="btn btn-lg btn-success btn-checkout"><i class="fa fa-shopping-cart"></i> {% trans "Complete Checkout" %}</button>
 			</div>

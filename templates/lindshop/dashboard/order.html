@@ -32,13 +32,30 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<h4>{% trans "Customer Information" %}</h4>
-				{% include "lindshop/dashboard/customer-info.html" with customer=order.customer %}
+				{% include "lindshop/dashboard/customer-info.html" with customer=order.user %}
 			</div>
 			<div class="col-sm-6">
 				<h4>{% trans "Customer Address" %}</h4>
-				{% include "lindshop/dashboard/customer-address.html" with address=order.customer.address_set.all.0 %}
+				{% include "lindshop/dashboard/customer-address.html" with address=order.user.address_set.all.0 %}
 			</div>
 		</div>
+		{% if order.customfieldvalue_set.all|length > 0 %}
+		<div class="row">
+			<div class="col-sm-12">
+				<h4>{% trans "Extra Information" %}</h4>
+				<ul>
+					{% for fieldvalue in order.customfieldvalue_set.all %}
+						{% with fieldvalue.custom_field as field %}
+						<li>
+							<label>{{field}}</label>
+							{{fieldvalue.value}}
+						</li>
+						{% endwith %}
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		{% endif %}
 		{% if order.subscription %}
 		<div class="row">
 			<div class="col-sm-12">

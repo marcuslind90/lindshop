@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth import get_user_model
 from lindshop.core.cart.models import Cart
 from lindshop.core.customer.models import Address, Country
-from lindshop.core.order.models import Order
+from lindshop.core.order.models import Order, CustomField, CustomFieldValue
 from lindshop.core.payment import payments
 
 def validate_checkout(request):
@@ -37,10 +37,6 @@ def validate_checkout(request):
 	if last_name is None or len(last_name) < 1:
 		status = False
 		errors.append(_('Last name field is empty.'))
-
-	if dog_name is None or len(dog_name) < 1:
-		status = False
-		errors.append(_('Dog name field is empty.'))
 
 	if email is None or len(email) < 1:
 		if 'id_cart' in request.session:
@@ -174,6 +170,21 @@ def add_address(request):
 		customer_address.save()
 
 	return customer_address
+
+def add_custom_fields(request, order):
+	custom_fields = CustomField.objects.all()
+	for field in custom_fields:
+		value = request.POST.get(field.slug, None)
+		if value is not None:
+			value = CustomFieldValue.objects.create(
+				custom_field = field, 
+				order = order, 
+				value = value
+			)
+		elif field.mandatory: # If field is not part of the request, but its mandatory. Raise an error.
+			raise ValueError('Mandatory field "%s" is not set.' % field.slug)
+
+	return True
 
 def add_order(cart, customer, **kwargs):
 	"""Add order data to the `Order` object.

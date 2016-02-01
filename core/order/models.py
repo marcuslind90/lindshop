@@ -111,6 +111,9 @@ class CustomField(models.Model):
 	mandatory = models.BooleanField(default=False)
 	slug = models.SlugField()
 
+	def __unicode__(self):
+		return self.label
+
 	class Meta:
 		app_label = 'order'
 
@@ -121,6 +124,9 @@ class CustomFieldValue(models.Model):
 	custom_field = models.ForeignKey('order.CustomField')
 	order = models.ForeignKey('order.Order')
 	value = models.CharField(max_length=100)
+
+	def __unicode__(self):
+		return "%s: %s" % (self.custom_field.label, self.value) 
 
 	class Meta:
 		app_label = 'order'

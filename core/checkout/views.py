@@ -9,22 +9,36 @@ from django.views.decorators.http import require_POST
 from lindshop.core.shipping.models import Carrier
 from lindshop.core.customer.models import Country
 from lindshop.core.cart.models import Cart, CartItem
-from lindshop.core.order.models import Order
+from lindshop.core.order.models import Order, CustomField
 from lindshop.core.subscription.models import Plan
 from lindshop.core.payment import payments
 from lindshop.core.checkout import process
 
 # Create your views here.
 def checkout(request, errors=None):
+	"""View to display the standard Checkout page with forms, payment
+	and extra fields.
+	"""
 	if 'id_cart' not in request.session:
 		return HttpResponseRedirect(reverse('shop:index'))
 	countries = Country.objects.all()
 	carriers = list_carriers(request)
+	custom_fields = CustomField.objects.all()
 
 	#carriers = Carrier.objects.all().order_by('-default')
-	return render(request, 'checkout.html', {'carriers': carriers, 'countries': countries, 'errors': errors, 'payments': payments})
+	return render(request, 'checkout.html', {
+		'carriers': carriers, 
+		'countries': countries, 
+		'errors': errors, 
+		'payments': payments, 
+		'custom_fields': custom_fields
+	})
 
 def ajax_checkout(request):
+	"""View that handles AJAX calls on the Checkout Page.
+	For example, when a user change country it should load the carriers
+	available in that country. This requires an AJAX call.
+	"""
 	try:
 		if request.method == 'POST':
 			if request.POST.get('action', None) == "list-carriers":
@@ -35,13 +49,12 @@ def ajax_checkout(request):
 	except Exception as ex:
 		print ex.message
 
-"""
-Function that returns the carriers available depending on what
-country the user has selected.
-html=True returns a HTML string.
-html=False returns a list of carrier objects.
-"""
 def list_carriers(request, html=False):
+	"""Function that returns the carriers available depending on what
+	country the user has selected.
+	html=True returns a HTML string.
+	html=False returns a list of carrier objects.
+	"""
 	default_country = None
 	try:
 		if 'id_cart' in request.session:
@@ -69,6 +82,10 @@ def list_carriers(request, html=False):
 
 @require_POST
 def process_checkout(request):
+	"""View to handle the Form Submit of the Checkout.
+	This is where all data from the Checkout is processed and
+	used to create an Order.
+	"""
 	# Validate Data, if failed, return checkout view again and display errors.
 	errors = process.validate_checkout(request)
 	if errors is not True:
@@ -101,9 +118,12 @@ def process_checkout(request):
 	# Try uncommenting this line, to see if we can still process the transaction witout a saved order in the database.
 	order.save()  # Save the order before we do the transaction, in case of error.
 
+
+	# Add Custom Fields Data
+	custom_fields = process.add_custom_fields(request, order)
+
 	# Complete Transaction
 	transaction_result = process.do_transaction(request, order)
-	print "Transaction Results are: %s" % transaction_result
 
 	if 'error' not in transaction_result:
 		print "Transaction Results are: %s" % transaction_result
