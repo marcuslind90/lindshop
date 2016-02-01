@@ -102,6 +102,29 @@ class Order(models.Model):
 	class Meta:
 		app_label = 'order'
 
+class CustomField(models.Model):
+	"""This is a custom field for the checkout for each order. For example, perhaps you want to collect
+	the date of birth of the customer. You can add a custom field here and it will be presented
+	in the checkout.
+	"""
+	label = models.CharField(max_length=50)
+	mandatory = models.BooleanField(default=False)
+	slug = models.SlugField()
+
+	class Meta:
+		app_label = 'order'
+
+class CustomFieldValue(models.Model):
+	"""A value of a Custom Field for an order. For example, all orders have a custom field called "Date of Birth",
+	and on Order #357 the "Date of Birth" field is set to "1990-02-11".
+	"""
+	custom_field = models.ForeignKey('order.CustomField')
+	order = models.ForeignKey('order.Order')
+	value = models.CharField(max_length=100)
+
+	class Meta:
+		app_label = 'order'
+
 class Notification(models.Model):
 	order 				= models.ForeignKey(Order)
 	notification_type 	= models.CharField(max_length=20, choices=(("shipping", "Shipping"), ("note", "Note")))
