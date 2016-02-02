@@ -11,7 +11,7 @@ from lindshop.core.customer.models import Country
 from lindshop.core.cart.models import Cart, CartItem
 from lindshop.core.order.models import Order, CustomField
 from lindshop.core.subscription.models import Plan
-from lindshop.core.payment import payments
+from lindshop.core.payment.utils import payments
 from lindshop.core.checkout import process
 
 # Create your views here.

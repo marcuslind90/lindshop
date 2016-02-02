@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from lindshop.core.order.models import Order
-from lindshop.core.payment import payments
+from lindshop.core.payment.utils import payments
 
 """
 If a payment fails or any other interesting event

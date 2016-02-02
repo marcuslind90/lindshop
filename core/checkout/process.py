@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from lindshop.core.cart.models import Cart
 from lindshop.core.customer.models import Address, Country
 from lindshop.core.order.models import Order, CustomField, CustomFieldValue
-from lindshop.core.payment import payments
+from lindshop.core.payment.utils import payments
 
 def validate_checkout(request):
 	"""Validate the inputs of the checkout form.
