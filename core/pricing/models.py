@@ -73,7 +73,7 @@ class Pricing(models.Model):
 		if self.product is not None:
 			return self.product.name
 		else:
-			return self.plan.name
+			return "self.plan.name"
 
 	class Meta:
 		app_label = 'pricing'

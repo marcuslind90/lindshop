@@ -1,0 +1,148 @@
+<a href="" ng-click="navigateTo('/orders/');"><i class="fa fa-long-arrow-left"></i> Back to Orders</a>
+<div class="page-header">
+	<div class="row">
+		<div class="col-xs-6">
+			<h1>Order #{{order.id}} by {{order.user.first_name}} {{order.user.last_name}}</h1>
+			<h4>{{order.date_created | date : "dd/MM-yyyy H:mm:s"}}</h4>
+		</div>
+		<div class="col-xs-6 text-right">
+			<h1 class="box-header success" ng-show="order.subscription">Subscribed</h1>
+			<h1 class="box-header warning" ng-show="payment_status == 'unpaid'">Unpaid</h1>
+			<h1 class="box-header danger" ng-show="payment_status == 'canceled'">Canceled</h1>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-8">
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th></th>
+						<th>#</th>
+						<th>Product</th>
+						<th class="text-right">Price per unit</th>
+						<th class="text-right">Amount</th>
+						<th class="text-right">Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="clickable-row" data-href="{% url "shop:dashboard:order" order.pk %}" ng-repeat="item in order.cart.cartitem_set">
+						<td><img ng-src="{{item.product.productimage_set[0].image}}" class="img-thumbnail img-responsive"></td>
+						<td>{{item.product.id}}</td>
+						<td>{{item.product.name}}</td>
+						<td class="text-right">{{item.product.price}}</td>
+						<td class="text-right">{{item.amount}}</td>
+						<td class="text-right">{{item.price}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<p><b>Total:</b> {{order.cart.total}}</p>
+	</div>
+	<div class="col-sm-4">
+		<div class="row">
+			<div class="col-sm-6">
+				<h4>Customer Information</h4>
+				<div id="customer-info">
+					<div class="row">
+						<div class="col-xs-12">
+							{{order.user.first_name}} {{order.user.last_name}}
+						</div>
+						<div class="col-xs-12">
+							<a href="mailto:{{order.user.email}}">{{order.user.email}}</a>
+						</div>
+						<div class="col-xs-12">
+							{{order.user.user_address.phone}}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<h4>Customer Address</h4>
+				<div id="customer-address">
+					<div class="row">
+						<div class="col-xs-12">
+							{{order.user.user_address[0].address}}
+						</div>
+						<div class="col-xs-12">
+							{{order.user.user_address[0].zipcode}}
+						</div>
+						<div class="col-xs-12">
+							{{order.user.user_address[0].city}}
+						</div>
+						<div class="col-xs-12">
+							{{order.user.user_address[0].country.name}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" ng-show="order.customfieldvalue_set.length">
+			<div class="col-sm-12">
+				<h4>Extra Information</h4>
+				<ul>
+					<li ng-repeat="field in order.customfieldvalue_set">
+						<label>{{field.custom_field.label}}:</label>
+						{{field.value}}
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row" ng-show="order.subscription">
+			<div class="col-sm-12">
+				<h4>Subscription Details</h4>
+				<ul>
+					<li>
+						<label>Plan</label>
+						{{order.subscription_plan.name}}
+					</li>
+					<li>
+						<label>Expire:</label>
+						<i class="fa fa-warning" ng-show="order.is_past_due"></i>
+						{{order.subscription_enddate | date : "dd/MM-yyyy"}}
+					</li>
+					<li>
+						<label>Status:</label>
+						{{order.subscription_status}}
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-6" ng-controller="notificationCtrl">
+		<div class="page-header">
+			<h2>Order Notifications</h2>
+		</div>
+		<div class="form-group">
+			<div class="row">
+				<div class="col-sm-4">
+					<select name="notification_type" class="form-control" ng-model="notification.notification_type">
+						<option value="shipping">Shipping</option>
+						<option value="note">Note</option>
+					</select>
+				</div>
+				<div class="col-sm-8">
+					<textarea name="note" class="form-control" placeholder="Write a note (Not required)" ng-model="notification.note"></textarea>
+				</div>
+			</div>
+		</div>
+		<button type="submit" class="btn btn-default" ng-click="addNotification();">Add Notification <i class="fa fa-plus"></i></button>
+
+		<div class="row notification" ng-repeat="notification in order.order_notification">
+			<div class="col-xs-1">
+				<i class="fa fa-truck fa-3x fa-flip-horizontal" ng-show="notification.notification_type == 'shipping'"></i>
+				<i class="fa fa-comment fa-3x" ng-show="notification.notification_type == 'note'"></i>
+			</div>
+			<div class="col-xs-5">
+				{{notification.date_created | date : "dd/MM-yyyy H:mm:s"}}
+			</div>
+			<div class="col-xs-6">
+				{{notification.note}}
+			</div>
+		</div>
+	</div>
+</div>

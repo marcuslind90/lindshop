@@ -248,8 +248,8 @@ def updateCustomerCountry(request, id_country):
 	# If customer exist, check if address exists.
 	# If address exists, set country. If not, create a new address.
 	if cart.user:
-		if cart.user.address_set.all()[0]:
-			address = cart.user.address_set.all()[0]
+		if cart.user.user_address.all()[0]:
+			address = cart.user.user_address.all()[0]
 			address.country = country
 			address.save()
 		else:
@@ -281,6 +281,6 @@ def updateCart(request):
 		}
 
 		if cart.user is not None:
-			response['id_address'] = cart.user.address_set.all()[0].pk
+			response['id_address'] = cart.user.user_address.all()[0].pk
 
 		return JsonResponse(response)

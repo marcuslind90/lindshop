@@ -7,7 +7,8 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.module_loading import import_string
 
-from lindshop.core.dashboard import *
+#from lindshop.core.dashboard import *
+from lindshop.core.order.models import Order
 from lindshop import config
 
 """

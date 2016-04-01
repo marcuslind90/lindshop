@@ -36,7 +36,7 @@
 			</div>
 			<div class="col-sm-6">
 				<h4>{% trans "Customer Address" %}</h4>
-				{% include "lindshop/dashboard/customer-address.html" with address=order.user.address_set.all.0 %}
+				{% include "lindshop/dashboard/customer-address.html" with address=order.user.user_address.all.0 %}
 			</div>
 		</div>
 		{% if order.customfieldvalue_set.all|length > 0 %}

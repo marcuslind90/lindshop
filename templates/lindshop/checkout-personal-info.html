@@ -19,17 +19,17 @@
 <div class="form-group">
 	<div class="row">
 		<div class="col-xs-6">
-			<input type="text" name="address" class="form-control input-lg" placeholder="{% trans "Street Address" %}" value="{% if cart.user.address_set.all.0.address %}{{cart.user.address_set.all.0.address}}{% endif %}">
+			<input type="text" name="address" class="form-control input-lg" placeholder="{% trans "Street Address" %}" value="{% if cart.user.user_address.all.0.address %}{{cart.user.user_address.all.0.address}}{% endif %}">
 		</div>
 		<div class="col-xs-6">
-			<input type="text" name="zipcode" class="form-control input-lg" placeholder="{% trans "Zipcode" %}" value="{% if cart.user.address_set.all.0.zipcode %}{{cart.user.address_set.all.0.zipcode}}{% endif %}">
+			<input type="text" name="zipcode" class="form-control input-lg" placeholder="{% trans "Zipcode" %}" value="{% if cart.user.user_address.all.0.zipcode %}{{cart.user.user_address.all.0.zipcode}}{% endif %}">
 		</div>
 	</div>
 </div>
 <div class="form-group">
 	<div class="row">
 		<div class="col-xs-6">
-			<input type="text" name="city" class="form-control input-lg" placeholder="{% trans "City" %}" value="{% if cart.user.address_set.all.0.city %}{{cart.user.address_set.all.0.city}}{% endif %}">
+			<input type="text" name="city" class="form-control input-lg" placeholder="{% trans "City" %}" value="{% if cart.user.user_address.all.0.city %}{{cart.user.user_address.all.0.city}}{% endif %}">
 		</div>
 		<div class="col-xs-6">
 			<input type="text" name="phone" class="form-control input-lg" placeholder="{% trans "Phone" %}" value="{% if cart.user.phone %}{{cart.user.phone}}{% endif %}">

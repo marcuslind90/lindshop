@@ -59,8 +59,8 @@ def list_carriers(request, html=False):
 	try:
 		if 'id_cart' in request.session:
 			cart = Cart.objects.get(pk=request.session['id_cart'])
-			if cart.user.address_set.all()[0].country:
-				default_country = cart.user.address_set.all()[0].country
+			if cart.user.user_address.all()[0].country:
+				default_country = cart.user.user_address.all()[0].country
 	except Exception as ex:
 		print ex.message
 

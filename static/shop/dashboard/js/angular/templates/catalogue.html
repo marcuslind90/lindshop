@@ -1,0 +1,72 @@
+<a href="" ng-show="main_category.parent" ng-click="navigateTo('/category/'+main_category.parent.id);"><i class="fa fa-long-arrow-left"></i> Back to {{main_category.parent.name}}</a>
+<a href="" ng-show="!main_category.parent && main_category.id" ng-click="navigateTo('/catalogue/');"><i class="fa fa-long-arrow-left"></i> Back to Catalogue</a>
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-6">
+			<h1>{{main_category.name}}</h1>
+		</div>
+		<div class="col-sm-6 text-right">
+			<button class="btn btn-default" ng-click="navigateTo('/catalogue/add-product/'+main_category.id);"><i class="fa fa-plus"></i> Add Product</button>
+			<button class="btn btn-default" ng-click="navigateTo('/catalogue/add-category/');"><i class="fa fa-plus"></i> Add Category</button>
+		</div>
+	</div>
+</div>
+
+<div class="page-header">
+	<h2>Categories</h2>
+</div>
+<div class="alert alert-warning" ng-hide="categories.length">
+	<strong>Not found!</strong> There were no categories found.
+</div>
+
+<div class="table-responsive" ng-show="categories.length">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Category</th>
+				<th>Category</th>
+				<th>Category</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="clickable-row" ng-click="navigateTo('/category/'+category.id);" ng-repeat="category in categories">
+				<td>{{category.id}}</td>
+				<td>{{category.name}}</td>
+				<td>{{category.name}}</td>
+				<td>{{category.name}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</div>
+
+<div class="page-header">
+	<h2>Products</h2>
+</div>
+<div class="alert alert-warning" ng-hide="products.length">
+	<strong>Not found!</strong> There were no products found.
+</div>
+<div class="table-responsive" ng-show="products.length">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Featured Image</th>
+				<th>Product Name</th>
+				<th>Active</th>
+				<th>Stock</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="clickable-row" ng-click="navigateTo('/product/'+product.id);" ng-repeat="product in products">
+				<td><img src="#" data-product="{{product.id}}" class="img-responsive img-thumbnail" featured-image /></td>
+				<td>{{product.name}}</td>
+				<td>
+					<span class="product-status" ng-if="product.active"><i class="fa fa-check"></i></span>
+					<span class="product-status" ng-if="!product.active"><i class="fa fa-remove"></i></span>
+				</td>
+				<td>{{product.name}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

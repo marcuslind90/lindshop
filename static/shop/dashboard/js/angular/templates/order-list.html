@@ -1,0 +1,20 @@
+<div class="table-responsive" ng-controller="orderCtrl">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Email</th>
+				<th>Total</th>
+				<th>Order Created</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="clickable-row" ng-click="navigateTo('/orders/'+order.id);" ng-repeat="order in orderlist">
+				<td>{{order.id}}</td>
+				<td>{{order.user.email}}</td>
+				<td>{{order.total}}</td>
+				<td>{{order.date_created | date : "dd/MM-yyyy"}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

@@ -154,7 +154,7 @@ def add_subscription(request, attributes=None):
 		# Create a new customer
 		try: 
 			customer = Customer.objects.get(email=email)
-			address = customer.address_set.all()[0]
+			address = customer.user_address.all()[0]
 		except Customer.DoesNotExist:
 			customer = Customer(email=email)
 			customer.save()

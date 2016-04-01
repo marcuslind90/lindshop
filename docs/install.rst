@@ -37,6 +37,7 @@ Installation
        'lindshop.core.menu',         # Required
        'lindshop.core.breadcrumbs',  # Required
        'sorl.thumbnail',             # Required
+       'rest_framework',             # Required
    )
 
 3. Add URL routing to your projects main :code:`urls.py` file.

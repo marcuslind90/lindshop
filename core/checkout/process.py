@@ -127,13 +127,6 @@ def add_customer(request):
 		cart.user.email = email
 		cart.user.save()
 
-	"""
-	cart.user.dog_name = dog_name
-	cart.user.date_of_birth = date_of_birth
-	cart.user.phone = phone
-	cart.user.save()
-	"""
-
 	return cart.user
 
 def add_address(request):
@@ -151,8 +144,8 @@ def add_address(request):
 	country_obj = Country.objects.get(pk=country)
 
 	# If user already have an address.
-	if len(cart.user.address_set.all()) > 0:
-		customer_address = cart.user.address_set.all()[0]
+	if len(cart.user.user_address.all()) > 0:
+		customer_address = cart.user.user_address.all()[0]
 		customer_address.country = country_obj
 		customer_address.address = address
 		customer_address.city = city

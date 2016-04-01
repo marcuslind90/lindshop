@@ -43,7 +43,7 @@ class Country(models.Model):
 		app_label = 'customer'
 
 class Address(models.Model):
-	user = models.ForeignKey(settings.AUTH_USER_MODEL)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_address")
 	address = models.CharField(max_length=128, blank=True, null=True)
 	zipcode = models.CharField(max_length=10, blank=True, null=True)
 	city = models.CharField(max_length=100, blank=True, null=True)

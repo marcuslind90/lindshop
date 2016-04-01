@@ -32,6 +32,9 @@ class Order(models.Model):
 		else:
 			return False
 
+	def get_total(self):
+		return self.cart.get_total()
+
 	def send_confirmation(self):
 		subject = _('TailBay Order Confirmation')
 		logo = config.shop_logo
@@ -132,7 +135,7 @@ class CustomFieldValue(models.Model):
 		app_label = 'order'
 
 class Notification(models.Model):
-	order 				= models.ForeignKey(Order)
+	order 				= models.ForeignKey(Order, related_name="order_notification")
 	notification_type 	= models.CharField(max_length=20, choices=(("shipping", "Shipping"), ("note", "Note")))
 	date_created		= models.DateTimeField(auto_now_add=True)
 	note 				= models.TextField(blank=True, null=True)

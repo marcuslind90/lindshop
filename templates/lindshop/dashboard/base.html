@@ -28,50 +28,44 @@
 	<![endif]-->
   </head>
 
-  <body>
-
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-	  <div class="container-fluid">
-		<div class="navbar-header">
-		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-			<span class="sr-only">Toggle navigation</span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		  </button>
-		  <a class="navbar-brand" href="#">Project name</a>
-		</div>
-		<div id="navbar" class="navbar-collapse collapse">
-		  <ul class="nav navbar-nav navbar-right">
-			<li><a href="#">Dashboard</a></li>
-			<li><a href="#">Settings</a></li>
-			<li><a href="#">Profile</a></li>
-			<li><a href="{% url "shop:dashboard:logout" %}">{% trans "Logout" %}</a></li>
-		  </ul>
-		  <form class="navbar-form navbar-right">
-			<input type="text" class="form-control" placeholder="Search...">
-		  </form>
-		</div>
-	  </div>
-	</nav>
-
+  <body ng-app="dashboard" ng-controller="mainCtrl">
 	<div class="container-fluid">
 	  <div class="row">
-		<div class="col-sm-3 col-md-2 sidebar">
-		  <ul class="nav nav-sidebar">
-		  	{% url "shop:dashboard:dashboard" as url %}
-			<li {% if request.get_full_path == url %}class="active"{% endif %}><a href="{{url}}">{% trans "Orders" %} <span class="sr-only">(current)</span></a></li>
-			{% url "shop:dashboard:subscriptions" as url %}
-			<li {% if request.get_full_path == url %}class="active"{% endif %}><a href="{{url}}">{% trans "Subscriptions" %}</a></li>
-			{% url "shop:dashboard:plans" as url %}
-			<li {% if request.get_full_path == url %}class="active"{% endif %}><a href="{{url}}">{% trans "Plans" %}</a></li>
+		<div class="sidebar">
+		  <ul class="nav nav-sidebar" auto-active>
+			<li {% if request.get_full_path == "#/orders/" %}class="active"{% endif %}>
+				<a href="#/orders/" data-toggle="tooltip" data-placement="right" title="{% trans "Orders" %}"><i class="fa fa-2x fa-shopping-cart"></i></a>
+			</li>
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="#/catalogue/" data-toggle="tooltip" data-placement="right" title="{% trans "Catalogue" %}"><i class="fa fa-2x fa-book"></i></a>
+			</li>
 			{% url "shop:dashboard:products" as url %}
-			<li {% if request.get_full_path == url %}class="active"{% endif %}><a href="{{url}}">{% trans "Products" %}</a></li>
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Products" %}"><i class="fa fa-2x fa-book"></i></a>
+			</li>
 			{% url "shop:dashboard:categories" as url %}
-			<li {% if request.get_full_path == url %}class="active"{% endif %}><a href="{{url}}">{% trans "Categories" %}</a></li>
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Categories" %}"><i class="fa fa-2x fa-book"></i></a>
+			</li>
+			{% url "shop:dashboard:subscriptions" as url %}
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Subscriptions" %}"><i class="fa fa-2x fa-list"></i></a>
+			</li>
+			{% url "shop:dashboard:plans" as url %}
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Plans" %}"><i class="fa fa-2x fa-list"></i></a>
+			</li>
+		  	{% url "shop:dashboard:logout" as url %}
+			<li id="settings">
+				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Settings" %}"><i class="fa fa-2x fa-cog"></i></a>
+			</li>
+		  	{% url "shop:dashboard:logout" as url %}
+			<li id="logout">
+				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Logout" %}"><i class="fa fa-2x fa-power-off"></i></a>
+			</li>
 		  </ul>
 		</div>
-		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		<div class="col-sm-12 main">
 			{% block content %}{% endblock %}
 		</div>
 	  </div>
@@ -86,7 +80,22 @@
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script type="text/javascript" src="{% static 'shop/js/jquery.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'shop/js/bootstrap.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/angular.js' %}"></script>
+	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/angular-route.js' %}"></script>
+	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/angular-animate.js' %}"></script>
+	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/checklist-model.js' %}"></script>
+	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/app.js' %}"></script>
+	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/controllers/mainctrl.js' %}"></script>
+	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/controllers/orderctrl.js' %}"></script>
+	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/controllers/cataloguectrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'shop/dashboard/js/dashboard.js' %}"></script>
+	<script>
+	// Add the CSRF Token
+	var app = angular.module('dashboard'); // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration
+	app.config(['$httpProvider', function($httpProvider) {
+	    $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
+	}]);
+	</script>
 	{% block js_compress %}{% endblock %}
   </body>
 </html>

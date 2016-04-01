@@ -96,7 +96,7 @@
 				<div class="form-group">
 					<select name="country" class="form-control input-lg">
 						{% for country in countries %}
-						<option value="{{country.id}}" {% if country == cart.user.address_set.all.0.country %}selected{% endif %}>{% trans country.name %}</option>
+						<option value="{{country.id}}" {% if country == cart.user.user_address.all.0.country %}selected{% endif %}>{% trans country.name %}</option>
 						{% endfor %}
 					</select>
 				</div>

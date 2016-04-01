@@ -10,9 +10,9 @@ class Product(models.Model):
 	name = models.CharField(max_length=100)
 	short_description = models.TextField(blank=True, null=True)
 	description = models.TextField(blank=True, null=True)
-	attributes = models.ManyToManyField('attribute.Attribute', blank=True)
 	slug = models.SlugField(unique=True)
-	category = models.ForeignKey('category.Category', null=True)
+	category = models.ForeignKey('category.Category', null=True, related_name="product_category")  # This is the main home category
+	categories = models.ManyToManyField('category.Category', blank=True)  # This is all the categories that this product is displayed in
 	active = models.BooleanField(default=False)
 	seo_title = models.CharField(max_length=100, blank=True, null=True)
 	seo_description = models.TextField(blank=True, null=True)
@@ -38,6 +38,9 @@ class Product(models.Model):
 		images = self.productimage_set.filter(featured=True)
 		if len(images) > 0:
 			return images[0]
+
+	def get_featured_url(self):
+		return self.get_featured().image.url
 
 	def get_absolute_url(self):
 		return reverse('shop:product', kwargs={'id_product': self.pk, 'slug': self.slug})
@@ -65,7 +68,10 @@ class Product(models.Model):
 		try:
 			pricing = self.pricing_set.get(product=self, currency__language=get_language())
 		except Pricing.DoesNotExist:
-			pricing = self.pricing_set.get(product=self, currency__default=True)
+			try:
+				pricing = self.pricing_set.get(product=self, currency__default=True)
+			except Pricing.DoesNotExist:
+				return 0
 		#pricing = self.pricing_set.get(product=self)
 		tax_multiplier = pricing.taxrule.percentage/100+1
 		return pricing.price*tax_multiplier
