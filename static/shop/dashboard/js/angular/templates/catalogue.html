@@ -65,7 +65,10 @@
 					<span class="product-status" ng-if="product.active"><i class="fa fa-check"></i></span>
 					<span class="product-status" ng-if="!product.active"><i class="fa fa-remove"></i></span>
 				</td>
-				<td>{{product.name}}</td>
+				<td>
+					<span ng-if="product.stock">{{product.stock}}</span>
+					<span ng-if="!product.stock" class="label label-danger">0</span>
+				</td>
 			</tr>
 		</tbody>
 	</table>

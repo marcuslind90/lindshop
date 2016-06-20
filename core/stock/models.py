@@ -14,6 +14,7 @@ class Stock(models.Model):
 	product = models.ForeignKey('product.Product')
 	warehouse = models.ForeignKey(Warehouse)
 	stock = models.IntegerField()
+	shelf = models.CharField(max_length=50, blank=True, null=True)
 
 	def __unicode__(self):
 		return self.product.name

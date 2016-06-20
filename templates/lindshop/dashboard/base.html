@@ -39,22 +39,6 @@
 			<li {% if request.get_full_path == url %}class="active"{% endif %}>
 				<a href="#/catalogue/" data-toggle="tooltip" data-placement="right" title="{% trans "Catalogue" %}"><i class="fa fa-2x fa-book"></i></a>
 			</li>
-			{% url "shop:dashboard:products" as url %}
-			<li {% if request.get_full_path == url %}class="active"{% endif %}>
-				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Products" %}"><i class="fa fa-2x fa-book"></i></a>
-			</li>
-			{% url "shop:dashboard:categories" as url %}
-			<li {% if request.get_full_path == url %}class="active"{% endif %}>
-				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Categories" %}"><i class="fa fa-2x fa-book"></i></a>
-			</li>
-			{% url "shop:dashboard:subscriptions" as url %}
-			<li {% if request.get_full_path == url %}class="active"{% endif %}>
-				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Subscriptions" %}"><i class="fa fa-2x fa-list"></i></a>
-			</li>
-			{% url "shop:dashboard:plans" as url %}
-			<li {% if request.get_full_path == url %}class="active"{% endif %}>
-				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Plans" %}"><i class="fa fa-2x fa-list"></i></a>
-			</li>
 		  	{% url "shop:dashboard:logout" as url %}
 			<li id="settings">
 				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Settings" %}"><i class="fa fa-2x fa-cog"></i></a>

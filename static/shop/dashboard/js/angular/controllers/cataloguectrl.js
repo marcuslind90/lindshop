@@ -97,6 +97,7 @@ angular.module('dashboard')
 		}, 
 		cache: true, 
 	}
+	$scope.stock = [];
 	// Get and set data.
 	getProduct(config, function(response){
 		$scope.product = response.data;
@@ -119,9 +120,16 @@ angular.module('dashboard')
 	getDefaultImage($routeParams['id'], function(response){
 		$scope.upload_image = response;
 	});
-	/*getAttributes(config, $routeParams['id'], function(response){
-		$scope.product.attribute_set = response.data;
-	});*/
+	getWarehouses(config, function(response){
+		$scope.warehouses = response.data;
+		// For each warehouse fetched, get the stock of the product in each warehouse
+		$scope.warehouses.forEach(function(warehouse){
+			getStock(config, $routeParams['id'], warehouse.id, function(response){
+				$scope.stock[warehouse.id] = response.data;
+			});
+		});
+	});
+	
 
 	function getProduct(config, callback) {
 		// Load Product Data 
@@ -149,7 +157,7 @@ angular.module('dashboard')
 				seo_description: '',
 				category: category, 
 				categories: [], 
-				attributes: [], 
+				attribute_set: [], 
 				pricing_set: []
 			};	
 		}
@@ -225,6 +233,25 @@ angular.module('dashboard')
 			'product': id_product, 
 			'uploading': false
 		});
+	}
+
+	function getWarehouses(config, callback) {
+		$http.get('/api/warehouses/', config).then(function(response){
+			callback(response)
+		});
+	}
+
+	function getStock(config, id_product, id_warehouse, callback) {
+		if(id_product){
+			console.log(id_product);
+			$http.get('/api/stock/?product='+id_product+'&warehouse='+id_warehouse, config).then(function(response){
+				callback(response);
+			});
+		}
+		else {
+			callback({data:[]});
+		}
+
 	}
 
 	$scope.addImage = function() {
@@ -311,11 +338,25 @@ angular.module('dashboard')
 		$scope.product.attribute_set.push(attribute);
 	};
 
+	$scope.addStock = function(warehouse) {
+		console.log("addStock called");
+		var stock = {
+			'stock': 1, 
+			'shelf': '', 
+			'product': $scope.product.id, 
+			'warehouse': warehouse.id
+		};
+		$scope.stock[warehouse.id].push(stock);
+	};
+
 	$scope.saveProduct = function(stay) {
 		// If it should UPDATE a product with a PUT Call
 		if($scope.product.id){
 			$http.put('/api/products/'+$scope.product.id+'/?callback=JSON_CALLBACK', $scope.product).then(function(response){
 				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
+				
+				// Save the Stock Data
+				$scope.saveStock();
 
 				// If stay is not true, then navigate the user back to category page.
 				if(!stay){
@@ -327,6 +368,7 @@ angular.module('dashboard')
 		}
 		// If it should CREATE a product with a POST call
 		else {
+			console.log($scope.product);
 			$http.post('/api/products/?callback=JSON_CALLBACK', $scope.product).then(function(response){
 				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
 
@@ -337,7 +379,6 @@ angular.module('dashboard')
 				else {
 					$scope.navigateTo('/product/'+response.data.id);
 				}
-
 				console.log(response);
 			});
 		}
@@ -372,6 +413,23 @@ angular.module('dashboard')
 				console.log(response);
 			});
 		}
+	};
+
+	$scope.saveStock = function(callback) {
+		$scope.stock.forEach(function(stock){
+			stock.forEach(function(stock_item){
+				if(stock_item.id){
+					$http.put('/api/stock/'+stock_item.id+'/?callback=JSON_CALLBACK', stock_item).then(function(response){
+						console.log(response);
+					});
+				}
+				else {
+					$http.post('/api/stock/?callback=JSON_CALLBACK', stock_item).then(function(response){
+						console.log(response);
+					});
+				}
+			});
+		});
 	};
 
 	$scope.deleteProduct = function() {
@@ -416,8 +474,12 @@ angular.module('dashboard')
 	};
 
 	$scope.deleteAttributeChoice = function(attribute, index) {
-		//var choice_delete = $scope.product.attribute_set.attributechoice_set[id];
 		attribute.attributechoice_set.splice(index, 1);
+	};
+
+	$scope.deleteStock = function(warehouse, index) {
+		console.log("Delete");
+		$scope.stock[warehouse.id].splice(index, 1);
 	};
 
 	$scope.setFeaturedImage = function(id) {

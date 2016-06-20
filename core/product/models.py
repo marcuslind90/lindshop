@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
+from django.db.models import Sum
 from lindshop.config import shop_name
 
 
@@ -27,6 +28,10 @@ class Product(models.Model):
 		else:
 			return _('Buy %(product_name)s at %(shop_name)s') % ({'product_name': self.name, 'shop_name': shop_name})
 
+	@property
+	def stock(self):
+		stock = self.stock_set.aggregate(total=Sum('stock'))
+		return stock['total']
 
 	"""
 	Get the featured product image. If multiple images are set

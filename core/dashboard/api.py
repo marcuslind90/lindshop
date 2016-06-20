@@ -11,6 +11,7 @@ from lindshop.core.customer.models import Address
 from lindshop.core.category.models import Category
 from lindshop.core.pricing.models import Pricing, Taxrule, Currency
 from lindshop.core.attribute.models import Attribute, AttributeChoice
+from lindshop.core.stock.models import Warehouse, Stock
 
 import json
 import re
@@ -21,6 +22,39 @@ from django.utils.text import slugify
 
 # REST API Url Patterns (Used by AngularJS)
 # Serializers define the API representation.
+class WarehouseSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Warehouse
+		fields = '__all__'
+
+class WarehouseViewSet(viewsets.ModelViewSet):
+	serializer_class = WarehouseSerializer
+
+	def get_queryset(self):
+		queryset = Warehouse.objects.all()
+
+		return queryset
+
+class StockSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Stock
+		fields = '__all__'
+
+class StockViewSet(viewsets.ModelViewSet):
+	serializer_class = StockSerializer
+
+	def get_queryset(self):
+		queryset = Stock.objects.all()
+		product = self.request.query_params.get('product', None)
+		warehouse = self.request.query_params.get('warehouse', None)
+
+		if product:
+			queryset = queryset.filter(product=product)
+		if warehouse:
+			queryset = queryset.filter(warehouse=warehouse)
+
+		return queryset
+
 class AttributeChoiceSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = AttributeChoice
@@ -208,6 +242,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ProductSerializer(serializers.ModelSerializer):
 	attribute_set = AttributeSerializer(many=True)
+
 	class Meta:
 		model = Product
 		depth = 0
@@ -223,9 +258,29 @@ class ProductSerializer(serializers.ModelSerializer):
 			'seo_description', 
 			'category', 
 			'categories', 
+			'stock', 
 			'attribute_set', 
 			'pricing_set', 
 		)
+
+	def create(self, validated_data):
+		if 'attribute_set' in validated_data:
+			validated_data.pop('attribute_set')
+		if 'pricing_set' in validated_data:
+			validated_data.pop('pricing_set')
+		if 'stock' in validated_data:
+			validated_data.pop('stock')
+		if 'productimage_set' in validated_data:
+			validated_data.pop('productimage_set')
+
+		categories_data = validated_data.pop('categories')
+
+		product = Product.objects.create(**validated_data)
+
+		for category in categories_data:
+			product.categories.add(category)
+
+		return product
 
 	def update(self, instance, validated_data):
 		attribute_data = validated_data.pop('attribute_set')
@@ -245,9 +300,9 @@ class ProductSerializer(serializers.ModelSerializer):
 			else:
 				attribute_instance = self.create_attribute(attribute, instance.pk)
 			attribute_ids.append(attribute_instance.pk)
+
 		# Delete all attributes that was not included in the request, 
 		# meaning... They have been deleted.
-		print attribute_ids
 		for attribute in instance.attribute_set.all():
 			if attribute.id not in attribute_ids:
 				attribute.delete()
