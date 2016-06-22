@@ -89,6 +89,103 @@ angular.module('dashboard')
 		});
 	}
 })
+.controller('categorySingleCtrl', function($scope, $http, $routeParams){
+	// Set config for HTTP calls
+	var config = {
+		params: {
+			callback: 'JSON_CALLBACK', 
+		}, 
+		cache: true, 
+	}
+
+	getCategory(config, function(response){
+		console.log(response);
+		$scope.category = response.data; // Get the category of this page.
+	});
+	getCategories(config, function(response){
+		$scope.categories = response.data;  // Get all Categories
+	});
+
+	function getCategory(config, callback) {
+		if($routeParams['id']) {
+			$http.get('/api/categories/'+$routeParams['id'], config).then(function(response){
+				callback(response);
+			});
+		}
+		else {
+			var data = {};
+			console.log("Setting default data!");
+			data['data'] =  {
+				"id": null,
+				"name": "",
+				"description": "",
+				"image": null,
+				"slug": "",
+				"parent": null
+			};
+			
+			if($routeParams['parent']){
+				data['data']['parent'] = parseInt($routeParams['parent']);
+			}
+
+			callback(data);
+			
+		}
+	}
+
+	function getCategories(config, callback) {
+		// Get all Categories for the Category Fields.
+		$http.get('/api/categories/', config).then(function(response){
+			console.log(response);
+			callback(response);
+		});
+
+	};
+
+	$scope.saveCategory = function(stay) {
+		console.log($scope.category);
+		// If it should UPDATE a category with a PUT Call
+		if($scope.category.id){
+			$http.put('/api/categories/'+$scope.category.id+'/?callback=JSON_CALLBACK', $scope.category).then(function(response){
+				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
+
+				// If stay is not true, then navigate the user back to category page.
+				if(!stay){
+					$scope.navigateTo('/category/'+response.data.id);
+				}
+
+				console.log(response);
+			});
+		}
+		// If it should CREATE a product with a POST call
+		else {
+			$http.post('/api/categories/?callback=JSON_CALLBACK', $scope.category).then(function(response){
+				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
+
+				// If stay is not true, then navigate the user back to category page.
+				if(!stay){
+					$scope.navigateTo('/category/'+response.data.id);
+				}
+				else {
+					$scope.navigateTo('/category/'+response.data.id);
+				}
+				console.log(response);
+			});
+		}
+	};
+
+	$scope.deleteCategory = function() {
+		$http.delete('/api/categories/'+$scope.category.id+'/?callback=JSON_CALLBACK').then(function(response){
+			if($scope.category.parent){
+				$scope.navigateTo('/category/'+$scope.category.parent);
+			}
+			else {
+				$scope.navigateTo('/catalogue/');
+			}
+		});
+	};
+
+})
 .controller('productSingleCtrl', function($scope, $http, $routeParams){
 	// Set config for HTTP calls
 	var config = {

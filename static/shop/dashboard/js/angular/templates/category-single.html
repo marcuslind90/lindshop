@@ -1,0 +1,63 @@
+<a href="" ng-click="navigateTo('/category/'+category.parent);" ng-if="category.parent"><i class="fa fa-long-arrow-left"></i> Back to Category</a>
+<a href="" ng-click="navigateTo('/catalogue/');" ng-if="!category.parent"><i class="fa fa-long-arrow-left"></i> Back to Category</a>
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-6">
+			<h1>{{category.name}}</h1>
+		</div>
+		<div class="col-sm-6 text-right">
+			<button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i> Delete Category</button>
+			<button class="btn btn-primary" ng-click="saveCategory(true);"><i class="fa fa-save"></i> Save &amp; Stay</button>
+			<button class="btn btn-primary" ng-click="saveCategory();"><i class="fa fa-save"></i> Save</button>
+		</div>
+	</div>
+</div>
+
+<div class="alert alert-success savebox" id="savebox"><strong>Saved!</strong> Your data has been saved.</div>
+<div class="row">
+	<div class="col-sm-12">
+		<div class="page-header">
+			<h3>General Settings</h3>
+		</div>
+
+		<div class="form-group">
+			<label>Name:</label>
+			<input type="text" class="form-control" placeholder="Category name" ng-model="category.name">
+		</div>
+
+		<div class="form-group">
+			<label>Parent Category:</label>
+			<select ng-model="category.parent" class="form-control" ng-options="category.id as category.name for category in categories">
+				<option value="">---</option>
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label>Description:</label>
+			<textarea class="form-control" ng-model="category.description" placeholder="Write a description of your category..."></textarea>
+		</div>
+
+		<div class="form-group">
+			<label>Slug:</label>
+			<input type="text" class="form-control input-sm" placeholder="Category Slug" ng-model="category.slug" readonly>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title" id="myModalLabel">Confirm Delete Category</h4>
+	  </div>
+	  <div class="modal-body">
+		<p>Are you sure that you want to delete this category?</p>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-danger" ng-click="deleteCategory()"><i class="fa fa-trash"></i> Delete Category</button>
+	  </div>
+	</div>
+  </div>
+</div>

@@ -384,7 +384,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Category
-		depth = 1
+		depth = 0
 
 class CategoryViewSet(viewsets.ModelViewSet):
 	serializer_class = CategorySerializer
@@ -397,6 +397,18 @@ class CategoryViewSet(viewsets.ModelViewSet):
 			queryset = queryset.filter(parent=parent)
 
 		return queryset
+
+	def create(self, request, *args, **kwargs):
+		# First we slugify our Category Name and add the slug parameter.
+		request.data['slug'] = slugify(request.data['name'])
+
+		serialized = self.serializer_class(data=request.data)
+		
+		if serialized.is_valid():
+			serialized.save()
+			return Response({'status': 'CREATED', 'id': serialized.data['id']})
+		else:
+			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
 class CartItemSerializer(serializers.ModelSerializer):
 	product = ProductSerializer(read_only=True)
