@@ -1,3 +1,3 @@
-name;text_input;slug
-Size;False;size
-Color;False;color
+name;text_input;slug;product
+Size;False;size;@1
+Color;False;color;@1
