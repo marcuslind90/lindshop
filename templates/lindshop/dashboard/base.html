@@ -39,6 +39,9 @@
 			<li {% if request.get_full_path == url %}class="active"{% endif %}>
 				<a href="#/catalogue/" data-toggle="tooltip" data-placement="right" title="{% trans "Catalogue" %}"><i class="fa fa-2x fa-book"></i></a>
 			</li>
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="#/appearance/" data-toggle="tooltip" data-placement="right" title="{% trans "Appearance" %}"><i class="fa fa-2x fa-paint-brush"></i></a>
+			</li>
 		  	{% url "shop:dashboard:logout" as url %}
 			<li id="settings">
 				<a href="{{url}}" data-toggle="tooltip" data-placement="right" title="{% trans "Settings" %}"><i class="fa fa-2x fa-cog"></i></a>
@@ -72,6 +75,7 @@
 	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/controllers/mainctrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/controllers/orderctrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/controllers/cataloguectrl.js' %}"></script>
+	<script type="text/javascript" src="{% static 'shop/dashboard/js/angular/controllers/appearancectrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'shop/dashboard/js/dashboard.js' %}"></script>
 	<script>
 	// Add the CSRF Token

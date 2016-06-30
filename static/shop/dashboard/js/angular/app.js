@@ -9,5 +9,6 @@ app.config(["$routeProvider", function($routeProvider){
 	.when('/catalogue/add-category/', {controller: 'catalogueCtrl', templateUrl: "/static/shop/dashboard/js/angular/templates/add-category.html"})
 	.when('/category/:id/', {controller: 'categoryCtrl', templateUrl: "/static/shop/dashboard/js/angular/templates/catalogue.html"})
 	.when('/product/:id/', {controller: 'productSingleCtrl', templateUrl: "/static/shop/dashboard/js/angular/templates/product-single.html"})
+	.when('/appearance/', {controller: 'appearanceCtrl', templateUrl: "/static/shop/dashboard/js/angular/templates/appearance.html"})
 	.otherwise({redirectTo: "/orders"})
 }]);

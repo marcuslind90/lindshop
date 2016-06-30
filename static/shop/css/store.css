@@ -34,3 +34,21 @@ div.product-attributes select {
 .tabs-container {
 	margin-top: 20px;
 }
+
+.product-thumbnails {
+	margin-top: 20px;
+}
+
+ul.nav-stacked > ul.nav-stacked > li > a{
+	padding-left: 30px;
+}
+
+ul.nav-stacked ul.nav-stacked ul.nav-stacked > li > a{
+	padding-left: 50px;
+}
+
+ul.nav-stacked li span {
+	width: 30px;
+	height: 30px;
+	text-align: center;
+}
