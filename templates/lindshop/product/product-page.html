@@ -11,9 +11,15 @@
 <div class="row">
 	<div class="col-sm-6">
 		<div class="product-images">
-			<img src="{{product.get_featured.image.url}}" class="img-responsive">
+			<a href="{{product.get_featured.image.url}}" data-lightbox="main-image"><img src="{{product.get_featured.image.url}}" class="img-responsive"></a>
+			<div class="row product-thumbnails">
+				{% for image in product.productimage_set.all %}
+				<div class="col-sm-3">
+					<a href="{{image.image.url}}" data-lightbox="product-images"><img src="{{image.image.url}}" class="img-responsive img-thumbnail"></a>
+				</div>
+				{% endfor %}
+			</div>
 		</div>
-
 	</div>
 	<div class="col-sm-6">
 		<div class="page-header first-header">

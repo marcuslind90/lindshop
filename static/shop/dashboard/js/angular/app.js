@@ -11,5 +11,6 @@ app.config(["$routeProvider", function($routeProvider){
 	.when('/category/:id/', {controller: 'categoryCtrl', templateUrl: "/static/shop/dashboard/js/angular/templates/catalogue.html"})
 	.when('/category/:id/edit/', {controller: 'categorySingleCtrl', templateUrl: "/static/shop/dashboard/js/angular/templates/category-single.html"})
 	.when('/product/:id/', {controller: 'productSingleCtrl', templateUrl: "/static/shop/dashboard/js/angular/templates/product-single.html"})
+	.when('/appearance/', {controller: 'appearanceCtrl', templateUrl: "/static/shop/dashboard/js/angular/templates/appearance.html"})
 	.otherwise({redirectTo: "/orders"})
 }]);

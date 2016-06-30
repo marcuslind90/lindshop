@@ -1,11 +1,16 @@
 {% load shop_tags %}
-<ul>
+<ul class="nav nav-pills nav-stacked">
 {% for category in categories %}
-	<li>
-		<a href="{{category.get_absolute_url}}" title="{{category.name}}">{{category.name}}</a>
-		{% if category.category_set.all %}
-		{% include "category/category-tree.html" with categories=category.category_set.all|order_category %}
-		{% endif %}
+	<li role="presentation" {% if request.path == category.get_absolute_url or category.get_absolute_url == product.category.get_absolute_url %}class="active"{% endif %}>
+		<a href="{{category.get_absolute_url}}" title="{{category.name}}">
+			{{category.name}}
+			{% if category.category_set.all %}
+			<span class="pull-right"><i class="fa fa-angle-down"></i></span>
+			{% endif %}
+		</a>
 	</li>
+	{% if category.category_set.all %}
+	{% include "category/category-tree.html" with categories=category.category_set.all|order_category %}
+	{% endif %}
 {% endfor %}
 </ul>
