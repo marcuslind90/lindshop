@@ -2,6 +2,8 @@ from django import template
 from django.utils.translation import get_language
 from lindshop import config
 from lindshop.core.menu.models import Menu
+from lindshop.core.category.models import Category
+from lindshop.core.slideshow.models import Slideshow
 
 register = template.Library()
 
@@ -24,13 +26,39 @@ def order_category(value):
 	"""
 	return value.order_by(config.category_order_by)
 
-@register.inclusion_tag('menu/menu.html')
-def menu(menu_slug):
+@register.simple_tag
+def get_menu(id_menu):
 	try:
-		menu = Menu.objects.get(slug=menu_slug)
+		menu = Menu.objects.get(pk=id_menu)
 	except Menu.DoesNotExist:
-		return {}
+		return
+		
+	menuitems = menu.menuitem_set.all()
 
-	menu_items = sorted(menu.items.all(), key=lambda t: t.label)  # Sort by @property label. (A-Z sorting)
+	for item in menuitems:
+		# If no custom label is set...
+		if item.label == '':
+			# ... check type and decide how to get label
+			if item.item_type == 'category':
+				category = Category.objects.get(pk=item.object_id)
+				item.label = category.name
 
-	return {'menu': menu, 'menu_items': menu_items}
+		# If no custom URL is set...
+		if item.url == '':
+			# ... check type and decide ho to get url
+			if item.item_type == 'category':
+				category = Category.objects.get(pk=item.object_id)
+				item.url = category.get_absolute_url
+
+
+	return menuitems
+
+@register.simple_tag
+def get_slideshow(id_slideshow):
+	try:
+		slideshow = Slideshow.objects.get(pk=id_slideshow)
+	except Menu.DoesNotExist:
+		return
+		
+	slides = slideshow.slide_set.all()
+	return slides

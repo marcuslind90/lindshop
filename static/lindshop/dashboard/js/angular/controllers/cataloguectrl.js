@@ -136,10 +136,8 @@ angular.module('dashboard')
 	function getCategories(config, callback) {
 		// Get all Categories for the Category Fields.
 		$http.get('/api/categories/', config).then(function(response){
-			console.log(response);
 			callback(response);
 		});
-
 	};
 
 	$scope.saveCategory = function(stay) {

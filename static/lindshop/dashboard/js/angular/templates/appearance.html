@@ -1,0 +1,51 @@
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-6">
+			<h1>Menus</h1>
+		</div>
+		<div class="col-sm-6 text-right">
+			<button class="btn btn-default" ng-click="navigateTo('/appearance/menu/');"><i class="fa fa-plus"></i> Add Menu</button>
+		</div>
+	</div>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Menu name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="clickable-row" ng-click="navigateTo('/appearance/menu/'+menu.id+'/');" ng-repeat="menu in menus">
+			<td>{{menu.id}}</td>
+			<td>{{menu.name}}</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-6">
+			<h1>Slideshows</h1>
+		</div>
+		<div class="col-sm-6 text-right">
+			<button class="btn btn-default" ng-click="navigateTo('/appearance/slideshow/');"><i class="fa fa-plus"></i> Add Slideshow</button>
+		</div>
+	</div>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Slideshow name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="clickable-row" ng-click="navigateTo('/appearance/slideshow/'+slideshow.id+'/');" ng-repeat="slideshow in slideshows">
+			<td>{{slideshow.id}}</td>
+			<td>{{slideshow.name}}</td>
+		</tr>
+	</tbody>
+</table>

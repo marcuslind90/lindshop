@@ -116,6 +116,38 @@ p {
     width: 50%;
 }
 
+p.price {
+    font-size: 2em;
+    font-weight: 600;
+    margin: 20px 0;
+}
+
+div.product-attributes select {
+    /*margin-bottom: 20px;*/
+}
+
+.tabs-container {
+    margin-top: 20px;
+}
+
+.product-thumbnails {
+    margin-top: 20px;
+}
+
+ul.nav-stacked > ul.nav-stacked > li > a{
+    padding-left: 30px;
+}
+
+ul.nav-stacked ul.nav-stacked ul.nav-stacked > li > a{
+    padding-left: 50px;
+}
+
+ul.nav-stacked li span {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+}
+
 @media(max-width: 737px) {
 
     .btn-50 {

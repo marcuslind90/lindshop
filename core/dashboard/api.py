@@ -12,6 +12,8 @@ from lindshop.core.category.models import Category
 from lindshop.core.pricing.models import Pricing, Taxrule, Currency
 from lindshop.core.attribute.models import Attribute, AttributeChoice
 from lindshop.core.stock.models import Warehouse, Stock
+from lindshop.core.menu.models import Menu, MenuItem
+from lindshop.core.slideshow.models import Slideshow, Slide
 
 import json
 import re
@@ -19,9 +21,204 @@ from StringIO import StringIO
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.text import slugify
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 
 # REST API Url Patterns (Used by AngularJS)
 # Serializers define the API representation.
+class SlideSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Slide
+		fields = '__all__'
+		extra_kwargs = {
+			'id': {'read_only': False, 'required': False}, 
+			'slideshow': {'required': False}, 
+			'image': {'required': False}
+		}
+
+	def get_validation_exclusions(self):
+			exclusions = super(SlideSerializer, self).get_validation_exclusions()
+			return exclusions + ['id']
+
+class SlideshowSerializer(serializers.ModelSerializer):
+	slide_set = SlideSerializer(many=True)
+	class Meta:
+		model = Slideshow
+		fields = ('id', 'name', 'slide_set')
+
+	def create(self, validated_data):
+		slides = validated_data.pop('slide_set')
+		slideshow = Slideshow.objects.create(**validated_data)
+
+		for item in slides:
+			Slide.objects.create(slideshow=slideshow, **item)
+
+		return menu
+
+	def update(self, instance, validated_data):
+		slides = validated_data.pop('slide_set')
+		item_ids = []
+
+		# Iterate through all data in validated_data and update the instance
+		# with new values and save it.
+		for(key, value) in validated_data.items():
+			setattr(instance, key, value)
+		instance.save()
+
+		for item in slides:
+			if 'id' in item:
+				# Update attribute
+				item_obj = Slide.objects.get(pk=item['id'])
+				for(key, value) in item.items():
+					setattr(item_obj, key, value)
+
+				item_obj.save()
+			else:
+				# Create new attribute
+				item_obj = Slide.objects.create(slideshow=instance, **item)
+
+			item_ids.append(item_obj.id)
+
+		# If this instance have any other menuitems that was not send
+		# in this HTTP call, then remove them. They should be deleted.
+		for item in instance.slide_set.all():
+			if item.id not in item_ids:
+				item.delete()
+
+		return instance
+
+class SlideshowViewSet(viewsets.ModelViewSet):
+	serializer_class = SlideshowSerializer
+
+	def get_queryset(self):
+		queryset = Slideshow.objects.all()
+
+		return queryset
+
+	def create(self, request, pk=None):
+		"""
+		The uploaded file is send as an encoded URL. We pull out the data from the URL and then
+		replace the image field of the request-data with the pulled out data.
+		"""
+		slides = request.data.pop('slide_set')
+		for slide in slides:
+			img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", slide['image']).groupdict()
+			blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
+			image = StringIO(blob)
+			image = InMemoryUploadedFile(image, None, slide['filename'], 'image/jpeg', image.len, None)
+			#print image
+			#image = StringIO.open(blob)
+			slide['image'] = image
+
+		request.data['slide_set'] = slides
+
+		slideshow = Slideshow(pk=pk)
+		serialized = self.serializer_class(slideshow, data=request.data)
+		
+		if serialized.is_valid():
+			serialized.save()
+			return Response({'status': 'CREATED', 'image_data': serialized.data})
+		else:
+			return Response({'status': 'FAILED', 'errors': serialized.errors})
+
+	def update(self, request, pk=None):
+		slides = request.data.pop('slide_set')
+		validator = URLValidator()
+		for slide in slides:
+			try:
+				# Validate that it's an URL. If it is, it means that the image is already stored
+				# and NOT a new uploaded image. So leave it alone.
+				validator(slide['image'])
+				slide.pop('image')
+			except ValidationError:
+				img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", slide['image']).groupdict()
+				blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
+				image = StringIO(blob)
+				image = InMemoryUploadedFile(image, None, slide['filename'], 'image/jpeg', image.len, None)
+				slide['image'] = image
+
+		# Add the slides back to the request after new files have been uploaded
+		# and replaced in the request dir.
+		request.data['slide_set'] = slides
+
+		slideshow = Slideshow(pk=pk)
+		serialized = self.serializer_class(slideshow, data=request.data)
+		
+		if serialized.is_valid():
+			serialized.save()
+			return Response({'status': 'UPDATED', 'image_data': serialized.data})
+		else:
+			return Response({'status': 'FAILED', 'errors': serialized.errors})
+
+class MenuItemSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = MenuItem
+		fields = '__all__'
+		extra_kwargs = {
+			'id': {'read_only': False, 'required': False}, 
+			'menu': {'required': False}
+		}
+
+	def get_validation_exclusions(self):
+			exclusions = super(MenuItemSerializer, self).get_validation_exclusions()
+			return exclusions + ['id']
+
+class MenuSerializer(serializers.ModelSerializer):
+	menuitem_set = MenuItemSerializer(many=True)
+	class Meta:
+		model = Menu
+		fields = ('id', 'name', 'menuitem_set')
+
+	def create(self, validated_data):
+		menu_items = validated_data.pop('menuitem_set')
+		menu = Menu.objects.create(**validated_data)
+
+		for item in menu_items:
+			MenuItem.objects.create(menu=menu, **item)
+
+		return menu
+
+	def update(self, instance, validated_data):
+		menu_items = validated_data.pop('menuitem_set')
+		item_ids = []
+
+		# Iterate through all data in validated_data and update the instance
+		# with new values and save it.
+		for(key, value) in validated_data.items():
+			setattr(instance, key, value)
+		instance.save()
+
+		for item in menu_items:
+			if 'id' in item:
+				# Update attribute
+				item_obj = MenuItem.objects.get(pk=item['id'])
+				for(key, value) in item.items():
+					setattr(item_obj, key, value)
+
+				item_obj.save()
+			else:
+				# Create new attribute
+				item_obj = MenuItem.objects.create(menu=instance, **item)
+
+			item_ids.append(item_obj.id)
+
+		# If this instance have any other menuitems that was not send
+		# in this HTTP call, then remove them. They should be deleted.
+		for item in instance.menuitem_set.all():
+			if item.id not in item_ids:
+				item.delete()
+
+		return instance
+
+
+class MenuViewSet(viewsets.ModelViewSet):
+	serializer_class = MenuSerializer
+
+	def get_queryset(self):
+		queryset = Menu.objects.all()
+
+		return queryset
+
 class WarehouseSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Warehouse
