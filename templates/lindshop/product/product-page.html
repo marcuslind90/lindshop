@@ -1,5 +1,6 @@
 {% extends "base-left-menu.html" %}
 {% load i18n %}
+{% load thumbnail %}
 {% load product_tags %}
 
 {% block title %}
@@ -15,7 +16,11 @@
 			<div class="row product-thumbnails">
 				{% for image in product.productimage_set.all %}
 				<div class="col-sm-3">
-					<a href="{{image.image.url}}" data-lightbox="product-images"><img src="{{image.image.url}}" class="img-responsive img-thumbnail"></a>
+					{% thumbnail image.image config.product_gallery_thumbnail_size crop="center" as im %}
+					<a href="{{image.image.url}}" data-lightbox="product-images">
+						<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class="img-responsive img-thumbnail">
+					</a>
+					{% endthumbnail %}
 				</div>
 				{% endfor %}
 			</div>
@@ -26,13 +31,24 @@
 			<h1>{{product.name}}</h1>
 		</div>
 		<p>{{product.short_description|linebreaks}}</p>
-		<p class="price">{% format_price product.get_price %}</p>
+
+		{% if product.productdata_set.all|length > 0 %}
+		<label>Information about the product</label>
+		<table class="table">
+			{% for data in product.productdata_set.all %}
+			<tr>
+				<td>{{data.label}}</td>
+				<td>{{data.value}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		{% endif %}
 
 		<form method="post" action="" id="add-product">
 			{% csrf_token %}
-			{% if product.attributes.all %}
+			{% if product.attribute_set.all %}
 			<div class="product-attributes">
-				{% for attribute in product.attributes.all %}
+				{% for attribute in product.attribute_set.all %}
 				<div class="form-group">
 					<select name="attribute-{{attribute.slug}}" class="form-control">
 						{% for choice in attribute.attributechoice_set.all %}
@@ -43,6 +59,8 @@
 				{% endfor %}
 			</div>
 			{% endif %}
+
+			<p class="price">{% format_price product.get_price %}</p>
 			<input type="hidden" name="id_product" value="{{product.pk}}">
 			<input type="hidden" name="action" value="add-product">
 			<button class="btn btn-warning btn-lg" type="submit">

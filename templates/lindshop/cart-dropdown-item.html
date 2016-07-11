@@ -10,7 +10,7 @@
 				<div class="col-xs-9 col-small-padding">
 					<div class="row">
 						<div class="col-sm-12">
-							<a href="{{item.product.get_featured.image.url}}">{{item.name}}</a>
+							<a href="{{item.product.get_absolute_url}}" title="{{item.name}}">{{item.name}}</a>
 						</div>
 					</div>
 					{% if item.attribute.all %}

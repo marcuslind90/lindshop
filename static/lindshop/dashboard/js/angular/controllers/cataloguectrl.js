@@ -193,6 +193,10 @@ angular.module('dashboard')
 		cache: true, 
 	}
 	$scope.stock = [];
+	$scope.dataPreset = {
+		'label': '', 
+		'selected': null
+	};
 	// Get and set data.
 	getProduct(config, function(response){
 		$scope.product = response.data;
@@ -223,6 +227,10 @@ angular.module('dashboard')
 				$scope.stock[warehouse.id] = response.data;
 			});
 		});
+	});
+
+	getDataPresets(config, function(response){
+		$scope.dataPresets = response.data;
 	});
 	
 
@@ -325,7 +333,6 @@ angular.module('dashboard')
 			'filename': null, 
 			'alt': '', 
 			'featured': false, 
-			'product': id_product, 
 			'uploading': false
 		});
 	}
@@ -349,6 +356,12 @@ angular.module('dashboard')
 
 	}
 
+	function getDataPresets(config, callback) {
+		$http.get('/api/productdatapresets/', config).then(function(response){
+			callback(response);
+		});
+	};
+
 	$scope.addImage = function() {
 		var upload_image = $scope.upload_image;
 		var file = document.getElementById('upload_file').files[0], 
@@ -366,17 +379,13 @@ angular.module('dashboard')
 			});
 
 			// If this is the first uploaded image, then set it to featured.
-			if($scope.images.length == 0) {
+			if($scope.product.productimage_set.length == 0) {
 				scope.$apply(function(){
 					scope.upload_image.featured = true;
 				});
 			}
 
-			// Send the data to the Backend REST API
-			$http.post('/api/images/', scope.upload_image).then(function(response){
-				// Add the saved image to the Image Scope to include it on the page.
-				$scope.images.push(response.data.image_data);
-			});
+			scope.product.productimage_set.push(scope.upload_image);
 
 			// Reset the #upload_file data after file has been uploaded.
 			scope.$apply(function(){
@@ -434,7 +443,6 @@ angular.module('dashboard')
 	};
 
 	$scope.addStock = function(warehouse) {
-		console.log("addStock called");
 		var stock = {
 			'stock': 1, 
 			'shelf': '', 
@@ -443,6 +451,41 @@ angular.module('dashboard')
 		};
 		$scope.stock[warehouse.id].push(stock);
 	};
+
+	$scope.addData = function() {
+		$scope.product.productdata_set.push({
+			'label': '', 
+			'value': ''
+		});
+	};
+
+	$scope.saveDataPreset = function() {
+		var preset = {
+			'label': $scope.dataPreset.label, 
+			'data': $scope.product.productdata_set
+		}
+
+		$http.post('/api/productdatapresets/?callback=JSON_CALLBACK', preset).then(function(response){
+			$scope.dataPresets.push(response.data);
+			console.log(response);
+		});
+	}
+
+	$scope.loadDataPreset = function() {
+		// If a preset is selected...
+		if($scope.dataPreset.selected != null) {
+			// ... then fetch the data and add it to this product...
+			$http.get('/api/productdatapresets/'+$scope.dataPreset.selected+'/?callback=JSON_CALLBACK').then(function(response){
+				response.data.data.forEach(function(entry){
+					$scope.product.productdata_set.push({
+						'label': entry.label, 
+						'value': entry.value
+					});
+				});
+				console.log(response.data.data);
+			});
+		}
+	}
 
 	$scope.saveProduct = function(stay) {
 		// If it should UPDATE a product with a PUT Call
@@ -539,22 +582,21 @@ angular.module('dashboard')
 	};
 
 	$scope.deleteImage = function(id) {
-		var image_delete = $scope.images[id];
+		var image_delete = $scope.product.productimage_set[id];
 		// If attempting to delete the featured image
 		if(image_delete.featured){
 			// If there's "earlier" images, set the previous image to featured instead.
-			if($scope.images[id-1]){
+			if($scope.product.productimage_set[id-1]){
 				$scope.setFeaturedImage(id-1);
 			}
 			// If there's "later" images, set the next image to featured instead.
-			else if($scope.images[id+1]){
+			else if($scope.product.productimage_set[id+1]){
 				$scope.setFeaturedImage(id+1);
 			}
 			// If this is only image, don't set anything to featured.
 		}
-		$http.delete('/api/images/'+image_delete.id+'/?callback=JSON_CALLBACK').then(function(response){
-			$scope.images.splice(id, 1);
-		});
+
+		$scope.product.productimage_set.splice(id, 1);
 	};
 
 	$scope.deletePricing = function(id) {
@@ -577,22 +619,18 @@ angular.module('dashboard')
 		$scope.stock[warehouse.id].splice(index, 1);
 	};
 
+	$scope.deleteData = function(index) {
+		$scope.product.productdata_set.splice(index, 1);
+	};
+
 	$scope.setFeaturedImage = function(id) {
 		// Loop through all images and set featured to false.
-		$scope.images.forEach(function(entry){
+		$scope.product.productimage_set.forEach(function(entry){
 			entry.featured = false;
 		});
-		// Set featured to true for the image clicked.
-		$scope.images[id].featured = true;
 
-		// Send Update API call that saves the change.
-		$scope.images.forEach(function(entry){
-			delete entry.image;
-			$http.patch('/api/images/'+entry.id+'/', entry).then(function(response){
-				console.log(response);
-			});
-		});
-		
+		// Set featured to true for the image clicked.
+		$scope.product.productimage_set[id].featured = true;
 	};
 })
 .directive('featuredTooltip', function(){

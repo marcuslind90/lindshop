@@ -226,22 +226,9 @@ angular.module('dashboard')
 			scope.$apply(function(){
 				getDefaultSlide(function(response){
 					scope.slide = response;
-				});
-			});
-
-			// Send the data to the Backend REST API
-			/*$http.post('/api/images/', scope.slide).then(function(response){
-				// Add the saved image to the Image Scope to include it on the page.
-				$scope.images.push(response.data.image_data);
-			});*/
-
-			// Reset the #upload_file data after file has been uploaded.
-			/*scope.$apply(function(){
-				getDefaultSlide(function(response){
-					scope.slide = response;
 					$('#upload_file').val(null);
 				});
-			});*/
+			});
 		}
 
 		if(file){
@@ -284,5 +271,11 @@ angular.module('dashboard')
 				console.log(response);
 			});
 		}
+	};
+
+	$scope.deleteSlideshow = function() {
+		$http.delete('/api/slideshows/'+$scope.slideshow.id+'/?callback=JSON_CALLBACK').then(function(response){
+			$scope.navigateTo('/appearance/');
+		});
 	};
 });

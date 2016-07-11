@@ -128,6 +128,7 @@ function addVoucher(voucher){
 }
 
 function addProductToCartForm(){
+	console.log("addProductToCartForm()");
 	var id_product = $('input[name="id_product"]').val();
 	var attributes = [];
 	$('.product-attributes select').each(function(index, element){
@@ -147,6 +148,7 @@ function addProductToCartForm(){
 }
 
 function addProductToCart(id_product){
+	console.log("addProductToCart()");
 	disableButton(id_product);
 	$.post('/ajax-cart/', {action: 'add-product', id_product: id_product, csrfmiddlewaretoken: csrf}, function(result){
 		enableButton(id_product);

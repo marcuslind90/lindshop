@@ -184,8 +184,8 @@ form#notification-form {
 /*
  * Button Classes
  */
-.page-header .btn {
-  margin-top: 20px;
+.page-header .form-group {
+  padding-top: 20px;
 }
 .page-header .btn-h4 {
   margin-top: 0;

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from lindshop.core.order.models import Order, CustomFieldValue, Notification
 from lindshop.core.cart.models import Cart, CartItem
-from lindshop.core.product.models import Product, ProductImage
+from lindshop.core.product.models import Product, ProductImage, ProductData, ProductDataPreset
 from lindshop.core.customer.models import Address
 from lindshop.core.category.models import Category
 from lindshop.core.pricing.models import Pricing, Taxrule, Currency
@@ -351,6 +351,12 @@ class AttributeViewSet(viewsets.ModelViewSet):
 class ProductImageSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ProductImage
+		fields = '__all__'
+		extra_kwargs = {
+			'id': {'read_only': False, 'required': False}, 
+			'product': {'required': False}, 
+			'image': {'required': False}
+		}
 
 class ProductImageViewSet(viewsets.ModelViewSet):
 	serializer_class = ProductImageSerializer
@@ -437,12 +443,44 @@ class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
+class ProductDataSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ProductData
+		fields = '__all__'
+		extra_kwargs = {
+			'id': {'read_only': False, 'required': False}, 
+			'product': {'required': False}
+		}
+
+class ProductDataPresetSerializer(serializers.ModelSerializer):
+	data = ProductDataSerializer(many=True)
+	class Meta:
+		model = ProductDataPreset
+
+	def create(self, validated_data):
+		data = validated_data.pop('data')
+		preset = ProductDataPreset.objects.create(**validated_data)
+		for d in data:
+			if 'id' in d:
+				d.pop('id')
+				d.pop('product')
+
+			data_obj = ProductData.objects.create(**d)
+			preset.data.add(data_obj)
+
+		return preset
+
+class ProductDataPresetViewSet(viewsets.ModelViewSet):
+	queryset = ProductDataPreset.objects.all()
+	serializer_class = ProductDataPresetSerializer
+
 class ProductSerializer(serializers.ModelSerializer):
 	attribute_set = AttributeSerializer(many=True)
+	productimage_set = ProductImageSerializer(many=True)
+	productdata_set = ProductDataSerializer(many=True)
 
 	class Meta:
 		model = Product
-		depth = 0
 		fields = (
 			'id', 
 			'name', 
@@ -458,6 +496,7 @@ class ProductSerializer(serializers.ModelSerializer):
 			'stock', 
 			'attribute_set', 
 			'pricing_set', 
+			'productdata_set'
 		)
 
 	def create(self, validated_data):
@@ -469,6 +508,8 @@ class ProductSerializer(serializers.ModelSerializer):
 			validated_data.pop('stock')
 		if 'productimage_set' in validated_data:
 			validated_data.pop('productimage_set')
+		if 'productdata_set' in validated_data:
+			validated_data.pop('productdata_set')
 
 		categories_data = validated_data.pop('categories')
 
@@ -480,8 +521,23 @@ class ProductSerializer(serializers.ModelSerializer):
 		return product
 
 	def update(self, instance, validated_data):
-		attribute_data = validated_data.pop('attribute_set')
-		attribute_ids = []
+		if 'attribute_set' in validated_data:
+			attribute_data = validated_data.pop('attribute_set')
+			self.add_attribute_data(instance, attribute_data)
+		if 'pricing_set' in validated_data:
+			pricing_data = validated_data.pop('pricing_set')
+		if 'stock' in validated_data:
+			stock_data = validated_data.pop('stock')
+		if 'productimage_set' in validated_data:
+			image_data = validated_data.pop('productimage_set')
+			self.add_image_data(instance, image_data)
+		if 'productdata_set' in validated_data:
+			productdata_data = validated_data.pop('productdata_set')
+			self.add_productdata_data(instance, productdata_data)
+
+		
+		#add_pricing_data(instance, pricing_data)
+		#add_stock_data(instance, stock_data)
 
 		# Iterate through all data in validated_data and update the instance
 		# with new values and save it.
@@ -489,13 +545,64 @@ class ProductSerializer(serializers.ModelSerializer):
 			setattr(instance, key, value)
 		instance.save()
 
+		return instance
+
+	def add_productdata_data(self, instance, validated_data):
+		data_ids = []
+
+		for data in validated_data:
+			if 'id' in data:
+				data_obj = ProductData.objects.get(pk=data['id'])
+				for(key, value) in data.items():
+					setattr(data_obj, key, value)
+				data_obj.save()
+			else:
+				data_obj = ProductData.objects.create(product=instance, **data)
+
+			data_ids.append(data_obj.id)
+
+		for data in instance.productdata_set.all():
+			if data.id not in data_ids:
+				data.delete()
+
+		return instance
+
+	def add_image_data(self, instance, validated_data):
+		image_ids = []
+
+		for image in validated_data:
+			if 'id' in image:
+				# Update attribute
+				image_obj = ProductImage.objects.get(pk=image['id'])
+				for(key, value) in image.items():
+					setattr(image_obj, key, value)
+
+				image_obj.save()
+			else:
+				# Create new attribute
+				image_obj = ProductImage.objects.create(product=instance, **image)
+
+			image_ids.append(image_obj.id)
+
+		# If this instance have any other menuitems that was not send
+		# in this HTTP call, then remove them. They should be deleted.
+		for image in instance.productimage_set.all():
+			if image.id not in image_ids:
+				image.delete()
+
+		return instance
+
+	def add_attribute_data(self, instance, validated_data):
+		attribute_ids = []
+
 		# Handle nested attribute values.
-		for attribute in attribute_data:
+		for attribute in validated_data:
 			if 'id' in attribute:
 				attribute_instance = Attribute.objects.get(pk=attribute['id'])
 				self.update_attribute(attribute_instance, attribute)
 			else:
-				attribute_instance = self.create_attribute(attribute, instance.pk)
+				attribute_instance = self.create_attribute(instance, attribute)
+
 			attribute_ids.append(attribute_instance.pk)
 
 		# Delete all attributes that was not included in the request, 
@@ -512,13 +619,20 @@ class ProductSerializer(serializers.ModelSerializer):
 		# is not included in the request. 
 		choice_ids = []  
 
+		# Update the Attribute Data
+		validated_data['slug'] = slugify(validated_data['name'])
+		for(key, value) in validated_data.items():
+			setattr(instance, key, value)
+
+		instance.save()
+
 		for choice in choice_data:
 			# If id is within the call, then update the object with matching id
 			if 'id' in choice:
 				try:
 					choice_obj = AttributeChoice.objects.get(pk=choice['id'])
 					choice_obj.value = choice['value']
-					choice_obj.slug = choice['slug']
+					choice_obj.slug = slugify(choice['value'])
 					choice_obj.attribute = instance
 				# If ID is not found, then create a new object
 				except AttributeChoice.DoesNotExist:
@@ -541,10 +655,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
 		return instance
 
-	def create_attribute(self, validated_data, id_product):
+	def create_attribute(self, instance, validated_data):
 		choice_data = validated_data.pop('attributechoice_set')
+		validated_data['slug'] = slugify(validated_data['name'])
 
-		product = Product.objects.get(pk=id_product)
+		product = Product.objects.get(pk=instance.pk)
 		attribute = Attribute(**validated_data)
 		attribute.save()
 
@@ -574,6 +689,35 @@ class ProductViewSet(viewsets.ModelViewSet):
 		if serialized.is_valid():
 			serialized.save()
 			return Response({'status': 'CREATED', 'id': serialized.data['id']})
+		else:
+			return Response({'status': 'FAILED', 'errors': serialized.errors})
+
+	def update(self, request, pk=None):
+		images = request.data.pop('productimage_set')
+		validator = URLValidator()
+		for image in images:
+			try:
+				# Validate that it's an URL. If it is, it means that the image is already stored
+				# and NOT a new uploaded image. So leave it alone.
+				validator(image['image'])
+				image.pop('image')
+			except ValidationError:
+				img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", image['image']).groupdict()
+				blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
+				imagefile = StringIO(blob)
+				imagefile = InMemoryUploadedFile(imagefile, None, image['filename'], 'image/jpeg', imagefile.len, None)
+				image['image'] = imagefile
+
+		# Add the slides back to the request after new files have been uploaded
+		# and replaced in the request dir.
+		request.data['productimage_set'] = images
+
+		product = Product(pk=pk)
+		serialized = self.serializer_class(product, data=request.data)
+		
+		if serialized.is_valid():
+			serialized.save()
+			return Response({'status': 'UPDATED', 'image_data': serialized.data})
 		else:
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 

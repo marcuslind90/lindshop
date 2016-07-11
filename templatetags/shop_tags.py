@@ -57,7 +57,7 @@ def get_menu(id_menu):
 def get_slideshow(id_slideshow):
 	try:
 		slideshow = Slideshow.objects.get(pk=id_slideshow)
-	except Menu.DoesNotExist:
+	except Slideshow.DoesNotExist:
 		return
 		
 	slides = slideshow.slide_set.all()

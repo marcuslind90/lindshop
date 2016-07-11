@@ -35,6 +35,9 @@ products_per_row_mobile	= settings.LINDSHOP.get('products_per_row_mobile', 2)
 product_thumbnail_width = settings.LINDSHOP.get('product_thumbnail_width', 260)
 product_thumbnail_height= settings.LINDSHOP.get('product_thumbnail_height', 360)
 product_thumbnail_size	= "%sx%s" % (product_thumbnail_width, product_thumbnail_height)
+product_gallery_thumbnail_width = settings.LINDSHOP.get('product_gallery_thumbnail_width', 80)
+product_gallery_thumbnail_height = settings.LINDSHOP.get('product_gallery_thumbnail_height', 80)
+product_gallery_thumbnail_size = "%sx%s" % (product_gallery_thumbnail_width, product_gallery_thumbnail_height)
 
 # Category Page Settings
 category_add_to_cart	= settings.LINDSHOP.get('category_add_to_cart', False)

@@ -121,3 +121,24 @@ class ProductImage(models.Model):
 
 	class Meta:
 		app_label = 'product'
+
+class ProductData(models.Model):
+	product = models.ForeignKey(Product, blank=True, null=True)
+	label = models.CharField(max_length=100)
+	value = models.CharField(max_length=100)
+
+	def __unicode__(self):
+		return "%s - %s" % (self.label, self.value)
+
+	class Meta:
+		app_label = 'product'
+
+class ProductDataPreset(models.Model):
+	label = models.CharField(max_length=100)
+	data = models.ManyToManyField(ProductData)
+
+	def __unicode__(self):
+		return self.label
+
+	class Meta:
+		app_label = 'product'
