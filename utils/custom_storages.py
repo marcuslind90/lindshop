@@ -3,22 +3,13 @@ from boto.s3.connection import S3Connection
 from storages.backends.s3boto import S3BotoStorage
 from django.core.files.storage import get_storage_class
 
-# By default the S3Connection is using s3.amazonaws.com
-# as host, which only allow for S3 hosted in US. To allow
-# EU hosts we need to change the DefaultHost with our own custom
-# Connection Class.
-class SingaporeConnection(S3Connection):
-    DefaultHost = "s3-ap-southeast-1.amazonaws.com"
-
 # We need a custom Storage Class for our Media files because we
 # want to have seperate locations for Static and Media files.
 class MediaStorage(S3BotoStorage):
-    connection_class = SingaporeConnection
     location = settings.MEDIAFILES_LOCATION
 
 # S3 storage backend that saves the files locally, too.
 class CachedS3BotoStorage(S3BotoStorage):
-    connection_class = SingaporeConnection
     location = settings.STATICFILES_LOCATION
     
     def __init__(self, *args, **kwargs):
