@@ -6,7 +6,7 @@ class Currency(models.Model):
 	iso_code = models.CharField(max_length=3)
 	format = models.CharField(max_length=10, blank=True, null=True)
 	default = models.BooleanField(default=False)
-	language = models.CharField(max_length=5)
+	language = models.CharField(max_length=5) # The activated language code when to display this price, ex: 'sv', 'en', 'th'.
 	
 	def __unicode__(self):
 		return self.iso_code

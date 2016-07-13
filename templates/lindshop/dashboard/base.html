@@ -40,6 +40,15 @@
 				<a href="#/catalogue/" data-toggle="tooltip" data-placement="right" title="{% trans "Catalogue" %}"><i class="fa fa-2x fa-book"></i></a>
 			</li>
 			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="#/payment/" data-toggle="tooltip" data-placement="right" title="{% trans "Payment" %}"><i class="fa fa-2x fa-money"></i></a>
+			</li>
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="#/shipping/" data-toggle="tooltip" data-placement="right" title="{% trans "Shipping" %}"><i class="fa fa-2x fa-truck"></i></a>
+			</li>
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="#/localization/" data-toggle="tooltip" data-placement="right" title="{% trans "Localization" %}"><i class="fa fa-2x fa-globe"></i></a>
+			</li>
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
 				<a href="#/appearance/" data-toggle="tooltip" data-placement="right" title="{% trans "Appearance" %}"><i class="fa fa-2x fa-paint-brush"></i></a>
 			</li>
 		  	{% url "shop:dashboard:logout" as url %}
@@ -76,6 +85,8 @@
 	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/angular/controllers/orderctrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/angular/controllers/cataloguectrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/angular/controllers/appearancectrl.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/angular/controllers/paymentctrl.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/angular/controllers/localizationctrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/dashboard.js' %}"></script>
 	<script>
 	// Add the CSRF Token

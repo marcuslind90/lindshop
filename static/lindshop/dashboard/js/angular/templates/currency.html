@@ -1,0 +1,64 @@
+<a href="" ng-click="navigateTo('/payment/');"><i class="fa fa-long-arrow-left"></i> Back to Payment</a>
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-6">
+			<h1>{{currency.iso_code}}</h1>
+		</div>
+		<div class="col-sm-6 text-right">
+			<div class="form-group">
+				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" ng-if="currency.id"><i class="fa fa-trash"></i> Delete</button>
+				<button class="btn btn-primary" ng-click="saveCurrency(true);"><i class="fa fa-save"></i> Save &amp; Stay</button>
+				<button class="btn btn-primary" ng-click="saveCurrency();"><i class="fa fa-save"></i> Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="alert alert-success savebox" id="savebox"><strong>Saved!</strong> Your data has been saved.</div>
+
+<div class="row">
+	<div class="col-sm-12">
+
+		<div class="form-group">
+			<label>ISO Code</label>
+			<input type="text" ng-model="currency.iso_code" class="form-control" placeholder="e.g. USD, SEK, NOK, GBP">
+		</div>
+
+		<div class="form-group">
+			<label>Format</label>
+			<input type="text" ng-model="currency.format" class="form-control" placeholder="Use %s as a placeholder for the number, e.g. '%s SEK'">
+		</div>
+
+		<div class="form-group">
+			<label>Language</label>
+			<input type="text" ng-model="currency.language" class="form-control" placeholder="Language code of when to use currency, e.g. sv, en, no">
+		</div>
+
+		<div class="form-group">
+			<label>Set as default currency</label>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" ng-model="currency.default"> Default
+				</label>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+	  </div>
+	  <div class="modal-body">
+		<p>Are you sure that you want to delete this?</p>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-danger" ng-click="deleteCurrency()"><i class="fa fa-trash"></i> Delete</button>
+	  </div>
+	</div>
+  </div>
+</div>

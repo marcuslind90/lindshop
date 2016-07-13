@@ -1,0 +1,55 @@
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-6">
+			<h1>Currencies</h1>
+		</div>
+		<div class="col-sm-6 text-right">
+			<div class="form-group">
+				<button class="btn btn-default" ng-click="navigateTo('/payment/currency/');"><i class="fa fa-plus"></i> Add Currency</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>ISO code</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="clickable-row" ng-click="navigateTo('/payment/currency/'+currency.id+'/');" ng-repeat="currency in currencies">
+			<td>{{currency.id}}</td>
+			<td>{{currency.iso_code}}</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-6">
+			<h1>Tax Rules</h1>
+		</div>
+		<div class="col-sm-6 text-right">
+			<div class="form-group">
+				<button class="btn btn-default" ng-click="navigateTo('/payment/taxrule/');"><i class="fa fa-plus"></i> Add Tax Rule</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Taxrule name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="clickable-row" ng-click="navigateTo('/payment/taxrule/'+taxrule.id+'/');" ng-repeat="taxrule in taxrules">
+			<td>{{taxrule.id}}</td>
+			<td>{{taxrule.name}}</td>
+		</tr>
+	</tbody>
+</table>

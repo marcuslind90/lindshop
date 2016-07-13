@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from lindshop.core.order.models import Order, CustomFieldValue, Notification
 from lindshop.core.cart.models import Cart, CartItem
 from lindshop.core.product.models import Product, ProductImage, ProductData, ProductDataPreset
-from lindshop.core.customer.models import Address
+from lindshop.core.customer.models import Address, Country
 from lindshop.core.category.models import Category
 from lindshop.core.pricing.models import Pricing, Taxrule, Currency
 from lindshop.core.attribute.models import Attribute, AttributeChoice
@@ -395,8 +395,33 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
 class CurrencySerializer(serializers.ModelSerializer):
+	"""Custom CurrencySerializer that handles saves and updates of
+	new currencies. When a currency is set to default, it unset every other
+	currency that is default.
+	"""
 	class Meta:
 		model = Currency
+
+	def update(self, instance, validated_data):
+		for(key, value) in validated_data.items():
+			setattr(instance, key, value)
+		instance.save()
+
+		if instance.default:
+			currencies = Currency.objects.all().exclude(pk=instance.pk)
+			currencies.update(default=False)
+
+		return instance
+
+	def create(self, validated_data):
+		currency = Currency(**validated_data)
+		currency.save()
+
+		if currency.default:
+			currencies = Currency.objects.all().exclude(pk=currency.pk)
+			currencies.update(default=False)
+
+		return currency
 
 class CurrencyViewSet(viewsets.ModelViewSet):
 	serializer_class = CurrencySerializer
@@ -424,6 +449,35 @@ class PricingViewSet(viewsets.ModelViewSet):
 			queryset = queryset.filter(product=product)
 
 		return queryset
+
+class CountrySerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Country
+
+	def update(self, instance, validated_data):
+		for(key, value) in validated_data.items():
+			setattr(instance, key, value)
+		instance.save()
+
+		if instance.default:
+			countries = Country.objects.all().exclude(pk=instance.pk)
+			countries.update(default=False)
+
+		return instance
+
+	def create(self, validated_data):
+		country = Country(**validated_data)
+		country.save()
+
+		if country.default:
+			countries = Country.objects.all().exclude(pk=country.pk)
+			countries.update(default=False)
+
+		return country
+
+class CountryViewSet(viewsets.ModelViewSet):
+	queryset = Country.objects.all()
+	serializer_class = CountrySerializer
 
 class AddressSerializer(serializers.ModelSerializer):
 	class Meta:
