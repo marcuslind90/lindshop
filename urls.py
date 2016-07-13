@@ -6,7 +6,7 @@ from lindshop.core.cart.views import ajax_cart
 from lindshop.core.checkout.views import checkout, ajax_checkout, process_checkout, thank_you
 from lindshop.core.payment.views import payment_webhook, get_form
 from lindshop.core.subscription.views import subscription_cancel, subscription_change
-from lindshop.core.dashboard.api import UserViewSet, OrderViewSet, CartViewSet, ProductViewSet, CategoryViewSet, PricingViewSet, TaxruleViewSet, CurrencyViewSet, ProductImageViewSet, AttributeViewSet, StockViewSet, WarehouseViewSet, MenuViewSet, SlideshowViewSet, ProductDataPresetViewSet
+from lindshop.core.dashboard.api import UserViewSet, OrderViewSet, CartViewSet, ProductViewSet, CategoryViewSet, PricingViewSet, TaxruleViewSet, CurrencyViewSet, ProductImageViewSet, AttributeViewSet, StockViewSet, WarehouseViewSet, MenuViewSet, SlideshowViewSet, ProductDataPresetViewSet, CountryViewSet
 from rest_framework import routers
 
 app_name = 'lindshop'
@@ -49,6 +49,7 @@ router.register(r'stock', StockViewSet, base_name="Stock")
 router.register(r'menus', MenuViewSet, base_name="Menu")
 router.register(r'slideshows', SlideshowViewSet, base_name="Slideshow")
 router.register(r'productdatapresets', ProductDataPresetViewSet, base_name="DataPreset")
+router.register(r'countries', CountryViewSet, base_name="Country")
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

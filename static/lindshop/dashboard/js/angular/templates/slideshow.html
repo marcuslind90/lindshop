@@ -5,9 +5,11 @@
 			<h1>{{slideshow.name}}</h1>
 		</div>
 		<div class="col-sm-6 text-right">
-			<button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" ng-if="slideshow.id"><i class="fa fa-trash"></i> Delete Slideshow</button>
-			<button class="btn btn-primary" ng-click="saveSlideshow(true);"><i class="fa fa-save"></i> Save &amp; Stay</button>
-			<button class="btn btn-primary" ng-click="saveSlideshow();"><i class="fa fa-save"></i> Save</button>
+			<div class="form-group">
+				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" ng-if="slideshow.id"><i class="fa fa-trash"></i> Delete Slideshow</button>
+				<button class="btn btn-primary" ng-click="saveSlideshow(true);"><i class="fa fa-save"></i> Save &amp; Stay</button>
+				<button class="btn btn-primary" ng-click="saveSlideshow();"><i class="fa fa-save"></i> Save</button>
+			</div>
 		</div>
 	</div>
 </div>

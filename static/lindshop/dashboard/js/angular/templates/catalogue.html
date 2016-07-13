@@ -6,9 +6,11 @@
 			<h1>{{main_category.name}}</h1>
 		</div>
 		<div class="col-sm-6 text-right">
-			<button class="btn btn-default" ng-click="navigateTo('/category/'+main_category.id+'/edit/');" ng-if="main_category.id"><i class="fa fa-edit"></i> Edit Category</button>
-			<button class="btn btn-default" ng-click="navigateTo('/catalogue/add-category/'+main_category.id);"><i class="fa fa-plus"></i> Add Category</button>
-			<button class="btn btn-default" ng-click="navigateTo('/catalogue/add-product/'+main_category.id);"><i class="fa fa-plus"></i> Add Product</button>
+			<div class="form-group">
+				<button class="btn btn-default" ng-click="navigateTo('/category/'+main_category.id+'/edit/');" ng-if="main_category.id"><i class="fa fa-edit"></i> Edit Category</button>
+				<button class="btn btn-default" ng-click="navigateTo('/catalogue/add-category/'+main_category.id);"><i class="fa fa-plus"></i> Add Category</button>
+				<button class="btn btn-default" ng-click="navigateTo('/catalogue/add-product/'+main_category.id);"><i class="fa fa-plus"></i> Add Product</button>
+			</div>
 		</div>
 	</div>
 </div>
