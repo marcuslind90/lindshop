@@ -24,6 +24,8 @@ app.config(["$routeProvider", function($routeProvider){
 	.when('/localization/', {controller: 'localizationCtrl', templateUrl: "/static/lindshop/dashboard/js/angular/templates/localization.html"})
 	.when('/localization/country/', {controller: 'countryCtrl', templateUrl: "/static/lindshop/dashboard/js/angular/templates/country.html"})
 	.when('/localization/country/:id/', {controller: 'countryCtrl', templateUrl: "/static/lindshop/dashboard/js/angular/templates/country.html"})
-	.when('/shipping/', {controller: 'localizationCtrl', templateUrl: "/static/lindshop/dashboard/js/angular/templates/shipping.html"})
+	.when('/shipping/', {controller: 'shippingCtrl', templateUrl: "/static/lindshop/dashboard/js/angular/templates/shipping.html"})
+	.when('/shipping/carrier/', {controller: 'carrierCtrl', templateUrl: "/static/lindshop/dashboard/js/angular/templates/carrier.html"})
+	.when('/shipping/carrier/:id/', {controller: 'carrierCtrl', templateUrl: "/static/lindshop/dashboard/js/angular/templates/carrier.html"})
 	.otherwise({redirectTo: "/orders"})
 }]);

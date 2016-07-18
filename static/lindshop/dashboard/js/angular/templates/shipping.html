@@ -1,1 +1,29 @@
-shipping.html
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-6">
+			<h1>Carriers</h1>
+		</div>
+		<div class="col-sm-6 text-right">
+			<div class="form-group">
+				<button class="btn btn-default" ng-click="navigateTo('/shipping/carrier/');"><i class="fa fa-plus"></i> Add Carrier</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>ISO code</th>
+			<th>Delivery Text</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="clickable-row" ng-click="navigateTo('/shipping/carrier/'+carrier.id+'/');" ng-repeat="carrier in carriers">
+			<td>{{carrier.id}}</td>
+			<td>{{carrier.name}}</td>
+			<td>{{carrier.delivery_text}}</td>
+		</tr>
+	</tbody>
+</table>

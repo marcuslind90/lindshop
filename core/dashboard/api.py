@@ -14,6 +14,7 @@ from lindshop.core.attribute.models import Attribute, AttributeChoice
 from lindshop.core.stock.models import Warehouse, Stock
 from lindshop.core.menu.models import Menu, MenuItem
 from lindshop.core.slideshow.models import Slideshow, Slide
+from lindshop.core.shipping.models import Carrier, CarrierPricing
 
 import json
 import re
@@ -26,6 +27,110 @@ from django.core.exceptions import ValidationError
 
 # REST API Url Patterns (Used by AngularJS)
 # Serializers define the API representation.
+class CarrierPricingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CarrierPricing
+		fields = '__all__'
+
+class CarrierSerializer(serializers.ModelSerializer):
+	carrierpricing_set = CarrierPricingSerializer(many=True)
+	class Meta:
+		model = Carrier
+		fields = ('id', 'name', 'delivery_text', 'logo', 'default', 'countries', 'carrierpricing_set')
+		extra_kwargs = {
+			'id': {'read_only': False, 'required': False}, 
+			'logo': {'required': False}
+		}
+
+	def create(self, validated_data):
+		pricing = validated_data.pop('carrierpricing_set')
+		countries = validated_data.pop('countries')
+
+		carrier = Carrier.objects.create(**validated_data)
+
+		for country in countries:
+			country_obj = Country.objects.get(pk=country.pk)
+			carrier.countries.add(country_obj)
+			country_ids.append(country_obj.pk)
+
+		return carrier
+
+	def update(self, instance, validated_data):
+		pricing = validated_data.pop('carrierpricing_set')
+		countries = validated_data.pop('countries')
+		country_ids = []
+
+		for(key, value) in validated_data.items():
+			setattr(instance, key, value)
+		instance.save()
+
+
+		for country in countries:
+			country_obj = Country.objects.get(pk=country.pk)
+			instance.countries.add(country_obj)
+			country_ids.append(country_obj.pk)
+
+		for country in instance.countries.all():
+			if country.id not in country_ids:
+				instance.countries.remove(country)
+
+		return instance
+
+
+class CarrierViewSet(viewsets.ModelViewSet):
+	serializer_class = CarrierSerializer
+
+	def get_queryset(self):
+		queryset = Carrier.objects.all()
+
+		return queryset
+
+	def create(self, request, pk=None):
+		if 'logo' in request.data and request.data['logo'] is not None:
+			img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", request.data['logo']).groupdict()
+			blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
+			image = StringIO(blob)
+			image = InMemoryUploadedFile(image, None, request.data['filename'], 'image/jpeg', image.len, None)
+
+			request.data['logo'] = image
+
+		carrier = Carrier.objects.get(pk=pk)
+		serialized = self.serializer_class(carrier, data=request.data)
+		
+		if serialized.is_valid():
+			serialized.save()
+			return Response({'status': 'CREATED', 'image_data': serialized.data})
+		else:
+			return Response({'status': 'FAILED', 'errors': serialized.errors})
+
+	def update(self, request, pk=None):
+		if 'logo' in request.data and request.data['logo'] is not None:
+			validator = URLValidator()
+			try:
+				# Validate that it's an URL. If it is, it means that the image is already stored
+				# and NOT a new uploaded image. So leave it alone.
+				validator(request.data['logo'])
+				request.data.pop('logo')
+				
+			except ValidationError:
+				img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", request.data['logo']).groupdict()
+				blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
+				image = StringIO(blob)
+				image = InMemoryUploadedFile(image, None, request.data['filename'], 'image/jpeg', image.len, None)
+
+				request.data['logo'] = image
+		elif 'logo' in request.data and request.data['logo'] is None:
+			request.data.pop('logo')
+
+		carrier = Carrier.objects.get(pk=pk)
+		serialized = self.serializer_class(carrier, data=request.data)
+		
+		if serialized.is_valid():
+			serialized.save()
+			return Response({'status': 'UPDATED', 'image_data': serialized.data})
+		else:
+			return Response({'status': 'FAILED', 'errors': serialized.errors})
+
 class SlideSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Slide
@@ -106,8 +211,7 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 			blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
 			image = StringIO(blob)
 			image = InMemoryUploadedFile(image, None, slide['filename'], 'image/jpeg', image.len, None)
-			#print image
-			#image = StringIO.open(blob)
+			
 			slide['image'] = image
 
 		request.data['slide_set'] = slides
@@ -381,8 +485,7 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 		blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
 		image = StringIO(blob)
 		image = InMemoryUploadedFile(image, None, request.data['filename'], 'image/jpeg', image.len, None)
-		#print image
-		#image = StringIO.open(blob)
+
 		request.data['image'] = image
 
 		image = ProductImage(pk=pk)
