@@ -36,6 +36,14 @@ angular.module('dashboard')
 		$scope.countries = response.data;
 	});
 
+	getTaxrules(config, function(response){
+		$scope.taxrules = response.data;
+	});
+
+	getCurrencies(config, function(response){
+		$scope.currencies = response.data;
+	});
+
 	function getCarrier(config, callback) {
 		if($routeParams['id']) {
 			$http.get('/api/carriers/'+$routeParams['id'], config).then(function(response) {
@@ -46,7 +54,7 @@ angular.module('dashboard')
 			callback({'data':{
 				'name': '', 
 				'delivery_text': '', 
-				'logo': true, 
+				'logo': null, 
 				'default': '', 
 				'countries': [], 
 				'carrierpricing_set': []
@@ -56,6 +64,18 @@ angular.module('dashboard')
 
 	function getCountries(config, callback) {
 		$http.get('/api/countries/', config).then(function(response){
+			callback(response);
+		});
+	}
+
+	function getTaxrules(config, callback) {
+		$http.get('/api/taxrules/', config).then(function(response){
+			callback(response);
+		});
+	}
+
+	function getCurrencies(config, callback) {
+		$http.get('/api/currencies/', config).then(function(response){
 			callback(response);
 		});
 	}
@@ -82,6 +102,20 @@ angular.module('dashboard')
 		}
 	};
 
+	$scope.addPricing = function() {
+		var data = {
+			'currency': null, 
+			'taxrule': null, 
+			'price': 0
+		};
+
+		$scope.carrier.carrierpricing_set.push(data);
+	};
+
+	$scope.deletePricing = function(index) {
+		$scope.carrier.carrierpricing_set.splice(index, 1);
+	};
+
 	$scope.saveCarrier = function(stay) {
 		// If it should UPDATE a product with a PUT Call
 		if($scope.carrier.id){
@@ -98,6 +132,7 @@ angular.module('dashboard')
 		// If it should CREATE a product with a POST call
 		else {
 			$http.post('/api/carriers/?callback=JSON_CALLBACK', $scope.carrier).then(function(response){
+				console.log(response);
 				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
 
 				// If stay is not true, then navigate the user back to category page.

@@ -15,6 +15,7 @@
 	<thead>
 		<tr>
 			<th>ID</th>
+			<th>Logo</th>
 			<th>ISO code</th>
 			<th>Delivery Text</th>
 		</tr>
@@ -22,6 +23,7 @@
 	<tbody>
 		<tr class="clickable-row" ng-click="navigateTo('/shipping/carrier/'+carrier.id+'/');" ng-repeat="carrier in carriers">
 			<td>{{carrier.id}}</td>
+			<td><img ng-src="{{carrier.logo}}" alt="{{carrier.name}}" class="img-responsive"></td>
 			<td>{{carrier.name}}</td>
 			<td>{{carrier.delivery_text}}</td>
 		</tr>

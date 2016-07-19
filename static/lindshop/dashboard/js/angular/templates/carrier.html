@@ -51,6 +51,57 @@
 				</label>
 			</div>
 		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-6">
+
+		<div class="page-header">
+			<div class="row">
+				<div class="col-sm-6">
+					<h1>Pricing</h1>
+				</div>
+				<div class="col-sm-6 text-right">
+					<div class="form-group">
+						<button class="btn btn-default" ng-click="addPricing();"><i class="fa fa-plus"></i> Add Pricing</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Price (excl VAT):</th>
+						<th>Tax VAT:</th>
+						<th>Currency:</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="pricing in carrier.carrierpricing_set">
+						<td>
+							<input type="text" class="form-control" placeholder="Price excl VAT" ng-model="pricing.price">
+						</td>
+						<td>
+							<select ng-model="pricing.taxrule" class="form-control" ng-options="taxrule.id as taxrule.name for taxrule in taxrules">
+								<option value="">---</option>
+							</select>
+						</td>
+						<td>
+							<select ng-model="pricing.currency" class="form-control" ng-options="currency.id as currency.iso_code for currency in currencies">
+								<option value="">---</option>
+							</select>
+						</td>
+						<td class="text-right">
+							<button class="btn btn-default vtop" ng-click="deletePricing($index);"><i class="fa fa-trash"></i></button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
 	</div>
 </div>
