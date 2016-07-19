@@ -31,6 +31,10 @@ class CarrierPricingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CarrierPricing
 		fields = '__all__'
+		extra_kwargs = {
+			'id': {'read_only': False, 'required': False}, 
+			'carrier': {'required': False}
+		}
 
 class CarrierSerializer(serializers.ModelSerializer):
 	carrierpricing_set = CarrierPricingSerializer(many=True)
@@ -43,7 +47,7 @@ class CarrierSerializer(serializers.ModelSerializer):
 		}
 
 	def create(self, validated_data):
-		pricing = validated_data.pop('carrierpricing_set')
+		pricings = validated_data.pop('carrierpricing_set')
 		countries = validated_data.pop('countries')
 
 		carrier = Carrier.objects.create(**validated_data)
@@ -53,17 +57,24 @@ class CarrierSerializer(serializers.ModelSerializer):
 			carrier.countries.add(country_obj)
 			country_ids.append(country_obj.pk)
 
+		for pricing in pricings:
+			CarrierPricing.objects.create(carrier=carrier, **pricing)
+
 		return carrier
 
 	def update(self, instance, validated_data):
-		pricing = validated_data.pop('carrierpricing_set')
+		pricings = validated_data.pop('carrierpricing_set')
 		countries = validated_data.pop('countries')
 		country_ids = []
+		price_ids = []
 
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
 		instance.save()
 
+		for pricing in pricings:
+			price_obj = CarrierPricing.objects.create(carrier=instance, **pricing)
+			price_ids.append(price_obj.pk)
 
 		for country in countries:
 			country_obj = Country.objects.get(pk=country.pk)
@@ -73,6 +84,10 @@ class CarrierSerializer(serializers.ModelSerializer):
 		for country in instance.countries.all():
 			if country.id not in country_ids:
 				instance.countries.remove(country)
+
+		for pricing in instance.carrierpricing_set.all():
+			if pricing.id not in price_ids:
+				instance.carrierpricing_set.remove(pricing)
 
 		return instance
 
@@ -94,14 +109,14 @@ class CarrierViewSet(viewsets.ModelViewSet):
 
 			request.data['logo'] = image
 
-		carrier = Carrier.objects.get(pk=pk)
+		carrier = Carrier(pk=pk)
 		serialized = self.serializer_class(carrier, data=request.data)
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'CREATED', 'image_data': serialized.data})
+			return Response(serialized.data)
 		else:
-			return Response({'status': 'FAILED', 'errors': serialized.errors})
+			return Response(serialized.data)
 
 	def update(self, request, pk=None):
 		if 'logo' in request.data and request.data['logo'] is not None:
@@ -127,9 +142,9 @@ class CarrierViewSet(viewsets.ModelViewSet):
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'UPDATED', 'image_data': serialized.data})
+			return Response(serialized.data)
 		else:
-			return Response({'status': 'FAILED', 'errors': serialized.errors})
+			return Response(serialized.data)
 
 class SlideSerializer(serializers.ModelSerializer):
 	class Meta:
