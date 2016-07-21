@@ -21,6 +21,7 @@ def checkout(request, errors=None):
 	"""
 	if 'id_cart' not in request.session:
 		return HttpResponseRedirect(reverse('shop:index'))
+
 	countries = Country.objects.all()
 	carriers = list_carriers(request)
 	custom_fields = CustomField.objects.all()
@@ -59,7 +60,7 @@ def list_carriers(request, html=False):
 	try:
 		if 'id_cart' in request.session:
 			cart = Cart.objects.get(pk=request.session['id_cart'])
-			if cart.user.user_address.all()[0].country:
+			if cart.user and cart.user.user_address.all()[0].country:
 				default_country = cart.user.user_address.all()[0].country
 	except Exception as ex:
 		print ex.message

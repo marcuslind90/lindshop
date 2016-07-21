@@ -2,8 +2,12 @@ from rest_framework import routers, serializers, viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+from rest_framework import status
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+
 from lindshop.core.order.models import Order, CustomFieldValue, Notification
 from lindshop.core.cart.models import Cart, CartItem
 from lindshop.core.product.models import Product, ProductImage, ProductData, ProductDataPreset
@@ -124,8 +128,8 @@ class CarrierViewSet(viewsets.ModelViewSet):
 	"""The ViewSet of the Carrier object. This handles the request and
 	sends it to the serializer.
 	"""
-
 	serializer_class = CarrierSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Carrier.objects.all()
@@ -138,7 +142,7 @@ class CarrierViewSet(viewsets.ModelViewSet):
 		# The image from AngularJS is stored as a  base64 string. We use the string and 
 		# create an image of it and then replace the original base64 string stored in the request
 		# with the new image.
-		if 'logo' in request.data and request.data['logo'] is not None:
+		if 'logo' in request.data and request.data['logo'] is not None and request.data['logo'] != "":
 			img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", request.data['logo']).groupdict()
 			blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
 			image = StringIO(blob)
@@ -153,7 +157,7 @@ class CarrierViewSet(viewsets.ModelViewSet):
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response(serialized.data)
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
 			return Response(serialized.data)
 
@@ -284,6 +288,7 @@ class SlideshowSerializer(serializers.ModelSerializer):
 
 class SlideshowViewSet(viewsets.ModelViewSet):
 	serializer_class = SlideshowSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Slideshow.objects.all()
@@ -311,7 +316,7 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'CREATED', 'image_data': serialized.data})
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
@@ -422,6 +427,7 @@ class MenuSerializer(serializers.ModelSerializer):
 
 class MenuViewSet(viewsets.ModelViewSet):
 	serializer_class = MenuSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Menu.objects.all()
@@ -435,6 +441,7 @@ class WarehouseSerializer(serializers.ModelSerializer):
 
 class WarehouseViewSet(viewsets.ModelViewSet):
 	serializer_class = WarehouseSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Warehouse.objects.all()
@@ -448,6 +455,7 @@ class StockSerializer(serializers.ModelSerializer):
 
 class StockViewSet(viewsets.ModelViewSet):
 	serializer_class = StockSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Stock.objects.all()
@@ -538,6 +546,7 @@ class AttributeSerializer(serializers.ModelSerializer):
 
 class AttributeViewSet(viewsets.ModelViewSet):
 	serializer_class = AttributeSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Attribute.objects.all()
@@ -573,6 +582,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductImageViewSet(viewsets.ModelViewSet):
 	serializer_class = ProductImageSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = ProductImage.objects.all()
@@ -600,7 +610,7 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'UPDATED', 'image_data': serialized.data})
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
@@ -641,6 +651,7 @@ class CurrencySerializer(serializers.ModelSerializer):
 class CurrencyViewSet(viewsets.ModelViewSet):
 	serializer_class = CurrencySerializer
 	queryset = Currency.objects.all()
+	permission_classes = (IsAdminUser,)
 
 class TaxruleSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -649,6 +660,7 @@ class TaxruleSerializer(serializers.ModelSerializer):
 class TaxruleViewSet(viewsets.ModelViewSet):
 	serializer_class = TaxruleSerializer
 	queryset = Taxrule.objects.all()
+	permission_classes = (IsAdminUser,)
 
 class PricingSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -656,6 +668,7 @@ class PricingSerializer(serializers.ModelSerializer):
 
 class PricingViewSet(viewsets.ModelViewSet):
 	serializer_class = PricingSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Pricing.objects.all()
@@ -698,6 +711,7 @@ class CountrySerializer(serializers.ModelSerializer):
 class CountryViewSet(viewsets.ModelViewSet):
 	queryset = Country.objects.all()
 	serializer_class = CountrySerializer
+	permission_classes = (IsAdminUser,)
 
 class AddressSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -715,6 +729,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
+	permission_classes = (IsAdminUser,)
 
 class ProductDataSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -753,6 +768,7 @@ class ProductDataPresetSerializer(serializers.ModelSerializer):
 class ProductDataPresetViewSet(viewsets.ModelViewSet):
 	queryset = ProductDataPreset.objects.all()
 	serializer_class = ProductDataPresetSerializer
+	permission_classes = (IsAdminUser,)
 
 class ProductSerializer(serializers.ModelSerializer):
 	attribute_set = AttributeSerializer(many=True)
@@ -976,6 +992,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class ProductViewSet(viewsets.ModelViewSet):
 	serializer_class = ProductSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Product.objects.all()
@@ -994,7 +1011,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'CREATED', 'id': serialized.data['id']})
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
@@ -1038,6 +1055,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class CategoryViewSet(viewsets.ModelViewSet):
 	serializer_class = CategorySerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Category.objects.all()
@@ -1057,7 +1075,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'CREATED', 'id': serialized.data['id']})
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
@@ -1094,6 +1112,7 @@ class CartSerializer(serializers.ModelSerializer):
 class CartViewSet(viewsets.ModelViewSet):
 	queryset = Cart.objects.all()
 	serializer_class = CartSerializer
+	permission_classes = (IsAdminUser,)
 
 class CustomFieldValueSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -1140,6 +1159,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 class OrderViewSet(viewsets.ModelViewSet):
 	queryset = Order.objects.all()
 	serializer_class = OrderSerializer
+	permission_classes = (IsAdminUser,)
 
 	def list(self, request):
 		queryset = Order.objects.all().order_by('-pk')[:25]

@@ -35,7 +35,6 @@ class CSVImporter(object):
 			csv_reader = csv.DictReader(csvfile, delimiter=self.delimiter)
 			for row in csv_reader:
 				for k, v in row.iteritems():
-					print "Key: %s, Value: %s" % (k, v)
 					if v is not None and len(v) > 0:
 						if v[0] == '@':
 							try:
