@@ -10,7 +10,5 @@ def product(request, id_product, slug):
 
 	breadcrumbs = Breadcrumbs()
 	breadcrumbs.add_product(product, False)
-
-	print breadcrumbs.crumbs
 	
 	return render(request, "product/product-page.html", {'product': product, 'breadcrumbs': breadcrumbs.crumbs})

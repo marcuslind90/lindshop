@@ -29,6 +29,7 @@ class ViewTests(TestCase):
 		response = self.client.get(reverse('shop:index'))
 		self.assertEqual(response.status_code, 200)
 
+	# PRINTS OUT 'NoneType' object has no attribute 'user_address'
 	def test_checkout_view(self):
 		response = checkout(self.factory)
 		self.assertEqual(response.status_code, 200)

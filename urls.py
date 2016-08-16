@@ -24,19 +24,19 @@ urlpatterns = [
 ]
 
 # Ajax/Form Submit URL patterns
-urlpatterns += patterns('', 
+urlpatterns += [ 
 	url(r'^ajax-cart/', ajax_cart, name='ajax-cart'), 
 	url(r'^ajax-checkout/', ajax_checkout, name='ajax-checkout'), 
 	url(r'^process-checkout/', process_checkout, name="process-checkout"),
 	url(r'^payment-webhook/', payment_webhook, name="payment-webhook"), 
 	url(r'^payment-get-form/', get_form, name="get-form"), 
-)
+]
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'orders', OrderViewSet)
-router.register(r'carts', CartViewSet)
+router.register(r'users', UserViewSet, base_name="User")
+router.register(r'orders', OrderViewSet, base_name="Order")
+router.register(r'carts', CartViewSet, base_name="Cart")
 router.register(r'products', ProductViewSet, base_name="Product")
 router.register(r'categories', CategoryViewSet, base_name="Category")
 router.register(r'pricings', PricingViewSet, base_name="Pricing")
@@ -54,13 +54,13 @@ router.register(r'carriers', CarrierViewSet, base_name="Carrier")
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
-urlpatterns += patterns('', 
-	url(r'^api/', include(router.urls)),
+urlpatterns += [ 
+	url(r'^api/', include(router.urls, namespace="api")),
 	url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-)
+]
 
 # Product and Category URLS
-urlpatterns += patterns('', 
+urlpatterns += [ 
 	url(r'^(?P<id_product>[0-9]+)-(?P<slug>[a-z\-0-9]+)/$', product, name="product"), 
 	url(r'^(?P<category_slug>[a-z0-9-]+)/$', category, name="category"), 
-)
+]

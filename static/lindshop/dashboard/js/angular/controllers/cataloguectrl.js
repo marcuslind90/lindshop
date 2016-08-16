@@ -261,7 +261,8 @@ angular.module('dashboard')
 				category: category, 
 				categories: [], 
 				attribute_set: [], 
-				pricing_set: []
+				pricing_set: [], 
+				productdata_set: []
 			};	
 		}
 	}

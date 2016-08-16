@@ -16,7 +16,7 @@ urlpatterns = [
 ]
 
 # Ajax/Form Submit URL patterns
-urlpatterns += patterns('', 
+urlpatterns += [ 
 	url(r'^check-payments/', views.check_payments, name='check-payments'), 
 	url(r'^add-notification/', views.add_notification, name='add-notification'), 
-)
+]

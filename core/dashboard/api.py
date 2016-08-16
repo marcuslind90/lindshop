@@ -2,8 +2,12 @@ from rest_framework import routers, serializers, viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+from rest_framework import status
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+
 from lindshop.core.order.models import Order, CustomFieldValue, Notification
 from lindshop.core.cart.models import Cart, CartItem
 from lindshop.core.product.models import Product, ProductImage, ProductData, ProductDataPreset
@@ -28,15 +32,21 @@ from django.core.exceptions import ValidationError
 # REST API Url Patterns (Used by AngularJS)
 # Serializers define the API representation.
 class CarrierPricingSerializer(serializers.ModelSerializer):
+	"""CarrierPricing used in the CarrierSerializer. 
+	Handles how CarrierPricing is displayed from the API.
+	"""
 	class Meta:
 		model = CarrierPricing
 		fields = '__all__'
 		extra_kwargs = {
 			'id': {'read_only': False, 'required': False}, 
-			'carrier': {'required': False}
+			'carrier': {'required': False} # For CREATE calls the carrier ID is not set yet
 		}
 
 class CarrierSerializer(serializers.ModelSerializer):
+	"""Handles how the Carrier data is displayed from the API.
+	Also handles custom CREATE and UPDATE calls.
+	"""
 	carrierpricing_set = CarrierPricingSerializer(many=True)
 	class Meta:
 		model = Carrier
@@ -47,44 +57,66 @@ class CarrierSerializer(serializers.ModelSerializer):
 		}
 
 	def create(self, validated_data):
+
+		# Seperate nested data from the Carrier object.
 		pricings = validated_data.pop('carrierpricing_set')
 		countries = validated_data.pop('countries')
 
+		# Create our Carrier with the remaining data.
 		carrier = Carrier.objects.create(**validated_data)
 
+		# Use the nested `countries` data to add all the countries
+		# to the ManyToMany `countryes`-field of Carrier.
 		for country in countries:
 			country_obj = Country.objects.get(pk=country.pk)
 			carrier.countries.add(country_obj)
-			country_ids.append(country_obj.pk)
 
+		# Use the nested `pricings` data and create all the new
+		# pricings for the carrier.
 		for pricing in pricings:
 			CarrierPricing.objects.create(carrier=carrier, **pricing)
 
 		return carrier
 
 	def update(self, instance, validated_data):
+
+		# Seperate nested data from the Carrier object.
 		pricings = validated_data.pop('carrierpricing_set')
 		countries = validated_data.pop('countries')
+
+		# Initiate arrays that will store each ID that is included in the call
+		# so that we can later remove all data stored in the DB that was not included.
 		country_ids = []
 		price_ids = []
 
+		# Loop through our items in the call, and set matching Instance parameter to its value
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
+
+		# Save the instance. This updates the database.
 		instance.save()
 
+		# Use the nested `pricings` data and create all the new
+		# pricings for the carrier.
 		for pricing in pricings:
 			price_obj = CarrierPricing.objects.create(carrier=instance, **pricing)
-			price_ids.append(price_obj.pk)
+			price_ids.append(price_obj.pk) # Keep the ID so that we remember which one was updated.
 
+		# Use the nested `countries` data to add all the countries
+		# to the ManyToMany `countryes`-field of Carrier.
 		for country in countries:
 			country_obj = Country.objects.get(pk=country.pk)
 			instance.countries.add(country_obj)
-			country_ids.append(country_obj.pk)
+			country_ids.append(country_obj.pk) # Keep the ID so that we remember which one was updated.
 
+		# Get all the countries previously added to this instance and check
+		# if any of them was NOT included in this call. If so, remove them. 
 		for country in instance.countries.all():
 			if country.id not in country_ids:
 				instance.countries.remove(country)
 
+		# Get all the pricings previously added to this instance and check
+		# if any of them was NOT included in this call. If so, remove them. 
 		for pricing in instance.carrierpricing_set.all():
 			if pricing.id not in price_ids:
 				instance.carrierpricing_set.remove(pricing)
@@ -93,7 +125,11 @@ class CarrierSerializer(serializers.ModelSerializer):
 
 
 class CarrierViewSet(viewsets.ModelViewSet):
+	"""The ViewSet of the Carrier object. This handles the request and
+	sends it to the serializer.
+	"""
 	serializer_class = CarrierSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Carrier.objects.all()
@@ -101,42 +137,62 @@ class CarrierViewSet(viewsets.ModelViewSet):
 		return queryset
 
 	def create(self, request, pk=None):
-		if 'logo' in request.data and request.data['logo'] is not None:
+
+		# If `logo` is included in the call, it means an Image is uploaded.
+		# The image from AngularJS is stored as a  base64 string. We use the string and 
+		# create an image of it and then replace the original base64 string stored in the request
+		# with the new image.
+		if 'logo' in request.data and request.data['logo'] is not None and request.data['logo'] != "":
 			img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", request.data['logo']).groupdict()
 			blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
 			image = StringIO(blob)
 			image = InMemoryUploadedFile(image, None, request.data['filename'], 'image/jpeg', image.len, None)
 
-			request.data['logo'] = image
+			request.data['logo'] = image # Replace the original base64 string with the new file.
 
 		carrier = Carrier(pk=pk)
+
+		# Sends the data to the serializer that validates the data and stores it.
 		serialized = self.serializer_class(carrier, data=request.data)
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response(serialized.data)
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
-			return Response(serialized.data)
+			return Response({'ERROR': serialized.errors})
 
 	def update(self, request, pk=None):
-		if 'logo' in request.data and request.data['logo'] is not None:
+
+		# If `logo` is included in the call, it means an Image is uploaded.
+		# The image from AngularJS is stored as a  base64 string. We use the string and 
+		# create an image of it and then replace the original base64 string stored in the request
+		# with the new image.
+		if 'logo' in request.data and request.data['logo'] is not None and request.data['logo'] != "":
+
+			# To see if it's an already existing image, or a new one, we check if the logo-value
+			# is an URL (to an existing, uploaded image) or a base64 encoded string (a new uploaded file)
 			validator = URLValidator()
 			try:
 				# Validate that it's an URL. If it is, it means that the image is already stored
 				# and NOT a new uploaded image. So leave it alone.
 				validator(request.data['logo'])
 				request.data.pop('logo')
-				
+			
+			# If we get an Exception for the value NOT being a URL, we should handle Image Upload...
 			except ValidationError:
 				img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", request.data['logo']).groupdict()
 				blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
 				image = StringIO(blob)
 				image = InMemoryUploadedFile(image, None, request.data['filename'], 'image/jpeg', image.len, None)
 
+				# Replace the base64-string value with the new file.
 				request.data['logo'] = image
+
+		# If 'logo' is included, but its "None". Then remove it (So it doesn't replace existing value with None).
 		elif 'logo' in request.data and request.data['logo'] is None:
 			request.data.pop('logo')
 
+		# Get the Instance of the Carrier we're updating...
 		carrier = Carrier.objects.get(pk=pk)
 		serialized = self.serializer_class(carrier, data=request.data)
 		
@@ -147,12 +203,14 @@ class CarrierViewSet(viewsets.ModelViewSet):
 			return Response(serialized.data)
 
 class SlideSerializer(serializers.ModelSerializer):
+	"""Serializer that handle Slide's of a Slideshow from the API
+	"""
 	class Meta:
 		model = Slide
 		fields = '__all__'
 		extra_kwargs = {
 			'id': {'read_only': False, 'required': False}, 
-			'slideshow': {'required': False}, 
+			'slideshow': {'required': False}, # Not required because the slideshow might not be saved yet
 			'image': {'required': False}
 		}
 
@@ -161,22 +219,39 @@ class SlideSerializer(serializers.ModelSerializer):
 			return exclusions + ['id']
 
 class SlideshowSerializer(serializers.ModelSerializer):
+	"""Serializer that handle Slideshow's from the API
+	"""
 	slide_set = SlideSerializer(many=True)
+
 	class Meta:
 		model = Slideshow
 		fields = ('id', 'name', 'slide_set')
 
 	def create(self, validated_data):
+		"""Handle CREATE calls of Slideshow to the API
+		"""
+
+		# Seperate nested data
 		slides = validated_data.pop('slide_set')
+
+		# Create a new Slideshow object with the remaining data.
 		slideshow = Slideshow.objects.create(**validated_data)
 
+		# Use the nested `slides` data to create each slide
 		for item in slides:
 			Slide.objects.create(slideshow=slideshow, **item)
 
-		return menu
+		return slideshow
 
 	def update(self, instance, validated_data):
+		"""Handle UPDATE calls of Slideshow to the API
+		"""
+
+		# Seperate nested data
 		slides = validated_data.pop('slide_set')
+
+		# Initiate array that will store each ID that is included in the call
+		# so that we can later remove all data stored in the DB that was not included.
 		item_ids = []
 
 		# Iterate through all data in validated_data and update the instance
@@ -185,22 +260,26 @@ class SlideshowSerializer(serializers.ModelSerializer):
 			setattr(instance, key, value)
 		instance.save()
 
+		# Update the nested `slides` data
 		for item in slides:
+			# If the slide already has an `id` it means the Slide already
+			# exists and should be UPDATED.
 			if 'id' in item:
-				# Update attribute
 				item_obj = Slide.objects.get(pk=item['id'])
 				for(key, value) in item.items():
 					setattr(item_obj, key, value)
 
 				item_obj.save()
+
+			# If no `id` exist it means the slide is new and should be CREATED.
 			else:
-				# Create new attribute
 				item_obj = Slide.objects.create(slideshow=instance, **item)
 
+			# Save the ID of the slide so we know which ones were included in the call.
 			item_ids.append(item_obj.id)
 
-		# If this instance have any other menuitems that was not send
-		# in this HTTP call, then remove them. They should be deleted.
+		# If this instance have any other slides that was not send
+		# in this request, then remove them. They should be deleted.
 		for item in instance.slide_set.all():
 			if item.id not in item_ids:
 				item.delete()
@@ -209,6 +288,7 @@ class SlideshowSerializer(serializers.ModelSerializer):
 
 class SlideshowViewSet(viewsets.ModelViewSet):
 	serializer_class = SlideshowSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Slideshow.objects.all()
@@ -216,11 +296,11 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 		return queryset
 
 	def create(self, request, pk=None):
-		"""
-		The uploaded file is send as an encoded URL. We pull out the data from the URL and then
-		replace the image field of the request-data with the pulled out data.
-		"""
+		# Seperate nested data
 		slides = request.data.pop('slide_set')
+
+		# For each slide that is being created, we create a new file by using the base64 data send in the request
+		# and then replace the original value with the new file.
 		for slide in slides:
 			img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", slide['image']).groupdict()
 			blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
@@ -236,19 +316,26 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'CREATED', 'image_data': serialized.data})
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
 	def update(self, request, pk=None):
+		# Seperate nested data
 		slides = request.data.pop('slide_set')
+
+		# Since this is an UPDATE called it means that the slideshow might already have slides
+		# created with images already uploaded. We check if the value is an existing or a new image by 
+		# validating if it is an URL or not (Already uploaded images will point to an URL while new images
+		# is an base64 encoded string).
 		validator = URLValidator()
 		for slide in slides:
 			try:
-				# Validate that it's an URL. If it is, it means that the image is already stored
-				# and NOT a new uploaded image. So leave it alone.
 				validator(slide['image'])
+				# Since it's an already existing image, we don't have to update it, so remove it.
 				slide.pop('image')
+
+			# If validation fails, create the file from the data.
 			except ValidationError:
 				img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", slide['image']).groupdict()
 				blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
@@ -256,8 +343,6 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 				image = InMemoryUploadedFile(image, None, slide['filename'], 'image/jpeg', image.len, None)
 				slide['image'] = image
 
-		# Add the slides back to the request after new files have been uploaded
-		# and replaced in the request dir.
 		request.data['slide_set'] = slides
 
 		slideshow = Slideshow(pk=pk)
@@ -275,7 +360,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 		extra_kwargs = {
 			'id': {'read_only': False, 'required': False}, 
-			'menu': {'required': False}
+			'menu': {'required': False} # Not required because the `menu` might not be saved yet.
 		}
 
 	def get_validation_exclusions(self):
@@ -289,40 +374,50 @@ class MenuSerializer(serializers.ModelSerializer):
 		fields = ('id', 'name', 'menuitem_set')
 
 	def create(self, validated_data):
+		# Seperate nested data
 		menu_items = validated_data.pop('menuitem_set')
+
 		menu = Menu.objects.create(**validated_data)
 
+		# Create the items of the menu with the nested data.
 		for item in menu_items:
 			MenuItem.objects.create(menu=menu, **item)
 
 		return menu
 
 	def update(self, instance, validated_data):
+		# Seperate nested data
 		menu_items = validated_data.pop('menuitem_set')
+
+		# Initiate array that will be used to store the ID's of all items
+		# that are updated, so that we can remove any items not included
+		# in the current call, but existing in the database.
 		item_ids = []
 
-		# Iterate through all data in validated_data and update the instance
-		# with new values and save it.
+		# Update the instance with the data from the request.
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
+
 		instance.save()
 
+		# Use the nested data and create the items of the menu.
 		for item in menu_items:
+			# If the item has an ID, it means it already exists and should be UPDATED.
 			if 'id' in item:
-				# Update attribute
 				item_obj = MenuItem.objects.get(pk=item['id'])
 				for(key, value) in item.items():
 					setattr(item_obj, key, value)
 
 				item_obj.save()
+			# If the item has no ID, it means it should be CREATED.
 			else:
-				# Create new attribute
 				item_obj = MenuItem.objects.create(menu=instance, **item)
 
+			# Store the value of each updated/created item 
 			item_ids.append(item_obj.id)
 
-		# If this instance have any other menuitems that was not send
-		# in this HTTP call, then remove them. They should be deleted.
+		# Check all items in the database of this menu, and remove any item
+		# that was not included in this call.
 		for item in instance.menuitem_set.all():
 			if item.id not in item_ids:
 				item.delete()
@@ -332,6 +427,7 @@ class MenuSerializer(serializers.ModelSerializer):
 
 class MenuViewSet(viewsets.ModelViewSet):
 	serializer_class = MenuSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Menu.objects.all()
@@ -345,6 +441,7 @@ class WarehouseSerializer(serializers.ModelSerializer):
 
 class WarehouseViewSet(viewsets.ModelViewSet):
 	serializer_class = WarehouseSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Warehouse.objects.all()
@@ -358,6 +455,7 @@ class StockSerializer(serializers.ModelSerializer):
 
 class StockViewSet(viewsets.ModelViewSet):
 	serializer_class = StockSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Stock.objects.all()
@@ -432,10 +530,14 @@ class AttributeSerializer(serializers.ModelSerializer):
 		return instance
 
 	def create(self, validated_data):
+		# Seperate nested data...
 		choice_data = validated_data.pop('attributechoice_set')
+
+		# Create the Attribute with remaining data.
 		attribute = Attribute(**validated_data)
 		attribute.save()
 
+		# Create the AttributeChoices with the nested data seperated above.
 		for choice in choice_data:
 			choice_obj = AttributeChoice(attribute=attribute, **choice)
 			choice_obj.save()
@@ -444,6 +546,7 @@ class AttributeSerializer(serializers.ModelSerializer):
 
 class AttributeViewSet(viewsets.ModelViewSet):
 	serializer_class = AttributeSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Attribute.objects.all()
@@ -479,6 +582,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductImageViewSet(viewsets.ModelViewSet):
 	serializer_class = ProductImageSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = ProductImage.objects.all()
@@ -492,10 +596,8 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 		return queryset
 
 	def create(self, request, pk=None):
-		"""
-		The uploaded file is send as an encoded URL. We pull out the data from the URL and then
-		replace the image field of the request-data with the pulled out data.
-		"""
+		# The newly uploaded image is stored as a base64 string. We use the data to create a new file
+		# and then replace the original base64 string with the newly created file.
 		img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", request.data['image']).groupdict()
 		blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
 		image = StringIO(blob)
@@ -508,7 +610,7 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'UPDATED', 'image_data': serialized.data})
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
@@ -520,30 +622,36 @@ class CurrencySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Currency
 
-	def update(self, instance, validated_data):
-		for(key, value) in validated_data.items():
-			setattr(instance, key, value)
-		instance.save()
-
-		if instance.default:
-			currencies = Currency.objects.all().exclude(pk=instance.pk)
-			currencies.update(default=False)
-
-		return instance
-
 	def create(self, validated_data):
 		currency = Currency(**validated_data)
 		currency.save()
 
+		# If the instance updated is set to default, then unset "default"
+		# from any other currency (there can only be 1 default).
 		if currency.default:
 			currencies = Currency.objects.all().exclude(pk=currency.pk)
 			currencies.update(default=False)
 
 		return currency
 
+	def update(self, instance, validated_data):
+		# Update the instance with the new data...
+		for(key, value) in validated_data.items():
+			setattr(instance, key, value)
+		instance.save()
+
+		# If the instance updated is set to default, then unset "default"
+		# from any other currency (there can only be 1 default).
+		if instance.default:
+			currencies = Currency.objects.all().exclude(pk=instance.pk)
+			currencies.update(default=False)
+
+		return instance
+
 class CurrencyViewSet(viewsets.ModelViewSet):
 	serializer_class = CurrencySerializer
 	queryset = Currency.objects.all()
+	permission_classes = (IsAdminUser,)
 
 class TaxruleSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -552,6 +660,7 @@ class TaxruleSerializer(serializers.ModelSerializer):
 class TaxruleViewSet(viewsets.ModelViewSet):
 	serializer_class = TaxruleSerializer
 	queryset = Taxrule.objects.all()
+	permission_classes = (IsAdminUser,)
 
 class PricingSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -559,6 +668,7 @@ class PricingSerializer(serializers.ModelSerializer):
 
 class PricingViewSet(viewsets.ModelViewSet):
 	serializer_class = PricingSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Pricing.objects.all()
@@ -572,30 +682,36 @@ class CountrySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Country
 
-	def update(self, instance, validated_data):
-		for(key, value) in validated_data.items():
-			setattr(instance, key, value)
-		instance.save()
-
-		if instance.default:
-			countries = Country.objects.all().exclude(pk=instance.pk)
-			countries.update(default=False)
-
-		return instance
-
 	def create(self, validated_data):
 		country = Country(**validated_data)
 		country.save()
 
+		# If the instance updated is set to default, then unset "default"
+		# from any other country (there can only be 1 default).
 		if country.default:
 			countries = Country.objects.all().exclude(pk=country.pk)
 			countries.update(default=False)
 
 		return country
 
+	def update(self, instance, validated_data):
+		# Update the instance with the new data from the request.
+		for(key, value) in validated_data.items():
+			setattr(instance, key, value)
+		instance.save()
+
+		# If the instance updated is set to default, then unset "default"
+		# from any other country (there can only be 1 default).
+		if instance.default:
+			countries = Country.objects.all().exclude(pk=instance.pk)
+			countries.update(default=False)
+
+		return instance
+
 class CountryViewSet(viewsets.ModelViewSet):
 	queryset = Country.objects.all()
 	serializer_class = CountrySerializer
+	permission_classes = (IsAdminUser,)
 
 class AddressSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -610,10 +726,10 @@ class UserSerializer(serializers.ModelSerializer):
 		depth = 1
 		fields = ('id', 'email', 'first_name', 'last_name', 'user_address')
 
-# ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
+	permission_classes = (IsAdminUser,)
 
 class ProductDataSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -630,21 +746,29 @@ class ProductDataPresetSerializer(serializers.ModelSerializer):
 		model = ProductDataPreset
 
 	def create(self, validated_data):
+		# Seperate nessted data
 		data = validated_data.pop('data')
+
 		preset = ProductDataPreset.objects.create(**validated_data)
+
+		# The data in the request come from an already existing product.
+		# We first need to unset the `id` and `product` value from the data
+		# to make sure we created new and blank entries to the Preset that
+		# can be used in the future with any other product.
 		for d in data:
 			if 'id' in d:
 				d.pop('id')
 				d.pop('product')
 
 			data_obj = ProductData.objects.create(**d)
-			preset.data.add(data_obj)
+			preset.data.add(data_obj) # Add to ManyToManyField.
 
 		return preset
 
 class ProductDataPresetViewSet(viewsets.ModelViewSet):
 	queryset = ProductDataPreset.objects.all()
 	serializer_class = ProductDataPresetSerializer
+	permission_classes = (IsAdminUser,)
 
 class ProductSerializer(serializers.ModelSerializer):
 	attribute_set = AttributeSerializer(many=True)
@@ -672,6 +796,7 @@ class ProductSerializer(serializers.ModelSerializer):
 		)
 
 	def create(self, validated_data):
+		# Seperate nested data
 		if 'attribute_set' in validated_data:
 			validated_data.pop('attribute_set')
 		if 'pricing_set' in validated_data:
@@ -693,6 +818,7 @@ class ProductSerializer(serializers.ModelSerializer):
 		return product
 
 	def update(self, instance, validated_data):
+		# Seperate nested data
 		if 'attribute_set' in validated_data:
 			attribute_data = validated_data.pop('attribute_set')
 			self.add_attribute_data(instance, attribute_data)
@@ -720,19 +846,33 @@ class ProductSerializer(serializers.ModelSerializer):
 		return instance
 
 	def add_productdata_data(self, instance, validated_data):
+		"""Handle the save, update and create of ProductData
+		"""
+
+		# Initiate array that keep all id's that is included in the call 
+		# so that we later know which ones NOT included and that should be
+		# deleted from the database.
 		data_ids = []
 
+
 		for data in validated_data:
+			# If an ID already exists it means that the entry should be UPDATED.
 			if 'id' in data:
 				data_obj = ProductData.objects.get(pk=data['id'])
+
 				for(key, value) in data.items():
 					setattr(data_obj, key, value)
 				data_obj.save()
+
+			# If no ID exists, it means that the entry should be CREATED.
 			else:
 				data_obj = ProductData.objects.create(product=instance, **data)
 
 			data_ids.append(data_obj.id)
 
+		# Check existing entries in the database with the actual entries that were
+		# included in the request. If they were NOT included in the request, it means 
+		# that the user removed them, and they should be deleted from the database.
 		for data in instance.productdata_set.all():
 			if data.id not in data_ids:
 				data.delete()
@@ -740,24 +880,28 @@ class ProductSerializer(serializers.ModelSerializer):
 		return instance
 
 	def add_image_data(self, instance, validated_data):
+		"""Handle the save, update and create of ProductImage
+		"""
 		image_ids = []
 
 		for image in validated_data:
+			# If an ID already exists it means that the entry should be UPDATED.
 			if 'id' in image:
-				# Update attribute
 				image_obj = ProductImage.objects.get(pk=image['id'])
 				for(key, value) in image.items():
 					setattr(image_obj, key, value)
 
 				image_obj.save()
+
+			# If no ID exists, it means that the entry should be CREATED.
 			else:
-				# Create new attribute
 				image_obj = ProductImage.objects.create(product=instance, **image)
 
 			image_ids.append(image_obj.id)
 
-		# If this instance have any other menuitems that was not send
-		# in this HTTP call, then remove them. They should be deleted.
+		# Check existing entries in the database with the actual entries that were
+		# included in the request. If they were NOT included in the request, it means 
+		# that the user removed them, and they should be deleted from the database.
 		for image in instance.productimage_set.all():
 			if image.id not in image_ids:
 				image.delete()
@@ -765,20 +909,27 @@ class ProductSerializer(serializers.ModelSerializer):
 		return instance
 
 	def add_attribute_data(self, instance, validated_data):
+		"""Handle the save, update and create of Attribute and AttributeChoice
+		"""
+
 		attribute_ids = []
 
 		# Handle nested attribute values.
 		for attribute in validated_data:
+			# If an ID already exists it means that the entry should be UPDATED.
 			if 'id' in attribute:
 				attribute_instance = Attribute.objects.get(pk=attribute['id'])
 				self.update_attribute(attribute_instance, attribute)
+
+			# If no ID exists, it means that the entry should be CREATED.
 			else:
 				attribute_instance = self.create_attribute(instance, attribute)
 
 			attribute_ids.append(attribute_instance.pk)
 
-		# Delete all attributes that was not included in the request, 
-		# meaning... They have been deleted.
+		# Check existing entries in the database with the actual entries that were
+		# included in the request. If they were NOT included in the request, it means 
+		# that the user removed them, and they should be deleted from the database.
 		for attribute in instance.attribute_set.all():
 			if attribute.id not in attribute_ids:
 				attribute.delete()
@@ -787,30 +938,29 @@ class ProductSerializer(serializers.ModelSerializer):
 
 	def update_attribute(self, instance, validated_data):
 		choice_data = validated_data.pop('attributechoice_set')
-		# We keep a list of our Choice id's so we can delete any choice that
-		# is not included in the request. 
 		choice_ids = []  
 
-		# Update the Attribute Data
 		validated_data['slug'] = slugify(validated_data['name'])
+
+		# Update the existing values of the instance with the values from
+		# the request, and save it to the database.
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
-
 		instance.save()
 
 		for choice in choice_data:
-			# If id is within the call, then update the object with matching id
+			# If an ID already exists it means that the entry should be UPDATED.
 			if 'id' in choice:
 				try:
 					choice_obj = AttributeChoice.objects.get(pk=choice['id'])
 					choice_obj.value = choice['value']
 					choice_obj.slug = slugify(choice['value'])
 					choice_obj.attribute = instance
-				# If ID is not found, then create a new object
+				# If no ID exists, it means that the entry should be CREATED.
 				except AttributeChoice.DoesNotExist:
 					choice.pop('id')
 					choice_obj = AttributeChoice(**choice)
-			# If no ID within the call, create a new object.
+			# If no ID exists, it means that the entry should be CREATED.
 			else:
 				choice_obj = AttributeChoice(**choice)
 
@@ -818,9 +968,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
 			choice_ids.append(choice_obj.id)
 		
-		# Now delete all other entries that was NOT updated.
-		# Meaning... If there was any attributechoices NOT included in our call (= They've been deleted)
-		# Then delete them from the database.
+		# Check existing entries in the database with the actual entries that were
+		# included in the request. If they were NOT included in the request, it means 
+		# that the user removed them, and they should be deleted from the database.
 		for choice in instance.attributechoice_set.all():
 			if choice.id not in choice_ids:
 				choice.delete()
@@ -831,7 +981,6 @@ class ProductSerializer(serializers.ModelSerializer):
 		choice_data = validated_data.pop('attributechoice_set')
 		validated_data['slug'] = slugify(validated_data['name'])
 
-		product = Product.objects.get(pk=instance.pk)
 		attribute = Attribute(**validated_data)
 		attribute.save()
 
@@ -843,6 +992,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class ProductViewSet(viewsets.ModelViewSet):
 	serializer_class = ProductSerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Product.objects.all()
@@ -853,26 +1003,33 @@ class ProductViewSet(viewsets.ModelViewSet):
 		return queryset
 
 	def create(self, request, *args, **kwargs):
-		# First we slugify our Product Name and add the slug parameter.
+		# Add a slugify version of the `name` to the request and then
+		# pass it to the Serializer.
 		request.data['slug'] = slugify(request.data['name'])
 
 		serialized = self.serializer_class(data=request.data)
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'CREATED', 'id': serialized.data['id']})
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
 	def update(self, request, pk=None):
 		images = request.data.pop('productimage_set')
+
+		# To see if the request contains existing images uploaded before, or new images that should
+		# be uploaded now, we check if the image value is an URL (Existing images point to an URL).
 		validator = URLValidator()
 		for image in images:
+			# If the validation passes, remove the `image` from the request, since it means the image
+			# already exists and is not updated.
 			try:
-				# Validate that it's an URL. If it is, it means that the image is already stored
-				# and NOT a new uploaded image. So leave it alone.
 				validator(image['image'])
 				image.pop('image')
+
+			# If it fails validation, it means that the image contains a base64 string and we should
+			# create a file out of the data and add it to our request.
 			except ValidationError:
 				img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", image['image']).groupdict()
 				blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
@@ -880,11 +1037,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 				imagefile = InMemoryUploadedFile(imagefile, None, image['filename'], 'image/jpeg', imagefile.len, None)
 				image['image'] = imagefile
 
-		# Add the slides back to the request after new files have been uploaded
-		# and replaced in the request dir.
 		request.data['productimage_set'] = images
 
-		product = Product(pk=pk)
+		product = Product.objects.get(pk=pk)
 		serialized = self.serializer_class(product, data=request.data)
 		
 		if serialized.is_valid():
@@ -897,10 +1052,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Category
-		depth = 0
 
 class CategoryViewSet(viewsets.ModelViewSet):
 	serializer_class = CategorySerializer
+	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
 		queryset = Category.objects.all()
@@ -912,14 +1067,15 @@ class CategoryViewSet(viewsets.ModelViewSet):
 		return queryset
 
 	def create(self, request, *args, **kwargs):
-		# First we slugify our Category Name and add the slug parameter.
+		# Add a slugify version of the `name` to the request and then
+		# pass it to the Serializer.
 		request.data['slug'] = slugify(request.data['name'])
 
 		serialized = self.serializer_class(data=request.data)
 		
 		if serialized.is_valid():
 			serialized.save()
-			return Response({'status': 'CREATED', 'id': serialized.data['id']})
+			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
 			return Response({'status': 'FAILED', 'errors': serialized.errors})
 
@@ -956,6 +1112,7 @@ class CartSerializer(serializers.ModelSerializer):
 class CartViewSet(viewsets.ModelViewSet):
 	queryset = Cart.objects.all()
 	serializer_class = CartSerializer
+	permission_classes = (IsAdminUser,)
 
 class CustomFieldValueSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -1002,6 +1159,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 class OrderViewSet(viewsets.ModelViewSet):
 	queryset = Order.objects.all()
 	serializer_class = OrderSerializer
+	permission_classes = (IsAdminUser,)
 
 	def list(self, request):
 		queryset = Order.objects.all().order_by('-pk')[:25]

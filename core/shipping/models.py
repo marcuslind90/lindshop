@@ -7,7 +7,7 @@ class Carrier(models.Model):
 	delivery_text = models.CharField(max_length=100)
 	logo = models.ImageField(upload_to="carriers", null=True, blank=True)
 	default = models.BooleanField(default=True)
-	countries = models.ManyToManyField('customer.Country')
+	countries = models.ManyToManyField('customer.Country', blank=True)
 	
 	def get_total(self):
 		price = self.carrierpricing_set.get(carrier=self)

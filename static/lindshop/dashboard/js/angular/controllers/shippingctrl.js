@@ -55,7 +55,7 @@ angular.module('dashboard')
 				'name': '', 
 				'delivery_text': '', 
 				'logo': null, 
-				'default': '', 
+				'default': false, 
 				'countries': [], 
 				'carrierpricing_set': []
 			}});
