@@ -266,7 +266,7 @@ angular.module('dashboard')
 					$scope.navigateTo('/appearance/');
 				}
 				else {
-					$scope.navigateTo('/appearance/menu/'+response.data.id);
+					$scope.navigateTo('/appearance/slideshow/'+response.data.id);
 				}
 				console.log(response);
 			});

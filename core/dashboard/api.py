@@ -159,7 +159,7 @@ class CarrierViewSet(viewsets.ModelViewSet):
 			serialized.save()
 			return Response(serialized.data, status=status.HTTP_201_CREATED)
 		else:
-			return Response(serialized.data)
+			return Response({'ERROR': serialized.errors})
 
 	def update(self, request, pk=None):
 
@@ -167,7 +167,7 @@ class CarrierViewSet(viewsets.ModelViewSet):
 		# The image from AngularJS is stored as a  base64 string. We use the string and 
 		# create an image of it and then replace the original base64 string stored in the request
 		# with the new image.
-		if 'logo' in request.data and request.data['logo'] is not None:
+		if 'logo' in request.data and request.data['logo'] is not None and request.data['logo'] != "":
 
 			# To see if it's an already existing image, or a new one, we check if the logo-value
 			# is an URL (to an existing, uploaded image) or a base64 encoded string (a new uploaded file)
