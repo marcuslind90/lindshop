@@ -14,3 +14,16 @@ Lindshop is using Django's default User Model to handle backend users that can m
 .. code-block:: python
 
    python manage.py createsuperuser
+
+
+Errors
+^^^^^^
+
+.. code-block:: javascript
+
+   “No 'Access-Control-Allow-Origin' header is present on the requested resource”
+
+If you get the following error it probably is because you are using a third party storage for your 
+static files such as Amazon S3. This means that your dashboard AngularJS template files are now stored remotely and to access them AngularJS need to do CORS calls to get the template files.
+
+You solve this error by allowing CORS calls to your storage.
