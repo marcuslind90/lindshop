@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.module_loading import import_string
+from django.conf import settings
 
 #from lindshop.core.dashboard import *
 from lindshop.core.order.models import Order
@@ -52,7 +53,7 @@ Index Dashboard view.
 def dashboard(request):
 	if request.user.is_authenticated():
 		orders = Order.objects.all().order_by('-date_created')
-		return render(request, "lindshop/dashboard/index.html", {'orders': orders})
+		return render(request, "lindshop/dashboard/index.html", {'orders': orders, 'STATIC_URL': settings.STATIC_URL})
 	else:
 		return HttpResponseRedirect(reverse('shop:dashboard:login')+"?error=noauth")
 
