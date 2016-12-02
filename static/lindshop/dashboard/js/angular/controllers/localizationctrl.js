@@ -8,7 +8,7 @@ angular.module('dashboard')
 		}, 
 		cache: true, 
 	}
-
+	$scope.sort = 'id';
 	getCountries(config, function(response) {
 		$scope.countries = response.data;
 	});
@@ -18,6 +18,17 @@ angular.module('dashboard')
 		$http.get('/api/countries/', config).then(function(response) {
 			callback(response);
 		});
+	}
+
+	$scope.setSort = function(string) {
+		if($scope.sort == string) {
+			$scope.sort = '-'+string;
+		}
+		else {
+			$scope.sort = string;
+		}
+
+		console.log($scope.sort);
 	}
 })
 .controller('countryCtrl', function($scope, $http, $location, $routeParams){

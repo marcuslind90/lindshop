@@ -48,6 +48,9 @@
 				<a href="#/shipping/" data-toggle="tooltip" data-placement="right" title="{% trans "Shipping" %}"><i class="fa fa-2x fa-truck"></i></a>
 			</li>
 			<li {% if request.get_full_path == url %}class="active"{% endif %}>
+				<a href="#/stock/" data-toggle="tooltip" data-placement="right" title="{% trans "Warehouses" %}"><i class="fa fa-2x fa-industry"></i></a>
+			</li>
+			<li {% if request.get_full_path == url %}class="active"{% endif %}>
 				<a href="#/localization/" data-toggle="tooltip" data-placement="right" title="{% trans "Localization" %}"><i class="fa fa-2x fa-globe"></i></a>
 			</li>
 			<li {% if request.get_full_path == url %}class="active"{% endif %}>
@@ -87,7 +90,9 @@
 			'localization': '{% static 'lindshop/dashboard/js/angular/templates/localization.html' %}', 
 			'country': '{% static 'lindshop/dashboard/js/angular/templates/country.html' %}', 
 			'shipping': '{% static 'lindshop/dashboard/js/angular/templates/shipping.html' %}', 
-			'carrier': '{% static 'lindshop/dashboard/js/angular/templates/carrier.html' %}'
+			'carrier': '{% static 'lindshop/dashboard/js/angular/templates/carrier.html' %}', 
+			'stock': '{% static 'lindshop/dashboard/js/angular/templates/stock.html' %}', 
+			'warehouse': '{% static 'lindshop/dashboard/js/angular/templates/warehouse.html' %}'
 		};
 	</script>
 	{% block js_nocompress %}{% endblock %}
@@ -108,6 +113,7 @@
 	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/angular/controllers/paymentctrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/angular/controllers/localizationctrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/angular/controllers/shippingctrl.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/angular/controllers/stockctrl.js' %}"></script>
 	<script type="text/javascript" src="{% static 'lindshop/dashboard/js/dashboard.js' %}"></script>
 	<script>
 	// Add the CSRF Token

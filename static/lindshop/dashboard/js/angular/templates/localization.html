@@ -14,12 +14,12 @@
 <table class="table table-striped">
 	<thead>
 		<tr>
-			<th>ID</th>
-			<th>Name</th>
+			<th ng-click="setSort('id');">ID</th>
+			<th ng-click="setSort('name');">Name</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr class="clickable-row" ng-click="navigateTo('/localization/country/'+country.id+'/');" ng-repeat="country in countries">
+		<tr class="clickable-row" ng-click="navigateTo('/localization/country/'+country.id+'/');" ng-repeat="country in countries | orderBy:sort">
 			<td>{{country.id}}</td>
 			<td>{{country.name}}</td>
 		</tr>

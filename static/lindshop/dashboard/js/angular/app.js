@@ -27,6 +27,9 @@ app.config(["$routeProvider", "$sceDelegateProvider", function($routeProvider, $
 	.when('/shipping/', {controller: 'shippingCtrl', templateUrl: templates['shipping']})
 	.when('/shipping/carrier/', {controller: 'carrierCtrl', templateUrl: templates['carrier']})
 	.when('/shipping/carrier/:id/', {controller: 'carrierCtrl', templateUrl: templates['carrier']})
+	.when('/stock/', {controller: 'stockCtrl', templateUrl: templates['stock']})
+	.when('/stock/warehouse/', {controller: 'warehouseCtrl', templateUrl: templates['warehouse']})
+	.when('/stock/warehouse/:id/', {controller: 'warehouseCtrl', templateUrl: templates['warehouse']})
 	.otherwise({redirectTo: "/orders"});
 
 	$sceDelegateProvider.resourceUrlWhitelist([

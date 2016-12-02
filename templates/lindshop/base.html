@@ -46,7 +46,7 @@
 
 					<div class="collapse navbar-collapse" id="menu-1">
 						<ul class="nav navbar-nav">
-							{% get_menu 12 as menu %}
+							{% get_menu 1 as menu %}
 							{% for item in menu %}
 							<li {% if request.path == item.url or product.category.get_absolute_url == item.url %}class="active"{% endif %}><a href="{{item.url}}" title="{{item.label}}">{{item.label}}</a></li>
 							{% endfor %}
