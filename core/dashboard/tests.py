@@ -26,7 +26,7 @@ class ViewTests(TestCase):
 		self.pricing2 = Pricing.objects.create(product=self.product2, currency=self.currency, taxrule=self.taxrule, price=79.2)
 		self.normaluser = get_user_model().objects.create_user(username="normaluser", email="normaluser@mail.com", password="normaluser")
 		self.adminuser = get_user_model().objects.create_user(username="adminuser", email="adminuser@mail.com", password="adminuser", is_staff=True)
-		self.warehouse = Warehouse.objects.create(name="Test Warehouse")
+		self.warehouse = Warehouse.objects.create(name="Test Warehouse", address="Main Street 13", country=self.country, default=True)
 
 		self.factory = RequestFactory(enforce_csrf_checks=False)
 		self.factory.session = {'id_cart': self.cart.pk}
@@ -403,7 +403,10 @@ class ViewTests(TestCase):
 		client.login(username="adminuser", password="adminuser")
 
 		response = client.post(reverse('shop:api:Warehouse-list'), {
-			"name": "Test"
+			"name": "Test", 
+			"address": "Hello", 
+			"country": 1, 
+			"default": True
 		})
 
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
