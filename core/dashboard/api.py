@@ -439,6 +439,32 @@ class WarehouseSerializer(serializers.ModelSerializer):
 		model = Warehouse
 		fields = '__all__'
 
+	def create(self, validated_data):
+		warehouse = Warehouse(**validated_data)
+		warehouse.save()
+
+		# If the instance updated is set to default, then unset "default"
+		# from any other warehouse (there can only be 1 default).
+		if warehouse.default:
+			warehouses = Warehouse.objects.all().exclude(pk=warehouse.pk)
+			warehouses.update(default=False)
+
+		return country
+
+	def update(self, instance, validated_data):
+		# Update the instance with the new data from the request.
+		for(key, value) in validated_data.items():
+			setattr(instance, key, value)
+		instance.save()
+
+		# If the instance updated is set to default, then unset "default"
+		# from any other country (there can only be 1 default).
+		if instance.default:
+			warehouses = Warehouse.objects.all().exclude(pk=instance.pk)
+			warehouses.update(default=False)
+
+		return instance
+
 class WarehouseViewSet(viewsets.ModelViewSet):
 	serializer_class = WarehouseSerializer
 	permission_classes = (IsAdminUser,)

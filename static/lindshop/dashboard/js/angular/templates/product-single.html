@@ -273,41 +273,37 @@
 				<div class="page-header">
 					<h3>Stock Management</h3>
 				</div>
+
 				<div ng-repeat="warehouse in warehouses">
-					<div class="page-header">
+					<div class="form-group">
+						<div class="page-header">
+							<h4>
+								{{warehouse.name}}
+							</h4>
+						</div>
 						<div class="row">
-							<div class="col-sm-6">
-								<h4>{{warehouse.name}}</h4>
+							<div class="col-sm-4">
+								<input type="text" class="form-control" value="{{stock[warehouse.id][0].shelf}}" ng-model="stock[warehouse.id][0].shelf" placeholder="Shelf Location" />
 							</div>
-							<div class="col-sm-6 text-right">
-								<button class="btn btn-default btn-h4" ng-click="addStock(warehouse);"><i class="fa fa-plus"></i> Add Stock</button>
+							<div class="col-sm-4">
+								<div class="row">
+									<div class="col-sm-6">
+										<input type="text" class="form-control" value="{{stock[warehouse.id][0].stock}}" ng-model="stock[warehouse.id][0].stock" placeholder="Amount of stock" ng-readonly="stockEdit" />
+									</div>
+									<div class="col-sm-6">
+										<div class="checkbox">
+											<label>
+												<input type="checkbox" ng-init="stockEdit = true" ng-click="stockEdit = !stockEdit" />
+												Edit Stock
+											</label>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="table-responsive">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th>Stock</th>
-									<th colspan="2">Shelf</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="stock_item in stock[warehouse.id]">
-									<td>
-										<input type="text" class="form-control" placeholder="Current Stock" ng-model="stock_item.stock">
-									</td>
-									<td>
-										<input type="text" class="form-control" placeholder="Shelf Location" ng-model="stock_item.shelf">
-									</td>
-									<td class="text-right">
-										<button class="btn btn-default vtop" ng-click="deleteStock(warehouse, $index);"><i class="fa fa-trash"></i></button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
 				</div>
+
 			</div>
 		</div>
 	</div>
