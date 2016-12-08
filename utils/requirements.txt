@@ -1,0 +1,8 @@
+dateutils==0.6.6
+Django==1.10.4
+djangorestframework==3.5.3
+Pillow==3.4.2
+python-dateutil==2.6.0
+pytz==2016.10
+six==1.10.0
+sorl-thumbnail==12.3
