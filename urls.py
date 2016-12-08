@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from lindshop import views
 from lindshop.core.product.views import product
 from lindshop.core.category.views import category

@@ -1,4 +1,4 @@
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 from django.contrib.auth.views import login, logout
 from lindshop.core.dashboard import views
 
