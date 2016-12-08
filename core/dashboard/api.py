@@ -621,6 +621,7 @@ class CurrencySerializer(serializers.ModelSerializer):
 	"""
 	class Meta:
 		model = Currency
+		fields = '__all__'
 
 	def create(self, validated_data):
 		currency = Currency(**validated_data)
@@ -656,6 +657,7 @@ class CurrencyViewSet(viewsets.ModelViewSet):
 class TaxruleSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Taxrule
+		fields = '__all__'
 
 class TaxruleViewSet(viewsets.ModelViewSet):
 	serializer_class = TaxruleSerializer
@@ -665,6 +667,7 @@ class TaxruleViewSet(viewsets.ModelViewSet):
 class PricingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Pricing
+		fields = '__all__'
 
 class PricingViewSet(viewsets.ModelViewSet):
 	serializer_class = PricingSerializer
@@ -681,6 +684,7 @@ class PricingViewSet(viewsets.ModelViewSet):
 class CountrySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Country
+		fields = '__all__'
 
 	def create(self, validated_data):
 		country = Country(**validated_data)
@@ -744,6 +748,7 @@ class ProductDataPresetSerializer(serializers.ModelSerializer):
 	data = ProductDataSerializer(many=True)
 	class Meta:
 		model = ProductDataPreset
+		fields = '__all__'
 
 	def create(self, validated_data):
 		# Seperate nessted data
@@ -1052,6 +1057,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Category
+		fields = '__all__'
 
 class CategoryViewSet(viewsets.ModelViewSet):
 	serializer_class = CategorySerializer
