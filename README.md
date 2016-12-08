@@ -3,6 +3,8 @@ Lindshop - An Ecommerce Platform For Django
 
 **_This project is currently under development and not ready for production use. Please Star/Watch it for future updates._**
 
+Version: 0.0.1
+
 Introduction
 ------------
 
