@@ -1,7 +1,12 @@
 import csv
 import os
 from django.core.files.base import ContentFile
+from django.apps import apps
+from django.conf import settings
 
+
+from lindshop.core.customer.models import Country
+from lindshop.core.cart.models import Cart
 from lindshop.core.category.models import Category
 from lindshop.core.product.models import Product
 from lindshop.core.subscription.models import Plan
@@ -17,7 +22,9 @@ class CSVImporter(object):
 		self.delimiter = delimiter
 
 		self.models = {
+			'user': apps.get_model(settings.AUTH_USER_MODEL), 
 			'category': Category, # --
+			'cart': Cart, 
 			'parent': Category, # Need duplicate Category to handle Category recursive relation "Parent"
 			'product': Product, 
 			'plan': Plan, 
@@ -25,7 +32,8 @@ class CSVImporter(object):
 			'taxrule': Taxrule, 
 			'carrier': Carrier, 
 			'plan': Plan, 
-			'attribute': Attribute
+			'attribute': Attribute, 
+			'country': Country
 		}
 
 	def csv_to_model(self, model):

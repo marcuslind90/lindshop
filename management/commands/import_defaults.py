@@ -20,6 +20,10 @@ class Command(BaseCommand):
 			self.import_carrier_pricing()
 			self.import_attributes()
 			self.import_attribute_choices()
+			self.import_addresses()
+			self.import_carts()
+			self.import_cart_items()
+			self.import_orders()
 
 		elif 'category' in args:
 			self.import_categories()
@@ -56,6 +60,18 @@ class Command(BaseCommand):
 
 		elif 'attributechoices' in args:
 			self.import_attribute_choices()
+
+		elif 'address' in args:
+			self.import_addresses()
+
+		elif 'cart' in args:
+			self.import_carts()
+
+		elif 'cart_item' in args:
+			self.import_cart_items()
+
+		elif 'order' in args:
+			self.import_orders()
 
 		else:
 			raise CommandError("This model does not exist.")
@@ -188,6 +204,51 @@ class Command(BaseCommand):
 		if len(counter) == 0:
 			csvi = CSVImporter(filename="lindshop/core/demo/csv/attribute_choices.csv")
 			csvi.csv_to_model(model=AttributeChoice)
+
+			return True
+		else:
+			return False
+
+	def import_addresses(self):
+		from lindshop.core.customer.models import Address
+		counter = Address.objects.all()
+		if len(counter) == 0:
+			csvi = CSVImporter(filename="lindshop/core/demo/csv/addresses.csv")
+			csvi.csv_to_model(model=Address)
+
+			return True
+		else:
+			return False
+
+	def import_carts(self):
+		from lindshop.core.cart.models import Cart
+		counter = Cart.objects.all()
+		if len(counter) == 0:
+			csvi = CSVImporter(filename="lindshop/core/demo/csv/carts.csv")
+			csvi.csv_to_model(model=Cart)
+
+			return True
+		else:
+			return False
+
+
+	def import_cart_items(self):
+		from lindshop.core.cart.models import CartItem
+		counter = CartItem.objects.all()
+		if len(counter) == 0:
+			csvi = CSVImporter(filename="lindshop/core/demo/csv/cart_items.csv")
+			csvi.csv_to_model(model=CartItem)
+
+			return True
+		else:
+			return False
+
+	def import_orders(self):
+		from lindshop.core.order.models import Order
+		counter = Order.objects.all()
+		if len(counter) == 0:
+			csvi = CSVImporter(filename="lindshop/core/demo/csv/orders.csv")
+			csvi.csv_to_model(model=Order)
 
 			return True
 		else:
