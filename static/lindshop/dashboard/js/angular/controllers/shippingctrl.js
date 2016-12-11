@@ -6,7 +6,6 @@ angular.module('dashboard')
 		params: {
 			callback: 'JSON_CALLBACK', 
 		}, 
-		cache: true, 
 	}
 
 	getCarriers(config, function(response) {
@@ -25,7 +24,6 @@ angular.module('dashboard')
 		params: {
 			callback: 'JSON_CALLBACK', 
 		}, 
-		cache: true, 
 	}
 
 	getCarrier(config, function(response){

@@ -6,7 +6,6 @@ angular.module('dashboard')
 		params: {
 			callback: 'JSON_CALLBACK', 
 		}, 
-		cache: true, 
 	}
 
 	getCurrencies(config, function(response) {
@@ -34,7 +33,6 @@ angular.module('dashboard')
 		params: {
 			callback: 'JSON_CALLBACK', 
 		}, 
-		cache: true, 
 	}
 
 	getCurrency(config, function(response){
@@ -96,8 +94,7 @@ angular.module('dashboard')
 	var config = {
 		params: {
 			callback: 'JSON_CALLBACK', 
-		}, 
-		cache: true, 
+		},  
 	}
 
 	getTaxrule(config, function(response){

@@ -3,7 +3,7 @@ angular.module('dashboard')
 .controller('orderCtrl', function($scope, $http, $location){
 	// Initiate Controller by setting values
 	//$scope.orderlist = $scope.orderlist || [];
-	$http.get('/api/orders?callback=JSON_CALLBACK', {cache: true}).then(function(response){
+	$http.get('/api/orders?callback=JSON_CALLBACK').then(function(response){
 		console.log(response);
 		$scope.orderlist = response.data;
 	});
@@ -14,7 +14,7 @@ angular.module('dashboard')
 	$scope.order;
 	$scope.notification = {'notification_type': 'shipping', 'date_created': currentDate}; // Set default value
 
-	$http.get('/api/orders/'+$routeParams['id']+'?callback=JSON_CALLBACK', {cache: true}).then(function(response){
+	$http.get('/api/orders/'+$routeParams['id']+'?callback=JSON_CALLBACK').then(function(response){
 		$scope.order = response.data;
 	});
 

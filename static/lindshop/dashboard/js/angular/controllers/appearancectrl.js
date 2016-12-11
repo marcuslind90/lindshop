@@ -5,8 +5,7 @@ angular.module('dashboard')
 	var config = {
 		params: {
 			callback: 'JSON_CALLBACK', 
-		}, 
-		cache: true, 
+		},  
 	}
 
 	getMenus(config, function(response) {
@@ -37,7 +36,6 @@ angular.module('dashboard')
 		params: {
 			callback: 'JSON_CALLBACK', 
 		}, 
-		cache: true, 
 	}
 	// Get default menu data
 	$scope.selectedCategories = [];
@@ -166,8 +164,7 @@ angular.module('dashboard')
 	var config = {
 		params: {
 			callback: 'JSON_CALLBACK', 
-		}, 
-		cache: true, 
+		},  
 	}
 
 	getSlideshow(config, function(response){

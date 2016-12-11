@@ -6,7 +6,6 @@ angular.module('dashboard')
 		params: {
 			callback: 'JSON_CALLBACK', 
 		}, 
-		cache: true, 
 	}
 	$scope.sort = 'id';
 	getCountries(config, function(response) {
@@ -35,8 +34,7 @@ angular.module('dashboard')
 	var config = {
 		params: {
 			callback: 'JSON_CALLBACK', 
-		}, 
-		cache: true, 
+		},  
 	}
 
 	getCountry(config, function(response){

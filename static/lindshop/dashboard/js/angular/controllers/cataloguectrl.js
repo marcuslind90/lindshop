@@ -31,12 +31,12 @@ angular.module('dashboard')
 
 	function getSubCategories(callback) {
 		if($routeParams['id']) {
-			$http.get('/api/categories?parent='+$routeParams['id']+'&callback=JSON_CALLBACK', {cache: true}).then(function(response){
+			$http.get('/api/categories?parent='+$routeParams['id']+'&callback=JSON_CALLBACK').then(function(response){
 				callback(response);
 			});
 		}
 		else {
-			$http.get('/api/categories?callback=JSON_CALLBACK', {cache: true}).then(function(response){
+			$http.get('/api/categories?callback=JSON_CALLBACK').then(function(response){
 				callback(response);
 			});
 		}
@@ -50,7 +50,6 @@ angular.module('dashboard')
 					callback: 'JSON_CALLBACK', 
 					parent: $routeParams['id'], 
 				}, 
-				cache: true
 			}
 
 			$http.get('/api/products', config).then(function(response){
@@ -59,7 +58,7 @@ angular.module('dashboard')
 		}
 		// If not get all products.
 		else {
-			$http.get('/api/products?callback=JSON_CALLBACK', {cache: true}).then(function(response){
+			$http.get('/api/products?callback=JSON_CALLBACK').then(function(response){
 				callback(response);
 			});
 		}
@@ -75,7 +74,6 @@ angular.module('dashboard')
 				callback: parent, 
 				parent: $routeParams['id'], 
 			}, 
-			cache: true
 		}
 
 		$http.get('/api/products', config).then(function(response){
@@ -84,7 +82,7 @@ angular.module('dashboard')
 	}
 	// If not get all products.
 	else {
-		$http.get('/api/products?callback=JSON_CALLBACK', {cache: true}).then(function(response){
+		$http.get('/api/products?callback=JSON_CALLBACK').then(function(response){
 			$scope.products = response.data;
 		});
 	}
@@ -95,7 +93,6 @@ angular.module('dashboard')
 		params: {
 			callback: 'JSON_CALLBACK', 
 		}, 
-		cache: true, 
 	}
 
 	getCategory(config, function(response){
@@ -190,7 +187,6 @@ angular.module('dashboard')
 		params: {
 			callback: 'JSON_CALLBACK', 
 		}, 
-		cache: true, 
 	}
 	$scope.stock = [];
 	$scope.dataPreset = {

@@ -6,10 +6,7 @@ angular.module('dashboard')
 		params: {
 			callback: 'JSON_CALLBACK', 
 		}, 
-		cache: true, 
 	}
-
-
 
 	getWarehouses(config, function(response) {
 		$scope.warehouses = response.data;
@@ -21,16 +18,13 @@ angular.module('dashboard')
 			callback(response);
 		});
 	}
-
-	console.log("appearanceCtrl Loaded!");
 })
 .controller('warehouseCtrl', function($scope, $http, $routeParams){
 	// Set config for HTTP calls
 	var config = {
 		params: {
 			callback: 'JSON_CALLBACK', 
-		}, 
-		cache: true, 
+		},  
 	}
 
 	getCountries(config, function(response){
@@ -40,8 +34,6 @@ angular.module('dashboard')
 			$scope.warehouse = response.data;
 		});
 	});
-
-
 
 	function getCountries(config, callback) {
 		$http.get('/api/countries/', config).then(function(response){
@@ -76,7 +68,6 @@ angular.module('dashboard')
 			}
 
 			callback(data);
-			
 		}
 	}
 
@@ -91,8 +82,6 @@ angular.module('dashboard')
 				if(!stay){
 					$scope.navigateTo('/stock/');
 				}
-
-				console.log(response);
 			});
 		}
 		// If it should CREATE a product with a POST call
