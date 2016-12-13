@@ -7,6 +7,7 @@ from lindshop.core.checkout.views import checkout, ajax_checkout, process_checko
 from lindshop.core.payment.views import payment_webhook, get_form
 from lindshop.core.subscription.views import subscription_cancel, subscription_change
 from lindshop.core.dashboard.api import UserViewSet, OrderViewSet, CartViewSet, ProductViewSet, CategoryViewSet, PricingViewSet, TaxruleViewSet, CurrencyViewSet, ProductImageViewSet, AttributeViewSet, StockViewSet, WarehouseViewSet, MenuViewSet, SlideshowViewSet, ProductDataPresetViewSet, CountryViewSet, CarrierViewSet
+import lindshop.core.api.viewsets as viewsets
 from rest_framework import routers
 
 app_name = 'lindshop'
@@ -34,23 +35,23 @@ urlpatterns += [
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet, base_name="User")
-router.register(r'orders', OrderViewSet, base_name="Order")
-router.register(r'carts', CartViewSet, base_name="Cart")
-router.register(r'products', ProductViewSet, base_name="Product")
-router.register(r'categories', CategoryViewSet, base_name="Category")
-router.register(r'pricings', PricingViewSet, base_name="Pricing")
-router.register(r'taxrules', TaxruleViewSet, base_name="Taxrule")
-router.register(r'currencies', CurrencyViewSet, base_name="Currency")
-router.register(r'images', ProductImageViewSet, base_name="ProductImage")
-router.register(r'attributes', AttributeViewSet, base_name="Attribute")
-router.register(r'warehouses', WarehouseViewSet, base_name="Warehouse")
-router.register(r'stock', StockViewSet, base_name="Stock")
-router.register(r'menus', MenuViewSet, base_name="Menu")
-router.register(r'slideshows', SlideshowViewSet, base_name="Slideshow")
-router.register(r'productdatapresets', ProductDataPresetViewSet, base_name="DataPreset")
-router.register(r'countries', CountryViewSet, base_name="Country")
-router.register(r'carriers', CarrierViewSet, base_name="Carrier")
+router.register(r'users', viewsets.UserViewSet, base_name="User")
+router.register(r'orders', viewsets.OrderViewSet, base_name="Order")
+router.register(r'carts', viewsets.CartViewSet, base_name="Cart")
+router.register(r'products', viewsets.ProductViewSet, base_name="Product")
+router.register(r'categories', viewsets.CategoryViewSet, base_name="Category")
+router.register(r'pricings', viewsets.PricingViewSet, base_name="Pricing")
+router.register(r'taxrules', viewsets.TaxruleViewSet, base_name="Taxrule")
+router.register(r'currencies', viewsets.CurrencyViewSet, base_name="Currency")
+router.register(r'images', viewsets.ProductImageViewSet, base_name="ProductImage")
+router.register(r'attributes', viewsets.AttributeViewSet, base_name="Attribute")
+router.register(r'warehouses', viewsets.WarehouseViewSet, base_name="Warehouse")
+router.register(r'stock', viewsets.StockViewSet, base_name="Stock")
+router.register(r'menus', viewsets.MenuViewSet, base_name="Menu")
+router.register(r'slideshows', viewsets.SlideshowViewSet, base_name="Slideshow")
+router.register(r'productdatapresets', viewsets.ProductDataPresetViewSet, base_name="DataPreset")
+router.register(r'countries', viewsets.CountryViewSet, base_name="Country")
+router.register(r'carriers', viewsets.CarrierViewSet, base_name="Carrier")
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
