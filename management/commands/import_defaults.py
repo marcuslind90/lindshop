@@ -20,6 +20,7 @@ class Command(BaseCommand):
 			self.import_carrier_pricing()
 			self.import_attributes()
 			self.import_attribute_choices()
+			self.import_users()
 			self.import_addresses()
 			self.import_carts()
 			self.import_cart_items()
@@ -60,6 +61,9 @@ class Command(BaseCommand):
 
 		elif 'attributechoices' in args:
 			self.import_attribute_choices()
+
+		elif 'user' in args:
+			self.import_users()
 
 		elif 'address' in args:
 			self.import_addresses()
@@ -204,6 +208,17 @@ class Command(BaseCommand):
 		if len(counter) == 0:
 			csvi = CSVImporter(filename="lindshop/core/demo/csv/attribute_choices.csv")
 			csvi.csv_to_model(model=AttributeChoice)
+
+			return True
+		else:
+			return False
+
+	def import_users(self):
+		from django.contrib.auth.models import User
+		counter = User.objects.all()
+		if len(counter) == 0:
+			csvi = CSVImporter(filename="lindshop/core/demo/csv/users.csv")
+			csvi.csv_to_model(model=User)
 
 			return True
 		else:
