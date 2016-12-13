@@ -1,0 +1,43 @@
+<a href="" ng-click="navigateTo('/users/');"><i class="fa fa-long-arrow-left"></i> Back to Users</a>
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-12">
+			<h1>#{{user.id}} - {{user.email}}</h1>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12">
+		<ul>
+			<li>
+				<label>First Name</label>
+				{{user.first_name}}
+			</li>
+			<li>
+				<label>Last Name</label>
+				{{user.last_name}}
+			</li>
+			<li>
+				<label>Email</label>
+				{{user.email}}
+			</li>
+			<li>
+				<label>Address</label>
+				{{user.user_address[0].address}}
+			</li>
+			<li>
+				<label>Zipcode</label>
+				{{user.user_address[0].zipcode}}
+			</li>
+			<li>
+				<label>City</label>
+				{{user.user_address[0].city}}
+			</li>
+			<li>
+				<label>Country</label>
+				{{user.user_address[0].country.name}}
+			</li>
+		</ul>
+	</div>
+</div>
