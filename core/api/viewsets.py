@@ -24,7 +24,9 @@ from lindshop.core.stock.models import Warehouse, Stock
 from lindshop.core.menu.models import Menu, MenuItem
 from lindshop.core.slideshow.models import Slideshow, Slide
 from lindshop.core.shipping.models import Carrier, CarrierPricing
+
 import lindshop.core.api.serializers as serializers
+import lindshop.core.api.utils as utils
 
 class CarrierViewSet(viewsets.ModelViewSet):
 	"""The ViewSet of the Carrier object. This handles the request and
@@ -34,9 +36,7 @@ class CarrierViewSet(viewsets.ModelViewSet):
 	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
-		queryset = Carrier.objects.all()
-
-		return queryset
+		return Carrier.objects.all()
 
 	def create(self, request, pk=None):
 
@@ -45,12 +45,7 @@ class CarrierViewSet(viewsets.ModelViewSet):
 		# create an image of it and then replace the original base64 string stored in the request
 		# with the new image.
 		if 'logo' in request.data and request.data['logo'] is not None and request.data['logo'] != "":
-			img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", request.data['logo']).groupdict()
-			blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
-			image = StringIO(blob)
-			image = InMemoryUploadedFile(image, None, request.data['filename'], 'image/jpeg', image.len, None)
-
-			request.data['logo'] = image # Replace the original base64 string with the new file.
+			request.data['logo'] = utils.upload_image(request.data['filename'], request.data['logo'])
 
 		carrier = Carrier(pk=pk)
 
@@ -82,13 +77,7 @@ class CarrierViewSet(viewsets.ModelViewSet):
 			
 			# If we get an Exception for the value NOT being a URL, we should handle Image Upload...
 			except ValidationError:
-				img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", request.data['logo']).groupdict()
-				blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
-				image = StringIO(blob)
-				image = InMemoryUploadedFile(image, None, request.data['filename'], 'image/jpeg', image.len, None)
-
-				# Replace the base64-string value with the new file.
-				request.data['logo'] = image
+				request.data['logo'] = utils.upload_image(request.data['filename'], request.data['logo'])
 
 		# If 'logo' is included, but its "None". Then remove it (So it doesn't replace existing value with None).
 		elif 'logo' in request.data and request.data['logo'] is None:
@@ -120,12 +109,7 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 		# For each slide that is being created, we create a new file by using the base64 data send in the request
 		# and then replace the original value with the new file.
 		for slide in slides:
-			img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", slide['image']).groupdict()
-			blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
-			image = StringIO(blob)
-			image = InMemoryUploadedFile(image, None, slide['filename'], 'image/jpeg', image.len, None)
-			
-			slide['image'] = image
+			slide['image'] = utils.upload_image(slide['filename'], slide['image'])
 
 		request.data['slide_set'] = slides
 
@@ -155,11 +139,7 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 
 			# If validation fails, create the file from the data.
 			except ValidationError:
-				img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", slide['image']).groupdict()
-				blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
-				image = StringIO(blob)
-				image = InMemoryUploadedFile(image, None, slide['filename'], 'image/jpeg', image.len, None)
-				slide['image'] = image
+				slide['image'] = utils.upload_image(slide['filename'], slide['image'])
 
 		request.data['slide_set'] = slides
 
@@ -250,12 +230,7 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 	def create(self, request, pk=None):
 		# The newly uploaded image is stored as a base64 string. We use the data to create a new file
 		# and then replace the original base64 string with the newly created file.
-		img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", request.data['image']).groupdict()
-		blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
-		image = StringIO(blob)
-		image = InMemoryUploadedFile(image, None, request.data['filename'], 'image/jpeg', image.len, None)
-
-		request.data['image'] = image
+		request.data['image'] = utils.upload_image(request.data['filename'], request.data['image'])
 
 		image = ProductImage(pk=pk)
 		serialized = self.serializer_class(image, data=request.data)
@@ -344,11 +319,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 			# If it fails validation, it means that the image contains a base64 string and we should
 			# create a file out of the data and add it to our request.
 			except ValidationError:
-				img_dict = re.match("data:(?P<type>.*?);(?P<encoding>.*?),(?P<data>.*)", image['image']).groupdict()
-				blob = img_dict['data'].decode(img_dict['encoding'], 'strict')
-				imagefile = StringIO(blob)
-				imagefile = InMemoryUploadedFile(imagefile, None, image['filename'], 'image/jpeg', imagefile.len, None)
-				image['image'] = imagefile
+				image['image'] = utils.upload_image(image['filename'], image['image'])
 
 		request.data['productimage_set'] = images
 
