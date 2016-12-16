@@ -55,7 +55,6 @@ class CarrierSerializer(serializers.ModelSerializer):
 		return carrier
 
 	def update(self, instance, validated_data):
-
 		# Seperate nested data from the Carrier object.
 		pricings = validated_data.pop('carrierpricing_set')
 		countries = validated_data.pop('countries')
@@ -65,21 +64,16 @@ class CarrierSerializer(serializers.ModelSerializer):
 		country_ids = []
 		price_ids = []
 
-		# Loop through our items in the call, and set matching Instance parameter to its value
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
-
-		# Save the instance. This updates the database.
 		instance.save()
 
-		# Use the nested `pricings` data and create all the new
-		# pricings for the carrier.
+		# Use the nested `pricings` data 
 		for pricing in pricings:
 			price_obj = CarrierPricing.objects.create(carrier=instance, **pricing)
 			price_ids.append(price_obj.pk) # Keep the ID so that we remember which one was updated.
 
-		# Use the nested `countries` data to add all the countries
-		# to the ManyToMany `countryes`-field of Carrier.
+		# Use the nested `countries` data
 		for country in countries:
 			country_obj = Country.objects.get(pk=country.pk)
 			instance.countries.add(country_obj)
@@ -100,8 +94,6 @@ class CarrierSerializer(serializers.ModelSerializer):
 		return instance
 
 class SlideSerializer(serializers.ModelSerializer):
-	"""Serializer that handle Slide's of a Slideshow from the API
-	"""
 	class Meta:
 		model = Slide
 		fields = '__all__'
@@ -116,8 +108,6 @@ class SlideSerializer(serializers.ModelSerializer):
 			return exclusions + ['id']
 
 class SlideshowSerializer(serializers.ModelSerializer):
-	"""Serializer that handle Slideshow's from the API
-	"""
 	slide_set = SlideSerializer(many=True)
 
 	class Meta:
@@ -125,13 +115,7 @@ class SlideshowSerializer(serializers.ModelSerializer):
 		fields = ('id', 'name', 'slide_set')
 
 	def create(self, validated_data):
-		"""Handle CREATE calls of Slideshow to the API
-		"""
-
-		# Seperate nested data
 		slides = validated_data.pop('slide_set')
-
-		# Create a new Slideshow object with the remaining data.
 		slideshow = Slideshow.objects.create(**validated_data)
 
 		# Use the nested `slides` data to create each slide
@@ -141,9 +125,6 @@ class SlideshowSerializer(serializers.ModelSerializer):
 		return slideshow
 
 	def update(self, instance, validated_data):
-		"""Handle UPDATE calls of Slideshow to the API
-		"""
-
 		# Seperate nested data
 		slides = validated_data.pop('slide_set')
 
@@ -151,8 +132,6 @@ class SlideshowSerializer(serializers.ModelSerializer):
 		# so that we can later remove all data stored in the DB that was not included.
 		item_ids = []
 
-		# Iterate through all data in validated_data and update the instance
-		# with new values and save it.
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
 		instance.save()
@@ -203,7 +182,6 @@ class MenuSerializer(serializers.ModelSerializer):
 		fields = ('id', 'name', 'menuitem_set')
 
 	def create(self, validated_data):
-		# Seperate nested data
 		menu_items = validated_data.pop('menuitem_set')
 
 		menu = Menu.objects.create(**validated_data)
@@ -257,20 +235,6 @@ class WarehouseSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Warehouse
 		fields = '__all__'
-
-	def create(self, validated_data):
-		warehouse = Warehouse(**validated_data)
-		warehouse.save()
-
-		return warehouse
-
-	def update(self, instance, validated_data):
-		# Update the instance with the new data from the request.
-		for(key, value) in validated_data.items():
-			setattr(instance, key, value)
-		instance.save()
-
-		return instance
 
 class StockSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -363,27 +327,9 @@ class ProductImageSerializer(serializers.ModelSerializer):
 		}
 
 class CurrencySerializer(serializers.ModelSerializer):
-	"""Custom CurrencySerializer that handles saves and updates of
-	new currencies. When a currency is set to default, it unset every other
-	currency that is default.
-	"""
 	class Meta:
 		model = Currency
 		fields = '__all__'
-
-	def create(self, validated_data):
-		currency = Currency(**validated_data)
-		currency.save()
-
-		return currency
-
-	def update(self, instance, validated_data):
-		# Update the instance with the new data...
-		for(key, value) in validated_data.items():
-			setattr(instance, key, value)
-		instance.save()
-
-		return instance
 
 class TaxruleSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -399,20 +345,6 @@ class CountrySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Country
 		fields = '__all__'
-
-	def create(self, validated_data):
-		country = Country(**validated_data)
-		country.save()
-
-		return country
-
-	def update(self, instance, validated_data):
-		# Update the instance with the new data from the request.
-		for(key, value) in validated_data.items():
-			setattr(instance, key, value)
-		instance.save()
-
-		return instance
 
 class AddressSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -538,14 +470,10 @@ class ProductSerializer(serializers.ModelSerializer):
 		return instance
 
 	def add_productdata_data(self, instance, validated_data):
-		"""Handle the save, update and create of ProductData
-		"""
-
 		# Initiate array that keep all id's that is included in the call 
 		# so that we later know which ones NOT included and that should be
 		# deleted from the database.
 		data_ids = []
-
 
 		for data in validated_data:
 			# If an ID already exists it means that the entry should be UPDATED.
@@ -572,8 +500,6 @@ class ProductSerializer(serializers.ModelSerializer):
 		return instance
 
 	def add_image_data(self, instance, validated_data):
-		"""Handle the save, update and create of ProductImage
-		"""
 		image_ids = []
 
 		for image in validated_data:
@@ -601,9 +527,6 @@ class ProductSerializer(serializers.ModelSerializer):
 		return instance
 
 	def add_attribute_data(self, instance, validated_data):
-		"""Handle the save, update and create of Attribute and AttributeChoice
-		"""
-
 		attribute_ids = []
 
 		# Handle nested attribute values.
