@@ -98,9 +98,7 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
-		queryset = Slideshow.objects.all()
-
-		return queryset
+		return Slideshow.objects.all()
 
 	def create(self, request, pk=None):
 		# Seperate nested data
@@ -157,18 +155,14 @@ class MenuViewSet(viewsets.ModelViewSet):
 	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
-		queryset = Menu.objects.all()
-
-		return queryset
+		return Menu.objects.all()
 
 class WarehouseViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.WarehouseSerializer
 	permission_classes = (IsAdminUser,)
 
 	def get_queryset(self):
-		queryset = Warehouse.objects.all()
-
-		return queryset
+		return Warehouse.objects.all()
 
 class StockViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.StockSerializer

@@ -1,0 +1,1 @@
+import signals # We need to import it to allow Django to automatically find the signals and receivers.

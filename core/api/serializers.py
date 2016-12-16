@@ -15,9 +15,6 @@ from lindshop.core.slideshow.models import Slideshow, Slide
 from lindshop.core.shipping.models import Carrier, CarrierPricing
 
 class CarrierPricingSerializer(serializers.ModelSerializer):
-	"""CarrierPricing used in the CarrierSerializer. 
-	Handles how CarrierPricing is displayed from the API.
-	"""
 	class Meta:
 		model = CarrierPricing
 		fields = '__all__'
@@ -27,9 +24,6 @@ class CarrierPricingSerializer(serializers.ModelSerializer):
 		}
 
 class CarrierSerializer(serializers.ModelSerializer):
-	"""Handles how the Carrier data is displayed from the API.
-	Also handles custom CREATE and UPDATE calls.
-	"""
 	carrierpricing_set = CarrierPricingSerializer(many=True)
 	class Meta:
 		model = Carrier
@@ -40,7 +34,6 @@ class CarrierSerializer(serializers.ModelSerializer):
 		}
 
 	def create(self, validated_data):
-
 		# Seperate nested data from the Carrier object.
 		pricings = validated_data.pop('carrierpricing_set')
 		countries = validated_data.pop('countries')
@@ -269,12 +262,6 @@ class WarehouseSerializer(serializers.ModelSerializer):
 		warehouse = Warehouse(**validated_data)
 		warehouse.save()
 
-		# If the instance updated is set to default, then unset "default"
-		# from any other warehouse (there can only be 1 default).
-		if warehouse.default:
-			warehouses = Warehouse.objects.all().exclude(pk=warehouse.pk)
-			warehouses.update(default=False)
-
 		return warehouse
 
 	def update(self, instance, validated_data):
@@ -282,12 +269,6 @@ class WarehouseSerializer(serializers.ModelSerializer):
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
 		instance.save()
-
-		# If the instance updated is set to default, then unset "default"
-		# from any other country (there can only be 1 default).
-		if instance.default:
-			warehouses = Warehouse.objects.all().exclude(pk=instance.pk)
-			warehouses.update(default=False)
 
 		return instance
 
@@ -394,12 +375,6 @@ class CurrencySerializer(serializers.ModelSerializer):
 		currency = Currency(**validated_data)
 		currency.save()
 
-		# If the instance updated is set to default, then unset "default"
-		# from any other currency (there can only be 1 default).
-		if currency.default:
-			currencies = Currency.objects.all().exclude(pk=currency.pk)
-			currencies.update(default=False)
-
 		return currency
 
 	def update(self, instance, validated_data):
@@ -407,12 +382,6 @@ class CurrencySerializer(serializers.ModelSerializer):
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
 		instance.save()
-
-		# If the instance updated is set to default, then unset "default"
-		# from any other currency (there can only be 1 default).
-		if instance.default:
-			currencies = Currency.objects.all().exclude(pk=instance.pk)
-			currencies.update(default=False)
 
 		return instance
 
@@ -435,12 +404,6 @@ class CountrySerializer(serializers.ModelSerializer):
 		country = Country(**validated_data)
 		country.save()
 
-		# If the instance updated is set to default, then unset "default"
-		# from any other country (there can only be 1 default).
-		if country.default:
-			countries = Country.objects.all().exclude(pk=country.pk)
-			countries.update(default=False)
-
 		return country
 
 	def update(self, instance, validated_data):
@@ -448,12 +411,6 @@ class CountrySerializer(serializers.ModelSerializer):
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
 		instance.save()
-
-		# If the instance updated is set to default, then unset "default"
-		# from any other country (there can only be 1 default).
-		if instance.default:
-			countries = Country.objects.all().exclude(pk=instance.pk)
-			countries.update(default=False)
 
 		return instance
 
