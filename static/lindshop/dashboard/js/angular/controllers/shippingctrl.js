@@ -117,30 +117,17 @@ angular.module('dashboard')
 	$scope.saveCarrier = function(stay) {
 		// If it should UPDATE a product with a PUT Call
 		if($scope.carrier.id){
-			$http.put('/api/carriers/'+$scope.carrier.id+'/?callback=JSON_CALLBACK', $scope.carrier).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/shipping/');
-				}
-
-			});
+			$http.put('/api/carriers/'+$scope.carrier.id+'/?callback=JSON_CALLBACK', $scope.carrier).then(
+				function(response) { $scope.successHandler(response, stay, '/shipping/'); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 		// If it should CREATE a product with a POST call
 		else {
-			$http.post('/api/carriers/?callback=JSON_CALLBACK', $scope.carrier).then(function(response){
-				console.log(response);
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/shipping/');
-				}
-				else {
-					$scope.navigateTo('/shipping/carrier/'+response.data.id);
-				}
-			});
+			$http.post('/api/carriers/?callback=JSON_CALLBACK', $scope.carrier).then(
+				function(response) { $scope.successHandler(response, stay, '/shipping/', '/shipping/carrier/'+response.data.id); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 	};
 

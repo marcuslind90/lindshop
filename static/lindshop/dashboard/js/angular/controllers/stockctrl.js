@@ -72,32 +72,19 @@ angular.module('dashboard')
 	}
 
 	$scope.saveWarehouse = function(stay) {
-		console.log($scope.warehouse);
 		// If it should UPDATE a category with a PUT Call
 		if($scope.warehouse.id){
-			$http.put('/api/warehouses/'+$scope.warehouse.id+'/?callback=JSON_CALLBACK', $scope.warehouse).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/stock/');
-				}
-			});
+			$http.put('/api/warehouses/'+$scope.warehouse.id+'/?callback=JSON_CALLBACK', $scope.warehouse).then(
+				function(response) { $scope.successHandler(response, stay, '/stock/'); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 		// If it should CREATE a product with a POST call
 		else {
-			$http.post('/api/warehouses/?callback=JSON_CALLBACK', $scope.warehouse).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/stock/');
-				}
-				else {
-					$scope.navigateTo('/stock/warehouse/'+response.data.id);
-				}
-				console.log(response);
-			});
+			$http.post('/api/warehouses/?callback=JSON_CALLBACK', $scope.warehouse).then(
+				function(response) { $scope.successHandler(response, stay, '/stock/', '/stock/warehouse/'+response.data.id); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 	};
 

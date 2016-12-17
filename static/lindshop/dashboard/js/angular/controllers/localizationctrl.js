@@ -59,29 +59,17 @@ angular.module('dashboard')
 	$scope.saveCountry = function(stay) {
 		// If it should UPDATE a product with a PUT Call
 		if($scope.country.id){
-			$http.put('/api/countries/'+$scope.country.id+'/?callback=JSON_CALLBACK', $scope.country).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/localization/');
-				}
-
-			});
+			$http.put('/api/countries/'+$scope.country.id+'/?callback=JSON_CALLBACK', $scope.country).then(
+				function(response) { $scope.successHandler(response, stay, '/localization/'); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 		// If it should CREATE a product with a POST call
 		else {
-			$http.post('/api/countries/?callback=JSON_CALLBACK', $scope.country).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/localization/');
-				}
-				else {
-					$scope.navigateTo('/localization/country/'+response.data.id);
-				}
-			});
+			$http.post('/api/countries/?callback=JSON_CALLBACK', $scope.country).then(
+				function(response) { $scope.successHandler(response, stay, '/localization/', '/localization/country/'+response.data.id); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 	};
 

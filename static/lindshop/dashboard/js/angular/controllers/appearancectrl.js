@@ -125,31 +125,17 @@ angular.module('dashboard')
 		console.log($scope.menu);
 		// If it should UPDATE a category with a PUT Call
 		if($scope.menu.id){
-			$http.put('/api/menus/'+$scope.menu.id+'/?callback=JSON_CALLBACK', $scope.menu).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/appearance/');
-				}
-
-				console.log(response);
-			});
+			$http.put('/api/menus/'+$scope.menu.id+'/?callback=JSON_CALLBACK', $scope.menu).then(
+				function(response) { $scope.successHandler(response, stay, '/appearance/'); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 		// If it should CREATE a product with a POST call
 		else {
-			$http.post('/api/menus/?callback=JSON_CALLBACK', $scope.menu).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/appearance/');
-				}
-				else {
-					$scope.navigateTo('/appearance/menu/'+response.data.id);
-				}
-				console.log(response);
-			});
+			$http.post('/api/menus/?callback=JSON_CALLBACK', $scope.menu).then(
+				function(response) { $scope.successHandler(response, stay, '/appearance/', '/appearance/menu/'+response.data.id); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 	};
 
@@ -242,31 +228,17 @@ angular.module('dashboard')
 		console.log($scope.slideshow);
 		// If it should UPDATE a category with a PUT Call
 		if($scope.slideshow.id){
-			$http.put('/api/slideshows/'+$scope.slideshow.id+'/?callback=JSON_CALLBACK', $scope.slideshow).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/appearance/');
-				}
-
-				console.log(response);
-			});
+			$http.put('/api/slideshows/'+$scope.slideshow.id+'/?callback=JSON_CALLBACK', $scope.slideshow).then(
+				function(response) { $scope.successHandler(response, stay, '/appearance/'); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 		// If it should CREATE a product with a POST call
 		else {
-			$http.post('/api/slideshows/?callback=JSON_CALLBACK', $scope.slideshow).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/appearance/');
-				}
-				else {
-					$scope.navigateTo('/appearance/slideshow/'+response.data.id);
-				}
-				console.log(response);
-			});
+			$http.post('/api/slideshows/?callback=JSON_CALLBACK', $scope.slideshow).then(
+				function(response) { $scope.successHandler(response, stay, '/appearance/', '/appearance/slideshow/'+response.data.id); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 	};
 

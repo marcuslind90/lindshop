@@ -58,29 +58,17 @@ angular.module('dashboard')
 	$scope.saveCurrency = function(stay) {
 		// If it should UPDATE a product with a PUT Call
 		if($scope.currency.id){
-			$http.put('/api/currencies/'+$scope.currency.id+'/?callback=JSON_CALLBACK', $scope.currency).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/payment/');
-				}
-
-			});
+			$http.put('/api/currencies/'+$scope.currency.id+'/?callback=JSON_CALLBACK', $scope.currency).then(
+				function(response) { $scope.successHandler(response, stay, '/payment/'); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 		// If it should CREATE a product with a POST call
 		else {
-			$http.post('/api/currencies/?callback=JSON_CALLBACK', $scope.currency).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/payment/');
-				}
-				else {
-					$scope.navigateTo('/payment/currency/'+response.data.id);
-				}
-			});
+			$http.post('/api/currencies/?callback=JSON_CALLBACK', $scope.currency).then(
+				function(response) { $scope.successHandler(response, stay, '/payment/', '/payment/currency/'+response.data.id); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 	};
 
@@ -120,29 +108,17 @@ angular.module('dashboard')
 	$scope.saveTaxrule = function(stay) {
 		// If it should UPDATE a product with a PUT Call
 		if($scope.taxrule.id){
-			$http.put('/api/taxrules/'+$scope.taxrule.id+'/?callback=JSON_CALLBACK', $scope.taxrule).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/payment/');
-				}
-
-			});
+			$http.put('/api/taxrules/'+$scope.taxrule.id+'/?callback=JSON_CALLBACK', $scope.taxrule).then(
+				function(response) { $scope.successHandler(response, stay, '/payment/'); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 		// If it should CREATE a product with a POST call
 		else {
-			$http.post('/api/taxrules/?callback=JSON_CALLBACK', $scope.taxrule).then(function(response){
-				$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
-
-				// If stay is not true, then navigate the user back to category page.
-				if(!stay){
-					$scope.navigateTo('/payment/');
-				}
-				else {
-					$scope.navigateTo('/payment/taxrule/'+response.data.id);
-				}
-			});
+			$http.post('/api/taxrules/?callback=JSON_CALLBACK', $scope.taxrule).then(
+				function(response) { $scope.successHandler(response, stay, '/payment/', '/payment/taxrule/'+response.data.id); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
 		}
 	};
 

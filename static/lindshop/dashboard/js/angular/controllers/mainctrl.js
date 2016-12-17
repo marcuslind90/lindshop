@@ -7,6 +7,25 @@ angular.module('dashboard')
 	$scope.navigateTo = function(url) {
 		$location.path(url);
 	}
+
+	$scope.successHandler = function(response, stay, parentPath, childPath) {
+		$(".error").text("").hide();
+		$('#savebox').show().delay(4000).fadeOut();  // Display the "Saved!" box and fade it out after a few seconds.
+
+		if(!stay){
+			$scope.navigateTo(parentPath);
+		}
+		else if(childPath) {
+			$scope.navigateTo(childPath);
+		}
+	}
+
+	$scope.errorHandler = function(response) {
+		$.each(response['data'], function(key, value){
+			$("#"+key+" .error").text(value).show();
+		});
+	}
+
 }).directive('autoActive', ['$location', function ($location) {
 	/*
 		Directive to handle active-links in menu.
