@@ -19,23 +19,26 @@
 <div class="row">
 	<div class="col-sm-12">
 
-		<div class="form-group">
+		<div class="form-group" id="name">
 			<label>Name</label>
 			<input type="text" ng-model="country.name" class="form-control" placeholder="Name of country, e.g. 'Sweden'">
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="slug">
 			<label>Slug</label>
 			<input type="text" ng-model="country.slug" class="form-control" placeholder="Identifier of country, e.g. 'sweden'">
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="default">
 			<label>Set as default country</label>
 			<div class="checkbox">
 				<label>
 					<input type="checkbox" ng-model="country.default"> Default
 				</label>
 			</div>
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 	</div>
 </div>

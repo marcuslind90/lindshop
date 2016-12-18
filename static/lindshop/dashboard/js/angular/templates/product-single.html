@@ -39,20 +39,25 @@
 					<h3>General Settings</h3>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group" id="name">
 					<label>Name:</label>
 					<input type="text" class="form-control" placeholder="Product name" ng-model="product.name">
+					<div class="alert alert-danger error" style="display: none;"></div>
 				</div>
 
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" ng-model="product.active"> Activate Product (Display)
-					</label>
+				<div class="form-group" id="active">
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" ng-model="product.active"> Activate Product (Display)
+						</label>
+					</div>
+					<div class="alert alert-danger error" style="display: none;"></div>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group" id="category">
 					<label>Home Category</label>
 					<select ng-model="product.category" class="form-control" ng-options="category.id as category.name for category in categories"></select>
+					<div class="alert alert-danger error" style="display: none;"></div>
 				</div>
 
 				<div class="checkbox">
@@ -68,14 +73,16 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group" id="short_description">
 					<label>Short Description:</label>
 					<textarea class="form-control" ng-model="product.short_description" placeholder="Write a short description of your product..."></textarea>
+					<div class="alert alert-danger error" style="display: none;"></div>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group" id="description">
 					<label>Long Description:</label>
 					<textarea class="form-control" ng-model="product.description" rows="5" placeholder="Write a long description of your product..."></textarea>
+					<div class="alert alert-danger error" style="display: none;"></div>
 				</div>
 
 				<div ng-if="product.id">
@@ -198,18 +205,21 @@
 			<h3>SEO Settings</h3>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="seo_title">
 			<label>SEO Title:</label>
 			<input type="text" class="form-control" placeholder="Write your SEO Title here..." ng-model="product.seo_title">
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" id="seo_description">
 			<label>SEO Description:</label>
 			<input type="text" class="form-control" placeholder="Write your SEO Description here..." ng-model="product.seo_description">
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="slug">
 			<label>Slug:</label>
 			<input type="text" class="form-control input-sm" placeholder="Product slug" ng-model="product.slug" readonly>
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 	</div>
 

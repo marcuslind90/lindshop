@@ -19,37 +19,42 @@
 <div class="row">
 	<div class="col-sm-12">
 
-		<div class="form-group">
+		<div class="form-group" id="name">
 			<label>Name</label>
 			<input type="text" ng-model="carrier.name" class="form-control" placeholder="e.g. Fedex, DHL, Schenker, Thailand Post">
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="delivery_text">
 			<label>Delivery Text</label>
 			<input type="text" ng-model="carrier.delivery_text" class="form-control" placeholder="Text to show in checkout together with the carrier">
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="fileupload">
 			<label>Logo</label>
 			<input type="file" id="upload_file" onchange="angular.element(this).scope().uploadFile()" />
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="default">
 			<label>Set as default carrier</label>
 			<div class="checkbox">
 				<label>
 					<input type="checkbox" ng-model="carrier.default"> Default
 				</label>
 			</div>
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="countries">
 			<label>Countries available for carrier</label>
 			<div class="checkbox" ng-repeat="country in countries">
 				<label>
 					<input type="checkbox" ng-true-value="{{country.id}}" ng-model="carrier.countries[$index]"> {{country.name}}
 				</label>
 			</div>
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 	</div>
 </div>

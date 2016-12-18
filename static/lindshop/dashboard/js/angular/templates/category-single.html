@@ -20,26 +20,30 @@
 			<h3>General Settings</h3>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="name">
 			<label>Name:</label>
 			<input type="text" class="form-control" placeholder="Category name" ng-model="category.name">
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="parent">
 			<label>Parent Category:</label>
 			<select ng-model="category.parent" class="form-control" ng-options="category.id as category.name for category in categories">
 				<option value="">---</option>
 			</select>
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="description">
 			<label>Description:</label>
 			<textarea class="form-control" ng-model="category.description" placeholder="Write a description of your category..."></textarea>
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" id="slug">
 			<label>Slug:</label>
 			<input type="text" class="form-control input-sm" placeholder="Category Slug" ng-model="category.slug" readonly>
+			<div class="alert alert-danger error" style="display: none;"></div>
 		</div>
 	</div>
 </div>
