@@ -2,13 +2,14 @@
 <div class="page-header">
 	<div class="row">
 		<div class="col-xs-6">
-			<h1>Order #{{order.id}} by {{order.user.first_name}} {{order.user.last_name}}</h1>
+			<h1>Order #{{order.id}} by {{user.first_name}} {{user.last_name}}</h1>
 			<h4>{{order.date_created | date : "dd/MM-yyyy H:mm:s"}}</h4>
 		</div>
 		<div class="col-xs-6 text-right">
 			<h1 class="box-header success" ng-show="order.subscription">Subscribed</h1>
-			<h1 class="box-header warning" ng-show="payment_status == 'unpaid'">Unpaid</h1>
-			<h1 class="box-header danger" ng-show="payment_status == 'canceled'">Canceled</h1>
+			<h1 class="box-header success" ng-show="order.payment_status == 'paid'">Paid</h1>
+			<h1 class="box-header warning" ng-show="order.payment_status == 'unpaid'">Unpaid</h1>
+			<h1 class="box-header danger" ng-show="order.payment_status == 'canceled'">Canceled</h1>
 		</div>
 	</div>
 </div>
@@ -47,13 +48,13 @@
 				<div id="customer-info">
 					<div class="row">
 						<div class="col-xs-12">
-							{{order.user.first_name}} {{order.user.last_name}}
+							{{user.first_name}} {{user.last_name}}
 						</div>
 						<div class="col-xs-12">
-							<a href="mailto:{{order.user.email}}">{{order.user.email}}</a>
+							<a href="mailto:{{order.user.email}}">{{user.email}}</a>
 						</div>
 						<div class="col-xs-12">
-							{{order.user.user_address.phone}}
+							{{address.phone}}
 						</div>
 					</div>
 				</div>
@@ -63,16 +64,16 @@
 				<div id="customer-address">
 					<div class="row">
 						<div class="col-xs-12">
-							{{order.user.user_address[0].address}}
+							{{address.address}}
 						</div>
 						<div class="col-xs-12">
-							{{order.user.user_address[0].zipcode}}
+							{{address.zipcode}}
 						</div>
 						<div class="col-xs-12">
-							{{order.user.user_address[0].city}}
+							{{address.city}}
 						</div>
 						<div class="col-xs-12">
-							{{order.user.user_address[0].country.name}}
+							{{address.country.name}}
 						</div>
 					</div>
 				</div>

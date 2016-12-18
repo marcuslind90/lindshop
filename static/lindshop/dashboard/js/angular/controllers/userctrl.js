@@ -28,6 +28,10 @@ angular.module('dashboard')
 
 	getUser(config, function(response) {
 		$scope.user = response.data;
+
+		getAddress(config, function(response) {
+			$scope.address = response.data;
+		});
 	});
 
 
@@ -36,4 +40,17 @@ angular.module('dashboard')
 			callback(response);
 		});
 	}
+
+	function getAddress(config, callback) {
+		$http.get('/api/addresses/'+$scope.user.user_address[0], config).then(function(response) {
+			callback(response);
+		});
+	}
+
+	function getCountry(config, callback) {
+		$http.get('/api/countries/'+$scope.address.country, config).then(function(response) {
+			callback(response);
+		});
+	}
+
 });

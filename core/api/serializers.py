@@ -347,16 +347,14 @@ class CountrySerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 class AddressSerializer(serializers.ModelSerializer):
+	country = CountrySerializer()
 	class Meta:
 		model = Address
-		depth = 1
-		exclude = ('user', )
+		fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
-	user_address = AddressSerializer(read_only=True, many=True)
 	class Meta:
 		model = User
-		depth = 1
 		fields = ('id', 'email', 'first_name', 'last_name', 'user_address')
 
 class ProductDataSerializer(serializers.ModelSerializer):
@@ -398,6 +396,7 @@ class ProductSerializer(serializers.ModelSerializer):
 	attribute_set = AttributeSerializer(many=True)
 	productimage_set = ProductImageSerializer(many=True)
 	productdata_set = ProductDataSerializer(many=True)
+	price = serializers.ReadOnlyField(source='get_price_incl')
 
 	class Meta:
 		model = Product
@@ -416,7 +415,8 @@ class ProductSerializer(serializers.ModelSerializer):
 			'stock', 
 			'attribute_set', 
 			'pricing_set', 
-			'productdata_set'
+			'productdata_set', 
+			'price'
 		)
 
 	def create(self, validated_data):
@@ -621,7 +621,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 			'product', 
 			'plan', 
 			'attribute', 
-			'price', 
+			'price',  
 		)
 
 class CartSerializer(serializers.ModelSerializer):
@@ -629,7 +629,6 @@ class CartSerializer(serializers.ModelSerializer):
 	total = serializers.ReadOnlyField(source='get_total')
 	class Meta:
 		model = Cart
-		depth = 1
 		fields = (
 			'id', 
 			'date_created', 
@@ -647,37 +646,13 @@ class CustomFieldValueSerializer(serializers.ModelSerializer):
 		exclude = ('id', 'order')
 
 class OrderSerializer(serializers.ModelSerializer):
-	user = UserSerializer(read_only=True)
-	cart = CartSerializer(read_only=True)
-	customfieldvalue_set = CustomFieldValueSerializer(read_only=True, many=True)
+	cart = CartSerializer()
 	class Meta:
 		model = Order
-		depth = 1
-		fields = (
-			'id',
-			'payment_status',
-			'payment_option',
-			'subscription', 
-			'subscription_status', 
-			'subscription_enddate', 
-			'payment_reference', 
-			'payment_id', 
-			'date_created', 
-			'cart', 
-			'user', 
-			'subscription_plan', 
-			'customfieldvalue_set', 
-			'order_notification', 
-		)
+		fields = '__all__'
 
 class OrderListSerializer(serializers.ModelSerializer):
 	total = serializers.ReadOnlyField(source='get_total')
 	class Meta:
 		model = Order
-		depth = 1
-		fields = (
-			'id',
-			'date_created', 
-			'user', 
-			'total', 
-		)
+		fields = '__all__'

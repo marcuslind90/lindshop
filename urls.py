@@ -35,6 +35,7 @@ urlpatterns += [
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
+router.register(r'addresses', viewsets.AddressViewSet, base_name="Address")
 router.register(r'users', viewsets.UserViewSet, base_name="User")
 router.register(r'orders', viewsets.OrderViewSet, base_name="Order")
 router.register(r'carts', viewsets.CartViewSet, base_name="Cart")

@@ -55,7 +55,6 @@ class Product(models.Model):
 			price = self.get_price_incl()
 		elif tax == 'excl':
 			price = self.get_price_excl()
-
 		return price
 
 	def get_price_excl(self):
@@ -70,14 +69,15 @@ class Product(models.Model):
 
 	def get_price_incl(self):
 		from lindshop.core.pricing.models import Pricing
-		try:
+		"""try:
 			pricing = self.pricing_set.get(product=self, currency__language=get_language())
 		except Pricing.DoesNotExist:
 			try:
 				pricing = self.pricing_set.get(product=self, currency__default=True)
 			except Pricing.DoesNotExist:
-				return 0
+				return 0"""
 		#pricing = self.pricing_set.get(product=self)
+		pricing = self.pricing_set.all()[0]
 		tax_multiplier = pricing.taxrule.percentage/100+1
 		return pricing.price*tax_multiplier
 

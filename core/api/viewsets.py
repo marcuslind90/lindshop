@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
@@ -9,9 +8,6 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from rest_framework import status
-
-import re
-from StringIO import StringIO
 
 from lindshop.core.order.models import Order, CustomFieldValue, Notification
 from lindshop.core.cart.models import Cart, CartItem
@@ -27,6 +23,11 @@ from lindshop.core.shipping.models import Carrier, CarrierPricing
 
 import lindshop.core.api.serializers as serializers
 import lindshop.core.api.utils as utils
+
+class AddressViewSet(viewsets.ModelViewSet):
+	serializer_class = serializers.AddressSerializer
+	permission_classes = (IsAdminUser,)
+	queryset = Address.objects.all()
 
 class CarrierViewSet(viewsets.ModelViewSet):
 	"""The ViewSet of the Carrier object. This handles the request and
@@ -52,11 +53,9 @@ class CarrierViewSet(viewsets.ModelViewSet):
 		# Sends the data to the serializer that validates the data and stores it.
 		serialized = self.serializer_class(carrier, data=request.data)
 		
-		if serialized.is_valid():
-			serialized.save()
-			return Response(serialized.data, status=status.HTTP_201_CREATED)
-		else:
-			return Response({'ERROR': serialized.errors})
+		serialized.is_valid(raise_exception=True)
+		serialized.save()
+		return Response(serialized.data, status=status.HTTP_201_CREATED)
 
 	def update(self, request, pk=None):
 
@@ -87,11 +86,9 @@ class CarrierViewSet(viewsets.ModelViewSet):
 		carrier = Carrier.objects.get(pk=pk)
 		serialized = self.serializer_class(carrier, data=request.data)
 		
-		if serialized.is_valid():
-			serialized.save()
-			return Response(serialized.data)
-		else:
-			return Response(serialized.data)
+		serialized.is_valid(raise_exception=True)
+		serialized.save()
+		return Response(serialized.data)
 
 class SlideshowViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.SlideshowSerializer
@@ -114,11 +111,9 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 		slideshow = Slideshow(pk=pk)
 		serialized = self.serializer_class(slideshow, data=request.data)
 		
-		if serialized.is_valid():
-			serialized.save()
-			return Response(serialized.data, status=status.HTTP_201_CREATED)
-		else:
-			return Response({'status': 'FAILED', 'errors': serialized.errors})
+		serialized.is_valid(raise_exception=True)
+		serialized.save()
+		return Response(serialized.data, status=status.HTTP_201_CREATED)
 
 	def update(self, request, pk=None):
 		# Seperate nested data
@@ -144,11 +139,9 @@ class SlideshowViewSet(viewsets.ModelViewSet):
 		slideshow = Slideshow(pk=pk)
 		serialized = self.serializer_class(slideshow, data=request.data)
 		
-		if serialized.is_valid():
-			serialized.save()
-			return Response({'status': 'UPDATED', 'image_data': serialized.data})
-		else:
-			return Response({'status': 'FAILED', 'errors': serialized.errors})
+		serialized.is_valid(raise_exception=True)
+		serialized.save()
+		return Response(serialized.data)
 
 class MenuViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.MenuSerializer
@@ -200,11 +193,9 @@ class AttributeViewSet(viewsets.ModelViewSet):
 		for choice in request.data['attributechoice_set']:
 			choice['slug'] = slugify(choice['value'])
 
-		if serialized.is_valid():
-			serialized.save()
-			return Response({'status': 'UPDATED'})
-		else:
-			return Response({'status': 'FAILED', 'errors': serialized.errors})
+		serialized.is_valid(raise_exception=True)
+		serialized.save()
+		return Response(serialized.data)
 
 class ProductImageViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.ProductImageSerializer
@@ -229,11 +220,9 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 		image = ProductImage(pk=pk)
 		serialized = self.serializer_class(image, data=request.data)
 		
-		if serialized.is_valid():
-			serialized.save()
-			return Response(serialized.data, status=status.HTTP_201_CREATED)
-		else:
-			return Response({'status': 'FAILED', 'errors': serialized.errors})
+		serialized.is_valid(raise_exception=True)
+		serialized.save()
+		return Response(serialized.data, status=status.HTTP_201_CREATED)
 
 class CurrencyViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.CurrencySerializer
@@ -291,11 +280,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 		serialized = self.serializer_class(data=request.data)
 		
-		if serialized.is_valid():
-			serialized.save()
-			return Response(serialized.data, status=status.HTTP_201_CREATED)
-		else:
-			return Response({'status': 'FAILED', 'errors': serialized.errors})
+		serialized.is_valid(raise_exception=True)
+		serialized.save()
+		return Response(serialized.data, status=status.HTTP_201_CREATED)
 
 	def update(self, request, pk=None):
 		images = request.data.pop('productimage_set')
@@ -320,11 +307,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 		product = Product.objects.get(pk=pk)
 		serialized = self.serializer_class(product, data=request.data)
 		
-		if serialized.is_valid():
-			serialized.save()
-			return Response({'status': 'UPDATED', 'image_data': serialized.data})
-		else:
-			return Response({'status': 'FAILED', 'errors': serialized.errors})
+		serialized.is_valid(raise_exception=True)
+		serialized.save()
+		return Response(serialized.data)
 
 class CategoryViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.CategorySerializer
@@ -346,11 +331,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 		serialized = self.serializer_class(data=request.data)
 		
-		if serialized.is_valid():
-			serialized.save()
-			return Response(serialized.data, status=status.HTTP_201_CREATED)
-		else:
-			return Response({'status': 'FAILED', 'errors': serialized.errors})
+		serialized.is_valid(raise_exception=True)
+		serialized.save()
+		return Response(serialized.data, status=status.HTTP_201_CREATED)
 
 class CartViewSet(viewsets.ModelViewSet):
 	queryset = Cart.objects.all()
@@ -366,9 +349,6 @@ class OrderViewSet(viewsets.ModelViewSet):
 		queryset = Order.objects.all().order_by('-pk')[:25]
 		serializer = serializers.OrderListSerializer(queryset, many=True)
 		return Response(serializer.data)
-
-	def post(self, request, pk=None):
-		return Response({'received_data': request.data})
 
 	@detail_route(methods=['POST'])
 	def add_notification(self, request, pk=None):
