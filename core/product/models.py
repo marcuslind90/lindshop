@@ -77,6 +77,10 @@ class Product(models.Model):
 			except Pricing.DoesNotExist:
 				return 0"""
 		#pricing = self.pricing_set.get(product=self)
+		pricings = self.pricing_set.all()
+		if len(pricings) < 1:
+			return 0
+			 
 		pricing = self.pricing_set.all()[0]
 		tax_multiplier = pricing.taxrule.percentage/100+1
 		return pricing.price*tax_multiplier

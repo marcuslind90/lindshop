@@ -95,7 +95,6 @@ class Cart(models.Model):
 class CartItem(models.Model):
 	cart 	= models.ForeignKey('cart.Cart')
 	product = models.ForeignKey('product.Product', null=True, blank=True)
-	plan	= models.ForeignKey('subscription.Plan', null=True, blank=True)
 	amount 	= models.IntegerField(default=1)
 	attribute = models.ManyToManyField('attribute.AttributeChoice')
 
@@ -106,16 +105,10 @@ class CartItem(models.Model):
 
 	@property
 	def name(self):
-		if self.product is not None:
-			return self.product.name
-		else:
-			return self.plan.name
+		return self.product.name
 			
 	def get_product_price(self):
-		if self.product is not None:
-			return self.get_price(self.product, self.amount)
-		else:
-			return self.get_price(self.plan, self.amount)
+		return self.get_price(self.product, self.amount)
 		
 	@staticmethod
 	def get_price(product, amount):
@@ -130,10 +123,7 @@ class CartItem(models.Model):
 		return price
 
 	def get_total(self):
-		if self.product is not None:
-			return self.amount*self.get_price(self.product, self.amount)
-		else:
-			return self.amount*self.get_price(self.plan, self.amount)			
+			return self.amount*self.get_price(self.product, self.amount)		
 
 	class Meta:
 		app_label = 'cart'

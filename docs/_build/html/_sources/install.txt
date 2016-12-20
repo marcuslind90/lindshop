@@ -33,7 +33,6 @@ Installation
        'lindshop.core.product',      # Required
        'lindshop.core.shipping',     # Required
        'lindshop.core.stock',        # Required
-       'lindshop.core.subscription', # Required
        'lindshop.core.menu',         # Required
        'lindshop.core.breadcrumbs',  # Required
        'sorl.thumbnail',             # Required
@@ -67,7 +66,6 @@ The command will import the following to your database:
 * Tax rules
 * Products
 * Product Images
-* Subscription Plans
 * Prices
 * Carriers
 * Carrier Pricings
@@ -178,14 +176,6 @@ Available Settings
    Type: Boolean
 
    Default: True
-
-.. attribute:: subscription_premium
-
-   Added price on subscriptions that choose Premium option (Upsell)
-
-   Type: Integer
-
-   Default: 100
 
 .. attribute:: order_email_alert
 

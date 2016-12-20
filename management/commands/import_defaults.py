@@ -14,7 +14,6 @@ class Command(BaseCommand):
 			self.import_taxrules()
 			self.import_products()
 			self.import_product_images()
-			self.import_plans()
 			self.import_pricings()
 			self.import_carriers()
 			self.import_carrier_pricing()
@@ -43,9 +42,6 @@ class Command(BaseCommand):
 
 		elif 'productimage' in args:
 			self.import_product_images()
-
-		elif 'plan' in args:
-			self.import_plans()
 
 		elif 'pricing' in args:
 			self.import_pricings()
@@ -142,17 +138,6 @@ class Command(BaseCommand):
 		if len(counter) == 0:
 			csvi = CSVImporter(filename="lindshop/core/demo/csv/product_images.csv")
 			csvi.csv_to_model(model=ProductImage)
-
-			return True
-		else:
-			return False
-
-	def import_plans(self):
-		from lindshop.core.subscription.models import Plan
-		counter = Plan.objects.all()
-		if len(counter) == 0:
-			csvi = CSVImporter(filename="lindshop/core/demo/csv/plans.csv")
-			csvi.csv_to_model(model=Plan)
 
 			return True
 		else:

@@ -10,7 +10,6 @@ from lindshop.core.shipping.models import Carrier
 from lindshop.core.customer.models import Country
 from lindshop.core.cart.models import Cart, CartItem
 from lindshop.core.order.models import Order, CustomField
-from lindshop.core.subscription.models import Plan
 from lindshop.core.payment.utils import payments
 from lindshop.core.checkout import process
 
@@ -95,9 +94,6 @@ def process_checkout(request):
 	# Get the cart that is being checked out
 	cart = process.get_cart(request)
 
-	# Check if the checkout is a subscription or a normal transaction
-	plan = process.get_plan(request)
-
 	# Add User Data
 	user = process.add_customer(request)
 
@@ -110,11 +106,6 @@ def process_checkout(request):
 		user=user, 
 		payment_option=request.POST.get('payment-option', None)
 	)
-
-	if plan is not None:
-		order.subscription 			= True
-		order.subscription_plan 	= plan
-		order.subscription_enddate	= plan.get_expire()
 
 	# Try uncommenting this line, to see if we can still process the transaction witout a saved order in the database.
 	order.save()  # Save the order before we do the transaction, in case of error.

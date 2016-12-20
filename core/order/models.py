@@ -14,23 +14,12 @@ class Order(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	payment_status = models.CharField(max_length=20, default="unpaid", choices=(("paid", "Paid"), ("unpaid", "Unpaid")))
 	payment_option = models.CharField(max_length=100, default="unknown")
-	subscription_plan = models.ForeignKey('subscription.Plan', blank=True, null=True)
-	subscription = models.BooleanField(default=False)
-	subscription_status = models.CharField(max_length=20, choices=(("active", "Active"), ("unpaid", "Unpaid"), ("canceled", "Canceled")), null=True, blank=True)
-	subscription_enddate = models.DateField(blank=True, null=True)
 	payment_reference = models.CharField(max_length=200, blank=True, null=True)
 	payment_id = models.CharField(max_length=200, blank=True, null=True)
 	date_created = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
 		return "#%s" % self.id
-
-	@property
-	def is_past_due(self):
-		if self.subscription_enddate < date.today():
-			return True
-		else:
-			return False
 
 	def get_total(self):
 		return self.cart.get_total()

@@ -1,6 +1,4 @@
 from django.db import models
-#from lindshop.core.product.models import Product
-#from lindshop.core.subscription.models import Plan
 
 class Currency(models.Model):
 	iso_code = models.CharField(max_length=3)
@@ -64,7 +62,6 @@ class Discount(models.Model):
 
 class Pricing(models.Model):
 	product 	= models.ForeignKey('product.Product', null=True, blank=True)
-	plan		= models.ForeignKey('subscription.Plan', null=True, blank=True)
 	currency 	= models.ForeignKey(Currency)
 	taxrule 	= models.ForeignKey(Taxrule)
 	price 		= models.FloatField()
@@ -73,7 +70,7 @@ class Pricing(models.Model):
 		if self.product is not None:
 			return self.product.name
 		else:
-			return "self.plan.name"
+			return "Pricing #%s" % self.pk
 
 	class Meta:
 		app_label = 'pricing'

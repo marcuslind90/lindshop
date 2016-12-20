@@ -20,9 +20,6 @@ checkout_show_vat		= settings.LINDSHOP.get('checkout_show_vat', True)
 checkout_shipping_hide 	= settings.LINDSHOP.get('checkout_shipping_hide', False)
 checkout_banktransfer	= settings.LINDSHOP.get('checkout_banktransfer', True)
 
-# Subscription Settings
-subscription_premium	= settings.LINDSHOP.get('subscription_premium', 100)
-
 # Order settings
 order_email_alert		= settings.LINDSHOP.get('order_email_alert', True)
 
@@ -42,5 +39,3 @@ product_gallery_thumbnail_size = "%sx%s" % (product_gallery_thumbnail_width, pro
 # Category Page Settings
 category_add_to_cart	= settings.LINDSHOP.get('category_add_to_cart', False)
 category_order_by		= settings.LINDSHOP.get('category_order_by', 'name')
-
-subscription_payment	= settings.LINDSHOP.get('subscription_payment', None)

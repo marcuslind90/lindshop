@@ -6,7 +6,6 @@
 			<h4>{{order.date_created | date : "dd/MM-yyyy H:mm:s"}}</h4>
 		</div>
 		<div class="col-xs-6 text-right">
-			<h1 class="box-header success" ng-show="order.subscription">Subscribed</h1>
 			<h1 class="box-header success" ng-show="order.payment_status == 'paid'">Paid</h1>
 			<h1 class="box-header warning" ng-show="order.payment_status == 'unpaid'">Unpaid</h1>
 			<h1 class="box-header danger" ng-show="order.payment_status == 'canceled'">Canceled</h1>
@@ -86,26 +85,6 @@
 					<li ng-repeat="field in order.customfieldvalue_set">
 						<label>{{field.custom_field.label}}:</label>
 						{{field.value}}
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div class="row" ng-show="order.subscription">
-			<div class="col-sm-12">
-				<h4>Subscription Details</h4>
-				<ul>
-					<li>
-						<label>Plan</label>
-						{{order.subscription_plan.name}}
-					</li>
-					<li>
-						<label>Expire:</label>
-						<i class="fa fa-warning" ng-show="order.is_past_due"></i>
-						{{order.subscription_enddate | date : "dd/MM-yyyy"}}
-					</li>
-					<li>
-						<label>Status:</label>
-						{{order.subscription_status}}
 					</li>
 				</ul>
 			</div>

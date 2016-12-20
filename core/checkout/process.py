@@ -82,18 +82,6 @@ def validate_checkout(request):
 def get_cart(request):
 	return Cart.objects.get(pk=request.session['id_cart'])
 
-def get_plan(request):
-	"""Get the Subscription Plan of the cart.
-	Return `Plan` object on success. Return False on fail.
-	"""
-	cart = Cart.objects.get(pk=request.session['id_cart'])
-	products = cart.cartitem_set.filter(plan__isnull=False)
-	plan = None  # Set plan to None by default
-	if len(products) > 0:
-			plan = products[0].plan
-
-	return plan
-
 def add_customer(request):
 	"""Add data to the customer object.
 	Return customer object.
@@ -186,8 +174,6 @@ def add_order(cart, customer, **kwargs):
 	order = Order(
 		cart=cart, 
 		user=cart.user, 
-		payment_id=id_payment_subscription, 
-		payment_reference=id_payment_customer
 	)
 
 	if 'payment_id' in kwargs:
@@ -195,12 +181,6 @@ def add_order(cart, customer, **kwargs):
 
 	if 'payment_reference' in kwargs:
 		order.payment_reference = kwargs['payment_reference']
-
-	if plan is not None:
-		order.subscription 			= True
-		order.subscription_status 	= result['status']
-		order.subscription_plan 	= plan
-		order.subscription_enddate	= plan.get_expire()
 
 	order.save()
 
@@ -210,7 +190,4 @@ def do_transaction(request, order):
 	"""
 	payment = payments[order.payment_option]
 
-	if order.subscription:
-		return payment.do_subscription_transaction(request, order)
-	else:
-		return payment.do_transaction(request, order)
+	return payment.do_transaction(request, order)

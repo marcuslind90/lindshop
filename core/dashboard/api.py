@@ -1120,7 +1120,6 @@ class CartItemSerializer(serializers.ModelSerializer):
 		fields = (
 			'amount', 
 			'product', 
-			'plan', 
 			'attribute', 
 			'price', 
 		)
@@ -1163,15 +1162,11 @@ class OrderSerializer(serializers.ModelSerializer):
 			'id',
 			'payment_status',
 			'payment_option',
-			'subscription', 
-			'subscription_status', 
-			'subscription_enddate', 
 			'payment_reference', 
 			'payment_id', 
 			'date_created', 
 			'cart', 
 			'user', 
-			'subscription_plan', 
 			'customfieldvalue_set', 
 			'order_notification', 
 		)

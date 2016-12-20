@@ -5,7 +5,6 @@ from lindshop.core.category.views import category
 from lindshop.core.cart.views import ajax_cart
 from lindshop.core.checkout.views import checkout, ajax_checkout, process_checkout, thank_you
 from lindshop.core.payment.views import payment_webhook, get_form
-from lindshop.core.subscription.views import subscription_cancel, subscription_change
 from lindshop.core.dashboard.api import UserViewSet, OrderViewSet, CartViewSet, ProductViewSet, CategoryViewSet, PricingViewSet, TaxruleViewSet, CurrencyViewSet, ProductImageViewSet, AttributeViewSet, StockViewSet, WarehouseViewSet, MenuViewSet, SlideshowViewSet, ProductDataPresetViewSet, CountryViewSet, CarrierViewSet
 import lindshop.core.api.viewsets as viewsets
 from rest_framework import routers
@@ -19,8 +18,6 @@ urlpatterns = [
 	url(r'^terms-of-service/$', views.terms, name="terms"), 
 	url(r'^contact/$', views.contact, name="contact"), 
 	url(r'^faq/$', views.faq, name="faq"), 
-	url(r'^subscription-change/$', subscription_change, name="subscription-change"), 
-	url(r'^subscription-cancel/$', subscription_cancel, name="subscription-cancel"), 
 	url(r'^dashboard/', include('lindshop.core.dashboard.urls', namespace="dashboard")), 
 ]
 

@@ -53,7 +53,3 @@ class ViewTests(TestCase):
 	def test_product_view(self):
 		response = self.client.get(reverse('shop:product', kwargs={'id_product': self.product1.pk, 'slug': self.product1.slug}))
 		self.assertEqual(response.status_code, 200)
-
-	def test_subscriptionchange_view(self):
-		response = self.client.get(reverse('shop:subscription-change'))
-		self.assertEqual(response.status_code, 200)

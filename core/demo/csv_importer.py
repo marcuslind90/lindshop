@@ -9,10 +9,8 @@ from lindshop.core.customer.models import Country
 from lindshop.core.cart.models import Cart
 from lindshop.core.category.models import Category
 from lindshop.core.product.models import Product
-from lindshop.core.subscription.models import Plan
 from lindshop.core.pricing.models import Currency, Taxrule
 from lindshop.core.shipping.models import Carrier
-from lindshop.core.subscription.models import Plan
 from lindshop.core.attribute.models import Attribute
 
 class CSVImporter(object):
@@ -27,11 +25,9 @@ class CSVImporter(object):
 			'cart': Cart, 
 			'parent': Category, # Need duplicate Category to handle Category recursive relation "Parent"
 			'product': Product, 
-			'plan': Plan, 
 			'currency': Currency, 
 			'taxrule': Taxrule, 
 			'carrier': Carrier, 
-			'plan': Plan, 
 			'attribute': Attribute, 
 			'country': Country
 		}

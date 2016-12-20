@@ -167,6 +167,7 @@ class ViewTests(TestCase):
 			"seo_description": "",
 			"category": "",
 			"categories": [],
+			"stock": 10, 
 			"attribute_set": [],
 			"pricing_set": [],
 			"productdata_set": []

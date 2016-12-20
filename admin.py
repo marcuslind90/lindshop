@@ -7,7 +7,6 @@ from lindshop.core.order.models import Order, Notification, CustomField, CustomF
 from lindshop.core.customer.models import CustomerProfile, Country, Address
 from lindshop.core.cart.models import Cart, CartItem
 from lindshop.core.shipping.models import Carrier, CarrierPricing
-from lindshop.core.subscription.models import Plan
 from lindshop.core.attribute.models import Attribute, AttributeChoice
 from lindshop.core.menu.models import MenuItem, Menu
 
@@ -32,7 +31,6 @@ admin.site.register(CartItem)
 admin.site.register(Carrier)
 admin.site.register(CarrierPricing)
 admin.site.register(Discount)
-admin.site.register(Plan)
 admin.site.register(Attribute)
 admin.site.register(AttributeChoice)
 admin.site.register(Menu)

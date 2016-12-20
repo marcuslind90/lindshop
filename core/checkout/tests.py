@@ -42,9 +42,6 @@ class ViewTests(TestCase):
 	def test_get_cart(self):
 		self.assertEqual(process.get_cart(self.factory), self.cart)
 
-	def test_get_plan(self):
-		self.assertEqual(process.get_plan(self.factory), None)
-
 	def test_add_customer(self):
 		self.assertEqual(process.add_customer(self.factory), self.user)  # Make sure the customer object is returned.
 		self.assertEqual(process.add_customer(self.factory).first_name, 'Marcus')  # Make sure that the data has been saved.

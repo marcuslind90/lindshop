@@ -8,7 +8,7 @@ Version: 0.0.1
 Introduction
 ------------
 
-Lindshop is a Django application that handles all the basic features of an ecommerce websites such as Products, Carts, Orders, Payments and so on. Lindshop is made to be easy to extend and customize to the type of ecommerce website that you're looking to build, no matter if it's a normal store with a few categories and products, or if it's an online subscription service with a single product.
+Lindshop is a Django application that handles all the basic features of an ecommerce websites such as Products, Carts, Orders, Payments and so on. Lindshop is made to be easy to extend and customize to the type of ecommerce website that you're looking to build.
 
 * Author: Marcus Lind (marcuslind90@gmail.com)
 * Github: https://github.com/marcuslind90/lindshop
@@ -50,7 +50,6 @@ To add Lindshop to your project just navigate to it and run `git clone https://g
         'lindshop.core.product',    # REQUIRED
         'lindshop.core.shipping',   # REQUIRED
         'lindshop.core.stock',      # REQUIRED
-        'lindshop.core.subscription', # REQUIRED
         'lindshop.core.menu',       # REQUIRED
         'lindshop.core.breadcrumbs',  # REQUIRED
         'lindshop.core.slideshow',  # REQUIRED
@@ -124,7 +123,6 @@ The command will import the following to your database:
 * Tax rules
 * Products
 * Product Images
-* Subscription Plans
 * Prices
 * Carriers
 * Carrier Pricings
