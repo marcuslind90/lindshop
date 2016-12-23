@@ -38,18 +38,6 @@ class ViewTests(TestCase):
 		response = self.client.get(reverse('shop:thank_you'))
 		self.assertEqual(response.status_code, 200)
 
-	def test_terms_view(self):
-		response = self.client.get(reverse('shop:terms'))
-		self.assertEqual(response.status_code, 200)
-
-	def test_contact_view(self):
-		response = self.client.get(reverse('shop:contact'))
-		self.assertEqual(response.status_code, 200)
-
-	def test_faq_view(self):
-		response = self.client.get(reverse('shop:faq'))
-		self.assertEqual(response.status_code, 200)
-
 	def test_product_view(self):
 		response = self.client.get(reverse('shop:product', kwargs={'id_product': self.product1.pk, 'slug': self.product1.slug}))
 		self.assertEqual(response.status_code, 200)

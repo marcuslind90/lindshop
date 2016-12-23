@@ -619,7 +619,6 @@ class CartItemSerializer(serializers.ModelSerializer):
 		fields = (
 			'amount', 
 			'product', 
-			'plan', 
 			'attribute', 
 			'price',  
 		)

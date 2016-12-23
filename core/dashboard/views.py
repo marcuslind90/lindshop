@@ -42,16 +42,15 @@ def logout_view(request):
 
 def dashboard(request):
 	if request.user.is_authenticated():
-		orders = Order.objects.all().order_by('-date_created')
-		return render(request, "lindshop/dashboard/index.html", {'orders': orders, 'STATIC_URL': settings.STATIC_URL})
+		return render(request, "lindshop/dashboard/base.html", {'STATIC_URL': settings.STATIC_URL})
 	else:
 		return HttpResponseRedirect(reverse('shop:dashboard:login')+"?error=noauth")
 
 @login_required
 def add_notification(request):
-	id_order 			= request.POST.get('id_order', None)
-	notification_type 	= request.POST.get('notification_type', None)
-	note 				= request.POST.get('note', None)
+	id_order = request.POST.get('id_order', None)
+	notification_type = request.POST.get('notification_type', None)
+	note = request.POST.get('note', None)
 
 	order = Order.objects.get(pk=id_order)
 	note = Notification(order=order, notification_type=notification_type, note=note)

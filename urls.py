@@ -15,9 +15,6 @@ urlpatterns = [
 	url(r'^$', views.landing, name='index'), 
 	url(r'^checkout/$', checkout, name="checkout"), 
 	url(r'^thank-you/$', thank_you, name="thank_you"), 
-	url(r'^terms-of-service/$', views.terms, name="terms"), 
-	url(r'^contact/$', views.contact, name="contact"), 
-	url(r'^faq/$', views.faq, name="faq"), 
 	url(r'^dashboard/', include('lindshop.core.dashboard.urls', namespace="dashboard")), 
 ]
 
