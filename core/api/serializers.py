@@ -7,12 +7,17 @@ from lindshop.core.cart.models import Cart, CartItem
 from lindshop.core.product.models import Product, ProductImage, ProductData, ProductDataPreset
 from lindshop.core.customer.models import Address, Country
 from lindshop.core.category.models import Category
-from lindshop.core.pricing.models import Pricing, Taxrule, Currency
+from lindshop.core.pricing.models import Pricing, Taxrule, Currency, Voucher
 from lindshop.core.attribute.models import Attribute, AttributeChoice
 from lindshop.core.stock.models import Warehouse, Stock
 from lindshop.core.menu.models import Menu, MenuItem
 from lindshop.core.slideshow.models import Slideshow, Slide
 from lindshop.core.shipping.models import Carrier, CarrierPricing
+
+class VoucherSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Voucher
+		fields = '__all__'
 
 class CarrierPricingSerializer(serializers.ModelSerializer):
 	class Meta:

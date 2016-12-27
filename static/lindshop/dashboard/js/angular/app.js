@@ -21,6 +21,8 @@ app.config(["$routeProvider", "$sceDelegateProvider", function($routeProvider, $
 	.when('/payment/currency/:id/', {controller: 'currencyCtrl', templateUrl: templates['currency']})
 	.when('/payment/taxrule/', {controller: 'taxruleCtrl', templateUrl: templates['taxrule']})
 	.when('/payment/taxrule/:id/', {controller: 'taxruleCtrl', templateUrl: templates['taxrule']})
+	.when('/payment/voucher/', {controller: 'voucherCtrl', templateUrl: templates['voucher']})
+	.when('/payment/voucher/:id/', {controller: 'voucherCtrl', templateUrl: templates['voucher']})
 	.when('/localization/', {controller: 'localizationCtrl', templateUrl: templates['localization']})
 	.when('/localization/country/', {controller: 'countryCtrl', templateUrl: templates['country']})
 	.when('/localization/country/:id/', {controller: 'countryCtrl', templateUrl: templates['country']})

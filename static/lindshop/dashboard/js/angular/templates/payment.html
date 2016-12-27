@@ -1,6 +1,38 @@
 <div class="page-header">
 	<div class="row">
 		<div class="col-sm-6">
+			<h1>Vouchers</h1>
+		</div>
+		<div class="col-sm-6 text-right">
+			<div class="form-group">
+				<button class="btn btn-default" ng-click="navigateTo('/payment/voucher/');"><i class="fa fa-plus"></i> Add Voucher</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Code</th>
+			<th>Type</th>
+			<th>Amount</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="clickable-row" ng-click="navigateTo('/payment/voucher/'+voucher.id+'/');" ng-repeat="voucher in vouchers">
+			<td>{{voucher.id}}</td>
+			<td>{{voucher.code}}</td>
+			<td>{{voucher.value_type}}</td>
+			<td>{{voucher.value}}</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-6">
 			<h1>Currencies</h1>
 		</div>
 		<div class="col-sm-6 text-right">

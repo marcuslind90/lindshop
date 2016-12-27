@@ -16,6 +16,10 @@ angular.module('dashboard')
 		$scope.taxrules = response.data;
 	});
 
+	getVouchers(config, function(response) {
+		$scope.vouchers = response.data;
+	});
+
 	function getCurrencies(config, callback) {
 		$http.get('/api/currencies/', config).then(function(response) {
 			callback(response);
@@ -24,6 +28,12 @@ angular.module('dashboard')
 
 	function getTaxrules(config, callback) {
 		$http.get('/api/taxrules/', config).then(function(response) {
+			callback(response);
+		});
+	}
+
+	function getVouchers(config, callback) {
+		$http.get('/api/vouchers/', config).then(function(response) {
 			callback(response);
 		});
 	}
@@ -124,6 +134,55 @@ angular.module('dashboard')
 
 	$scope.deleteTaxrule = function() {
 		$http.delete('/api/taxrules/'+$scope.taxrule.id+'/?callback=JSON_CALLBACK').then(function(response){
+			$scope.navigateTo('/payment/');
+		});
+	};
+})
+.controller('voucherCtrl', function($scope, $http, $location, $routeParams){
+	var config = {
+		params: {
+			callback: 'JSON_CALLBACK', 
+		},  
+	}
+
+	getVoucher(config, function(response){
+		$scope.voucher = response.data;
+	});
+
+	function getVoucher(config, callback) {
+		if($routeParams['id']) {
+			$http.get('/api/vouchers/'+$routeParams['id'], config).then(function(response) {
+				callback(response);
+			});
+		}
+		else {
+			callback({'data':{
+				'code': '', 
+				'value': '', 
+				'value_type': "percentage"
+			}});
+		}
+	}
+
+	$scope.saveVoucher = function(stay) {
+		// If it should UPDATE a product with a PUT Call
+		if($scope.voucher.id){
+			$http.put('/api/vouchers/'+$scope.voucher.id+'/?callback=JSON_CALLBACK', $scope.voucher).then(
+				function(response) { $scope.successHandler(response, stay, '/payment/'); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
+		}
+		// If it should CREATE a product with a POST call
+		else {
+			$http.post('/api/vouchers/?callback=JSON_CALLBACK', $scope.voucher).then(
+				function(response) { $scope.successHandler(response, stay, '/payment/', '/payment/voucher/'+response.data.id); }, 
+				function(response) { $scope.errorHandler(response); }
+			);
+		}
+	};
+
+	$scope.deleteVoucher = function() {
+		$http.delete('/api/vouchers/'+$scope.voucher.id+'/?callback=JSON_CALLBACK').then(function(response){
 			$scope.navigateTo('/payment/');
 		});
 	};
