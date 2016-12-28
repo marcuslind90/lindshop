@@ -50,7 +50,7 @@ class Voucher(models.Model):
 
 class Discount(models.Model):
 	product = models.ForeignKey('product.Product')
-	min_amount = models.IntegerField(default=1)
+	min_amount = models.IntegerField(default=1) # How many products that need to be added for Discount to be applied
 	value = models.FloatField()
 	value_type = models.CharField(max_length=20, choices=(("percentage", "Percentage"), ("value", "Value")))
 

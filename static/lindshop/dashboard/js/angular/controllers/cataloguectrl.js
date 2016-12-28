@@ -416,6 +416,16 @@ angular.module('dashboard')
 		});
 	}
 
+	$scope.addDiscount = function() {
+		var data = {
+			value: 0, 
+			value_type: "percentage", 
+			min_amount: 0, 
+			product: $scope.product.id
+		}
+		$scope.product.discount_set.push(data);
+	}
+
 	$scope.addAttributeChoice = function(attribute) {
 		var choice = {
 			'value': '', 
@@ -594,6 +604,10 @@ angular.module('dashboard')
 		}
 
 		$scope.product.productimage_set.splice(id, 1);
+	};
+
+	$scope.deleteDiscount = function(index) {
+		$scope.product.discount_set.splice(index, 1);
 	};
 
 	$scope.deletePricing = function(id) {

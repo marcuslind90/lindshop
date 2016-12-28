@@ -7,12 +7,20 @@ from lindshop.core.cart.models import Cart, CartItem
 from lindshop.core.product.models import Product, ProductImage, ProductData, ProductDataPreset
 from lindshop.core.customer.models import Address, Country
 from lindshop.core.category.models import Category
-from lindshop.core.pricing.models import Pricing, Taxrule, Currency, Voucher
+from lindshop.core.pricing.models import Pricing, Taxrule, Currency, Voucher, Discount
 from lindshop.core.attribute.models import Attribute, AttributeChoice
 from lindshop.core.stock.models import Warehouse, Stock
 from lindshop.core.menu.models import Menu, MenuItem
 from lindshop.core.slideshow.models import Slideshow, Slide
 from lindshop.core.shipping.models import Carrier, CarrierPricing
+
+class DiscountSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Discount
+		fields = '__all__'
+		extra_kwargs = {
+			'id': {'read_only': False, 'required': False}
+		}
 
 class VoucherSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -401,6 +409,7 @@ class ProductSerializer(serializers.ModelSerializer):
 	attribute_set = AttributeSerializer(many=True)
 	productimage_set = ProductImageSerializer(many=True)
 	productdata_set = ProductDataSerializer(many=True)
+	discount_set = DiscountSerializer(many=True)
 	price = serializers.ReadOnlyField(source='get_price_incl')
 
 	class Meta:
@@ -421,6 +430,7 @@ class ProductSerializer(serializers.ModelSerializer):
 			'attribute_set', 
 			'pricing_set', 
 			'productdata_set', 
+			'discount_set', 
 			'price'
 		)
 
@@ -461,6 +471,9 @@ class ProductSerializer(serializers.ModelSerializer):
 		if 'productdata_set' in validated_data:
 			productdata_data = validated_data.pop('productdata_set')
 			self.add_productdata_data(instance, productdata_data)
+		if 'discount_set' in validated_data:
+			discount_data = validated_data.pop('discount_set')
+			self.add_discount_data(discount_data)
 
 		
 		#add_pricing_data(instance, pricing_data)
@@ -471,6 +484,24 @@ class ProductSerializer(serializers.ModelSerializer):
 		for(key, value) in validated_data.items():
 			setattr(instance, key, value)
 		instance.save()
+
+		return instance
+
+	def add_discount_data(self, validated_data):
+		data_ids = []
+		for discount in validated_data:
+			if 'id' in discount:
+				instance = Discount.objects.get(pk=discount['id'])
+				DiscountSerializer().update(instance, discount)
+			else:
+				instance = DiscountSerializer().create(discount)
+
+			data_ids.append(instance.id)
+
+		# TODO: This can be refactored. This type of code is used a lot.
+		for data in Discount.objects.filter(product=instance.product):
+			if data.id not in data_ids:
+				data.delete()
 
 		return instance
 

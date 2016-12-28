@@ -133,6 +133,51 @@
 					</div>
 					<div class="alert alert-warning"><strong>Product need to be saved!</strong> Before you can add pricings to your product, you need to create it by saving it.</div>
 				</div>
+
+				<div ng-if="product.id">
+					<div class="page-header">
+						<div class="row">
+							<div class="col-sm-8">
+								<h3>Discounts</h3>
+							</div>
+							<div class="col-sm-4 text-right">
+								<button class="btn btn-sm btn-default" ng-click="addDiscount();"><i class="fa fa-plus"></i> Add Discount</button>
+							</div>
+						</div>
+					</div>
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Type</th>
+									<th>Value</th>
+									<th>Min Amount</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="discount in product.discount_set">
+									<td>
+										<select ng-model="discount.value_type" class="form-control">
+											<option value="percentage">Percentage</option>
+											<option value="value">Value</option>
+										</select>
+									</td>
+									<td>
+										<input ng-model="discount.value" type="number" class="form-control" placeholder="Discount value. E.g. 25" />
+									</td>
+									<td>
+										<input ng-model="discount.min_amount" type="number" class="form-control" placeholder="Minimum order amount" />
+									</td>
+									<td>
+										<button class="btn btn-default vtop" ng-click="deleteDiscount($index);"><i class="fa fa-trash"></i></button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
 			</div>
 
 			<div class="col-sm-6">
