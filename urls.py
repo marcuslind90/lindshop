@@ -12,7 +12,8 @@ from rest_framework import routers
 app_name = 'lindshop'
 
 urlpatterns = [
-	url(r'^$', views.landing, name='index'), 
+	url(r'^$', views.HomeView.as_view(), name='index'), 
+	url(r'^summary/$', views.CartSummary.as_view(), name='summary'), 
 	url(r'^checkout/$', checkout, name="checkout"), 
 	url(r'^thank-you/$', thank_you, name="thank_you"), 
 	url(r'^dashboard/', include('lindshop.core.dashboard.urls', namespace="dashboard")), 
@@ -58,6 +59,6 @@ urlpatterns += [
 
 # Product and Category URLS
 urlpatterns += [ 
-	url(r'^(?P<id_product>[0-9]+)-(?P<slug>[a-z\-0-9]+)/$', product, name="product"), 
-	url(r'^(?P<category_slug>[a-z0-9-]+)/$', category, name="category"), 
+	url(r'^(?P<id_product>[0-9]+)-(?P<slug>[a-z\-0-9]+)/$', views.ProductDetail.as_view(), name="product"), 
+	url(r'^(?P<category_slug>[a-z0-9-]+)/$', views.CategoryList.as_view(), name="category"), 
 ]
