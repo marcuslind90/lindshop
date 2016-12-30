@@ -83,8 +83,16 @@ class CarrierSerializer(serializers.ModelSerializer):
 
 		# Use the nested `pricings` data 
 		for pricing in pricings:
-			price_obj = CarrierPricing.objects.create(carrier=instance, **pricing)
-			price_ids.append(price_obj.pk) # Keep the ID so that we remember which one was updated.
+			if 'id' in pricing:
+				pricing_obj = CarrierPricing.objects.get(pk=pricing['id'])
+				for(key, value) in pricing.items():
+					setattr(pricing_obj, key, value)
+
+				pricing_obj.save()
+			else:
+				pricing_obj = CarrierPricing.objects.create(carrier=instance, **pricing)
+			
+			price_ids.append(pricing_obj.pk) # Keep the ID so that we remember which one was updated.
 
 		# Use the nested `countries` data
 		for country in countries:
@@ -446,6 +454,8 @@ class ProductSerializer(serializers.ModelSerializer):
 			validated_data.pop('productimage_set')
 		if 'productdata_set' in validated_data:
 			validated_data.pop('productdata_set')
+		if 'discount_set' in validated_data:
+			discount_data = validated_data.pop('discount_set')
 
 		categories_data = validated_data.pop('categories')
 

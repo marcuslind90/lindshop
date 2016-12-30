@@ -268,7 +268,7 @@ def updateCart(request):
 		items = cart.cartitem_set.all()
 		html = ""
 		for item in items:
-			html = "%s %s" % (html, render_to_string('lindshop/cart-dropdown-item.html', {'item': item, 'cart': cart, 'config': config}, context_instance=RequestContext(request)))
+			html = "%s %s" % (html, render_to_string('lindshop/cart-dropdown-item.html', {'item': item, 'cart': cart, 'config': config}))
 		response = {
 			'html': html, 
 			'amount': len(items), 

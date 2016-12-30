@@ -6,6 +6,7 @@ from lindshop.core.product.models import Product
 from lindshop.core.category.models import Category
 from lindshop.core.pricing.models import Currency, Taxrule, Pricing
 from lindshop.core.checkout.views import checkout
+from lindshop import views as views
 # Create your tests here.
 class ViewTests(TestCase):
 
@@ -31,7 +32,8 @@ class ViewTests(TestCase):
 
 	# PRINTS OUT 'NoneType' object has no attribute 'user_address'
 	def test_checkout_view(self):
-		response = checkout(self.factory)
+		request = self.factory.get(reverse('shop:checkout'))
+		response = views.Checkout.as_view()(request)
 		self.assertEqual(response.status_code, 200)
 
 	def test_thankyou_view(self):

@@ -33,14 +33,14 @@ class ViewTests(TestCase):
 		self.factory.META = {'CSRF_COOKIE_USED': False, 'CSRF_COOKIE_SECURE': False}
 
 	def test_api_auth(self):
-		response = self.client.get(reverse('shop:api:Product-list'))
+		response = self.client.get(reverse('lindshop:api:Product-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_users_auth(self):
-		response = self.client.get(reverse('shop:api:User-list'))
+		response = self.client.get(reverse('lindshop:api:User-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:User-list'))
+		request = self.factory.get(reverse('lindshop:api:User-list'))
 		request.user = self.normaluser
 
 		view = api.UserViewSet.as_view(actions={'get': 'list'})
@@ -56,7 +56,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:User-list'), {
+		response = client.post(reverse('lindshop:api:User-list'), {
 			"email": "test@test.com",
 			"first_name": "Test",
 			"last_name": "Test",
@@ -67,14 +67,14 @@ class ViewTests(TestCase):
 
 
 	def test_api_orders(self):
-		response = self.client.get(reverse('shop:api:Order-list'))
+		response = self.client.get(reverse('lindshop:api:Order-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_orders_auth(self):
-		response = self.client.get(reverse('shop:api:Order-list'))
+		response = self.client.get(reverse('lindshop:api:Order-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Order-list'))
+		request = self.factory.get(reverse('lindshop:api:Order-list'))
 		request.user = self.normaluser
 
 		view = api.OrderViewSet.as_view(actions={'get': 'list'})
@@ -90,7 +90,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Order-list'), {
+		response = client.post(reverse('lindshop:api:Order-list'), {
 			"email": "test@test.com",
 			"first_name": "Test",
 			"last_name": "Test",
@@ -100,14 +100,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'."""
 
 	def test_api_carts(self):
-		response = self.client.get(reverse('shop:api:Cart-list'))
+		response = self.client.get(reverse('lindshop:api:Cart-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_carts_auth(self):
-		response = self.client.get(reverse('shop:api:Cart-list'))
+		response = self.client.get(reverse('lindshop:api:Cart-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Cart-list'))
+		request = self.factory.get(reverse('lindshop:api:Cart-list'))
 		request.user = self.normaluser
 
 		view = api.CartViewSet.as_view(actions={'get': 'list'})
@@ -123,7 +123,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Cart-list'), {
+		response = client.post(reverse('lindshop:api:Cart-list'), {
 			"email": "test@test.com",
 			"first_name": "Test",
 			"last_name": "Test",
@@ -133,14 +133,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'."""
 
 	def test_api_products(self):
-		response = self.client.get(reverse('shop:api:Product-list'))
+		response = self.client.get(reverse('lindshop:api:Product-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_products_auth(self):
-		response = self.client.get(reverse('shop:api:Product-list'))
+		response = self.client.get(reverse('lindshop:api:Product-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Product-list'))
+		request = self.factory.get(reverse('lindshop:api:Product-list'))
 		request.user = self.normaluser
 
 		view = api.ProductViewSet.as_view(actions={'get': 'list'})
@@ -156,7 +156,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Product-list'), {
+		response = client.post(reverse('lindshop:api:Product-list'), {
 			"name": "Test",
 			"productimage_set": [],
 			"short_description": "",
@@ -170,20 +170,21 @@ class ViewTests(TestCase):
 			"stock": 10, 
 			"attribute_set": [],
 			"pricing_set": [],
-			"productdata_set": []
+			"productdata_set": [], 
+			"discount_set": []
 		})
 
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_categories(self):
-		response = self.client.get(reverse('shop:api:Category-list'))
+		response = self.client.get(reverse('lindshop:api:Category-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_categories_auth(self):
-		response = self.client.get(reverse('shop:api:Category-list'))
+		response = self.client.get(reverse('lindshop:api:Category-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Category-list'))
+		request = self.factory.get(reverse('lindshop:api:Category-list'))
 		request.user = self.normaluser
 
 		view = api.CategoryViewSet.as_view(actions={'get': 'list'})
@@ -199,7 +200,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Category-list'), {
+		response = client.post(reverse('lindshop:api:Category-list'), {
 			"name": "Test",
 			"description": "",
 			"image": "",
@@ -210,14 +211,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_pricings(self):
-		response = self.client.get(reverse('shop:api:Pricing-list'))
+		response = self.client.get(reverse('lindshop:api:Pricing-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_pricings_auth(self):
-		response = self.client.get(reverse('shop:api:Pricing-list'))
+		response = self.client.get(reverse('lindshop:api:Pricing-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Pricing-list'))
+		request = self.factory.get(reverse('lindshop:api:Pricing-list'))
 		request.user = self.normaluser
 
 		view = api.PricingViewSet.as_view(actions={'get': 'list'})
@@ -233,7 +234,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Pricing-list'), {
+		response = client.post(reverse('lindshop:api:Pricing-list'), {
 			"price": 1,
 			"product": 1,
 			"plan": "",
@@ -244,14 +245,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_taxrules(self):
-		response = self.client.get(reverse('shop:api:Taxrule-list'))
+		response = self.client.get(reverse('lindshop:api:Taxrule-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_taxrules_auth(self):
-		response = self.client.get(reverse('shop:api:Taxrule-list'))
+		response = self.client.get(reverse('lindshop:api:Taxrule-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Taxrule-list'))
+		request = self.factory.get(reverse('lindshop:api:Taxrule-list'))
 		request.user = self.normaluser
 
 		view = api.TaxruleViewSet.as_view(actions={'get': 'list'})
@@ -267,7 +268,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Taxrule-list'), {
+		response = client.post(reverse('lindshop:api:Taxrule-list'), {
 			"name": "Test",
 			"percentage": 1
 		})
@@ -275,14 +276,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_currencies(self):
-		response = self.client.get(reverse('shop:api:Currency-list'))
+		response = self.client.get(reverse('lindshop:api:Currency-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_currencies_auth(self):
-		response = self.client.get(reverse('shop:api:Currency-list'))
+		response = self.client.get(reverse('lindshop:api:Currency-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Currency-list'))
+		request = self.factory.get(reverse('lindshop:api:Currency-list'))
 		request.user = self.normaluser
 
 		view = api.CurrencyViewSet.as_view(actions={'get': 'list'})
@@ -298,7 +299,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Currency-list'), {
+		response = client.post(reverse('lindshop:api:Currency-list'), {
 			"iso_code": "THB",
 			"format": "%s THB",
 			"default": False,
@@ -308,14 +309,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_images(self):
-		response = self.client.get(reverse('shop:api:ProductImage-list'))
+		response = self.client.get(reverse('lindshop:api:ProductImage-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_images_auth(self):
-		response = self.client.get(reverse('shop:api:ProductImage-list'))
+		response = self.client.get(reverse('lindshop:api:ProductImage-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:ProductImage-list'))
+		request = self.factory.get(reverse('lindshop:api:ProductImage-list'))
 		request.user = self.normaluser
 
 		view = api.ProductImageViewSet.as_view(actions={'get': 'list'})
@@ -331,7 +332,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:ProductImage-list'), {
+		response = client.post(reverse('lindshop:api:ProductImage-list'), {
 			"email": "test@test.com",
 			"first_name": "Test",
 			"last_name": "Test",
@@ -341,14 +342,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'."""
 
 	def test_api_attributes(self):
-		response = self.client.get(reverse('shop:api:Attribute-list'))
+		response = self.client.get(reverse('lindshop:api:Attribute-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_attributes_auth(self):
-		response = self.client.get(reverse('shop:api:Attribute-list'))
+		response = self.client.get(reverse('lindshop:api:Attribute-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Attribute-list'))
+		request = self.factory.get(reverse('lindshop:api:Attribute-list'))
 		request.user = self.normaluser
 
 		view = api.AttributeViewSet.as_view(actions={'get': 'list'})
@@ -364,7 +365,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Attribute-list'), {
+		response = client.post(reverse('lindshop:api:Attribute-list'), {
 			"name": "Size",
 			"text_input": True,
 			"slug": "size",
@@ -380,14 +381,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_warehouses(self):
-		response = self.client.get(reverse('shop:api:Warehouse-list'))
+		response = self.client.get(reverse('lindshop:api:Warehouse-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_warehouses_auth(self):
-		response = self.client.get(reverse('shop:api:Warehouse-list'))
+		response = self.client.get(reverse('lindshop:api:Warehouse-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Warehouse-list'))
+		request = self.factory.get(reverse('lindshop:api:Warehouse-list'))
 		request.user = self.normaluser
 
 		view = api.WarehouseViewSet.as_view(actions={'get': 'list'})
@@ -403,7 +404,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Warehouse-list'), {
+		response = client.post(reverse('lindshop:api:Warehouse-list'), {
 			"name": "Test", 
 			"address": "Hello", 
 			"country": 1, 
@@ -413,14 +414,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_stock(self):
-		response = self.client.get(reverse('shop:api:Stock-list'))
+		response = self.client.get(reverse('lindshop:api:Stock-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_stock_auth(self):
-		response = self.client.get(reverse('shop:api:Stock-list'))
+		response = self.client.get(reverse('lindshop:api:Stock-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Stock-list'))
+		request = self.factory.get(reverse('lindshop:api:Stock-list'))
 		request.user = self.normaluser
 
 		view = api.StockViewSet.as_view(actions={'get': 'list'})
@@ -436,7 +437,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Stock-list'), {
+		response = client.post(reverse('lindshop:api:Stock-list'), {
 			"stock": 1,
 			"shelf": "E4",
 			"product": 1,
@@ -446,14 +447,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_menus(self):
-		response = self.client.get(reverse('shop:api:Menu-list'))
+		response = self.client.get(reverse('lindshop:api:Menu-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_menus_auth(self):
-		response = self.client.get(reverse('shop:api:Menu-list'))
+		response = self.client.get(reverse('lindshop:api:Menu-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Menu-list'))
+		request = self.factory.get(reverse('lindshop:api:Menu-list'))
 		request.user = self.normaluser
 
 		view = api.MenuViewSet.as_view(actions={'get': 'list'})
@@ -469,7 +470,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Menu-list'), {
+		response = client.post(reverse('lindshop:api:Menu-list'), {
 			"name": "Menu",
 			"menuitem_set": [
 				{
@@ -484,14 +485,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_slideshows(self):
-		response = self.client.get(reverse('shop:api:Slideshow-list'))
+		response = self.client.get(reverse('lindshop:api:Slideshow-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_slideshows_auth(self):
-		response = self.client.get(reverse('shop:api:Slideshow-list'))
+		response = self.client.get(reverse('lindshop:api:Slideshow-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Slideshow-list'))
+		request = self.factory.get(reverse('lindshop:api:Slideshow-list'))
 		request.user = self.normaluser
 
 		view = api.SlideshowViewSet.as_view(actions={'get': 'list'})
@@ -507,7 +508,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Slideshow-list'), {
+		response = client.post(reverse('lindshop:api:Slideshow-list'), {
 			"name": "TestSlideshow",
 			"slide_set": []
 		})
@@ -515,14 +516,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'."""
 
 	def test_api_productdatapresets(self):
-		response = self.client.get(reverse('shop:api:DataPreset-list'))
+		response = self.client.get(reverse('lindshop:api:DataPreset-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_productdatapresets_auth(self):
-		response = self.client.get(reverse('shop:api:DataPreset-list'))
+		response = self.client.get(reverse('lindshop:api:DataPreset-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:DataPreset-list'))
+		request = self.factory.get(reverse('lindshop:api:DataPreset-list'))
 		request.user = self.normaluser
 
 		view = api.ProductDataPresetViewSet.as_view(actions={'get': 'list'})
@@ -538,7 +539,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:DataPreset-list'), {
+		response = client.post(reverse('lindshop:api:DataPreset-list'), {
 			"data": [
 				{
 					"label": "Data", 
@@ -551,14 +552,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_countries(self):
-		response = self.client.get(reverse('shop:api:Country-list'))
+		response = self.client.get(reverse('lindshop:api:Country-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_countries_auth(self):
-		response = self.client.get(reverse('shop:api:Country-list'))
+		response = self.client.get(reverse('lindshop:api:Country-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Country-list'))
+		request = self.factory.get(reverse('lindshop:api:Country-list'))
 		request.user = self.normaluser
 
 		view = api.CountryViewSet.as_view(actions={'get': 'list'})
@@ -574,7 +575,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Country-list'), {
+		response = client.post(reverse('lindshop:api:Country-list'), {
 			"name": "Sweden",
 			"slug": "sweden",
 			"default": False
@@ -583,14 +584,14 @@ class ViewTests(TestCase):
 		self.assertEqual(response.status_code, 201) # Should return 201 which means 'Created'.
 
 	def test_api_carriers(self):
-		response = self.client.get(reverse('shop:api:Carrier-list'))
+		response = self.client.get(reverse('lindshop:api:Carrier-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
 	def test_api_carriers_auth(self):
-		response = self.client.get(reverse('shop:api:Carrier-list'))
+		response = self.client.get(reverse('lindshop:api:Carrier-list'))
 		self.assertEqual(response.status_code, 403) # Should return 403 Permission Denied because not yet Authenticated.
 
-		request = self.factory.get(reverse('shop:api:Carrier-list'))
+		request = self.factory.get(reverse('lindshop:api:Carrier-list'))
 		request.user = self.normaluser
 
 		view = api.CarrierViewSet.as_view(actions={'get': 'list'})
@@ -606,7 +607,7 @@ class ViewTests(TestCase):
 		client = Client()
 		client.login(username="adminuser", password="adminuser")
 
-		response = client.post(reverse('shop:api:Carrier-list'), {
+		response = client.post(reverse('lindshop:api:Carrier-list'), {
 			"name": "Schenker",
 			"delivery_text": "3-5 days",
 			"logo": "",

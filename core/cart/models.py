@@ -37,7 +37,6 @@ class Cart(models.Model):
 				total = Product.format_price(total, decimals=True)
 			else:
 				total = Product.format_price(total)
-
 		return total
 
 	def get_total_discount(self, formatted=False, decimals=False):

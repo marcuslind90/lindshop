@@ -21,30 +21,30 @@ def login_view(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
-				return HttpResponseRedirect(reverse('shop:dashboard:dashboard'))
+				return HttpResponseRedirect(reverse('lindshop:dashboard:dashboard'))
 			else:
 				# Return a "This account is distabled" message.
-				return HttpResponseRedirect(reverse('shop:dashboard:login')+"?error=disabled.")
+				return HttpResponseRedirect(reverse('lindshop:dashboard:login')+"?error=disabled.")
 
 		else:
 			# Return an invalid login message.
-			return HttpResponseRedirect(reverse('shop:dashboard:login')+"?error=failed")
+			return HttpResponseRedirect(reverse('lindshop:dashboard:login')+"?error=failed")
 
 
 	if request.user.is_authenticated():
-		return HttpResponseRedirect(reverse('shop:dashboard:dashboard'))
+		return HttpResponseRedirect(reverse('lindshop:dashboard:dashboard'))
 	else:
 		return render(request, "lindshop/dashboard/login.html")
 
 def logout_view(request):
 	logout(request)
-	return HttpResponseRedirect(reverse('shop:dashboard:login'))
+	return HttpResponseRedirect(reverse('lindshop:dashboard:login'))
 
 def dashboard(request):
 	if request.user.is_authenticated():
 		return render(request, "lindshop/dashboard/base.html", {'STATIC_URL': settings.STATIC_URL})
 	else:
-		return HttpResponseRedirect(reverse('shop:dashboard:login')+"?error=noauth")
+		return HttpResponseRedirect(reverse('lindshop:dashboard:login')+"?error=noauth")
 
 @login_required
 def add_notification(request):

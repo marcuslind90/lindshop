@@ -1,11 +1,9 @@
 {% load i18n %}
 <h2>{% trans "Personal Information" %}</h2>
 <div class="alert alert-danger personal-error" style="display:none;"></div>
-{% if not cart.user.email %}
 <div class="form-group">
 	<input type="email" name="email" class="form-control input-lg" placeholder="{% trans "Email" %}" value="{% if cart.user.email %}{{cart.user.email}}{% endif %}">
 </div>
-{% endif %}
 <div class="form-group">
 	<div class="row">
 		<div class="col-xs-6">
