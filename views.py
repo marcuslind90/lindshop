@@ -19,7 +19,6 @@ from django.shortcuts import get_object_or_404
 # End Class Based Views
 
 class HomeView(TemplateView):
-	template_name = "index.html"
 
 	def get_context_data(self, **kwargs):
 		context = super(HomeView, self).get_context_data(**kwargs)
@@ -28,7 +27,6 @@ class HomeView(TemplateView):
 
 class CategoryList(mixins.BreadcrumbsMixin, ListView):
 	context_object_name = "products"
-	template_name = "category/category-single.html"
 
 	def get_queryset(self):
 		# We call it self.object to keep things consistant with DetailView.
@@ -46,7 +44,6 @@ class CategoryList(mixins.BreadcrumbsMixin, ListView):
 class ProductDetail(mixins.BreadcrumbsMixin, DetailView):
 	model = Product
 	context_object_name = "product"
-	template_name = "product/product-single.html"
 
 	def get_context_data(self, **kwargs):
 		return super(ProductDetail, self).get_context_data(**kwargs)
@@ -55,10 +52,9 @@ class CartSummary(TemplateView):
 	"""Display a summary of the current user's cart items. The Cart context 
 	is already added by our context_processor and therefore this can be a TemplateView.
 	"""
-	template_name = "checkout/summary.html"
+	pass
 
 class Checkout(TemplateView):
-	template_name = "checkout/checkout.html"
 
 	def get_context_data(self, **kwargs):
 		context = super(Checkout, self).get_context_data(**kwargs)
@@ -94,4 +90,4 @@ class Checkout(TemplateView):
 
 
 class ThankYou(TemplateView):
-	template_name = "checkout/thankyou.html"
+	pass

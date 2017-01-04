@@ -2,12 +2,15 @@ from django.contrib.auth.models import User
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
+from django.db.models import Count
+from django.template.loader import render_to_string
 
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework import status
+import json
 
 from lindshop.core.order.models import Order, CustomFieldValue, Notification
 from lindshop.core.cart.models import Cart, CartItem
@@ -20,6 +23,7 @@ from lindshop.core.stock.models import Warehouse, Stock
 from lindshop.core.menu.models import Menu, MenuItem
 from lindshop.core.slideshow.models import Slideshow, Slide
 from lindshop.core.shipping.models import Carrier, CarrierPricing
+from lindshop import config
 
 import lindshop.core.api.serializers as serializers
 import lindshop.core.api.utils as utils
@@ -343,7 +347,96 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class CartViewSet(viewsets.ModelViewSet):
 	queryset = Cart.objects.all()
 	serializer_class = serializers.CartSerializer
-	permission_classes = (IsAdminUser,)
+	permission_classes = (AllowAny,)
+
+	@detail_route(methods=['POST'])
+	def add_item(self, request, pk=None):
+		print "Add Item Called!"
+		print request.data
+		attribute_list = []
+		cart = self.get_cart(request)
+
+		# Turn the list of attributes from the Form, into actual Attribute objects.
+		if 'attributes[]' in request.data:
+			attribute_list = self.get_attributes(request.data.getlist('attributes[]', None))
+		
+		product = Product.objects.get(pk=int(request.data.get('id_product', None)))
+		amount = int(request.data.get('quantity', None))
+
+		# If attribute is added. Then check for a CartItem with all those attributes.
+		if len(attribute_list) > 0:
+			ci = CartItem.objects.filter(cart=cart, product=product, attribute__in=attribute_list).annotate(num_attr=Count('attribute')).filter(num_attr=len(attribute_list))
+		# If no attribute is added, check for a CartItem without any attributes at all.
+		else:
+			ci = CartItem.objects.filter(cart=cart, product=product, attribute__isnull=True)
+
+		# If CartItem that is same to the added product already exist in this cart, 
+		# then just update the amount of the already existing cart item.
+		if len(ci) > 0:
+			ci = ci[0]
+			ci.amount += amount
+			ci.save()
+		# If no CartItem exist, then create a new one. 
+		else:
+			ci = CartItem(cart=cart, product=product)
+			ci.amount = amount
+			ci.save()
+			ci.attribute.add(*attribute_list)
+
+		return Response(request.data, status=status.HTTP_201_CREATED)
+
+	@detail_route(methods=['GET'])
+	def get_cart_html(self, request, pk=None):
+		cart = self.get_cart(request)
+		serializer = serializers.CartSerializer(cart)
+
+		response = {}
+		response['html'] = render_to_string("lindshop_frontend/cart/cart-content.html", {'cart': cart, 'config': config})
+		response['product_count'] = len(serializer.data['cartitem_set'])
+
+		return Response(response, status=status.HTTP_200_OK)
+
+	def get_attributes(self, attributes):
+		attribute_list = []
+
+		# Turn a JSON list of attributes into a list (`attribute_list`)
+		# of AttributeChoice objects.
+		for json_attribute in attributes:
+			attribute = json.loads(json_attribute)
+			attribute['attribute'] = attribute['attribute'].split('-')[1:][0]  # Remove the "attribute-" part and only keep the real attribute slug.
+			
+			try:
+				attribute_obj = AttributeChoice.objects.get(attribute__slug=attribute['attribute'], slug=attribute['value'])
+				attribute_list.append(attribute_obj)
+			except AttributeChoice.DoesNotExist:
+				pass
+
+		return attribute_list
+
+	def get_cart(self, request):
+		# Cart does not exist yet for this session. Lets create it!
+		if 'id_cart' not in request.session:
+			currency = Currency.get_current_currency(request)
+			cart = Cart(currency=currency)
+
+			# If a Default Carrier exist, then add it to the cart
+			# when the user creates his first cart.
+			try: 
+				carrier = Carrier.objects.get(default=True)
+				cart.carrier = carrier
+			except Carrier.DoesNotExist:
+				pass
+
+			cart.save()
+
+			request.session['id_cart'] = cart.pk
+
+		# Cart already exist for this session. Let's assign it!
+		else:
+			cart = Cart.objects.get(pk=request.session['id_cart'])
+
+		return cart
+
 
 class OrderViewSet(viewsets.ModelViewSet):
 	queryset = Order.objects.all()

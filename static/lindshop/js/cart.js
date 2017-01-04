@@ -6,16 +6,16 @@ var cart_summary = $('ul.checkout-cart-list');
 $(document).ready(function(){
 	// Normal "Add To Cart" button. This adds the product of the button
 	// to the users cart.
-	$('button[name="add-product"]').click(function(e){
+	/*$('button[name="add-product"]').click(function(e){
 		e.preventDefault();
 		addProductToCart($(this).data('id'))
-	});
+	});*/
 
 	// When "Add to cart" form on Product Page is submitted. Add product to cart.
-	$('form#add-product').on('submit', function(e){
+	/*$('form#add-product').on('submit', function(e){
 		e.preventDefault();
 		addProductToCartForm();
-	});
+	});*/
 
 	// VoucherFields "Add" button. This is the button that submits the call
 	// and add the voucher to the cart.
