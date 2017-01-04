@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load product_tags %}
+<div class="itemlist">
+{% if cart.cartitem_set %}
+{% for item in cart.cartitem_set.all %}
+{% include "lindshop_frontend/cart-dropdown-item.html" with item=item %}	
+{% endfor %}
+{% endif %}
+</div>
+{% if cart %}
+<div class="cart-summary">
+<label class="total_price">{% trans "Total" %}</label>
+<p class="total_price">{% format_price cart.get_total %}</p>
+</div>
+{% endif %}
