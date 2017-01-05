@@ -87,12 +87,12 @@ $(document).ready(function(){
 		removeProductFromCart(container.data('id'));
 	});
 
-	cart_summary.delegate('input[name="amount"]', 'change', function(e){
+	/*cart_summary.delegate('input[name="amount"]', 'change', function(e){
 		e.preventDefault();
 		var container = $(this).parents('.dropdown-product');
 		updateAmount(container.data('id'), $(this).val());
 		console.log(container.data('id')+" changed to "+$(this).val());
-	});
+	});*/
 
 	cart_dropdown.delegate('a[name="remove"]', 'click', function(e){
 		e.preventDefault();
@@ -100,12 +100,12 @@ $(document).ready(function(){
 		removeProductFromCart(container.data('id'));
 	});
 
-	cart_dropdown.delegate('input[name="amount"]', 'change', function(e){
+	/*cart_dropdown.delegate('input[name="amount"]', 'change', function(e){
 		e.preventDefault();
 		var container = $(this).parents('.dropdown-product');
 		updateAmount(container.data('id'), $(this).val());
 		console.log(container.data('id')+" changed to "+$(this).val());
-	});
+	});*/
 });
 
 

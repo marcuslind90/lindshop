@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.core import serializers as django_serializers
 from django.utils.text import slugify
 from django.db.models import Count
 from django.template.loader import render_to_string
@@ -344,6 +345,18 @@ class CategoryViewSet(viewsets.ModelViewSet):
 		serialized.save()
 		return Response(serialized.data, status=status.HTTP_201_CREATED)
 
+class CartItemViewSet(viewsets.ModelViewSet):
+	queryset = CartItem.objects.all()
+	serializer_class = serializers.CartItemSerializer
+	permission_classes = (AllowAny,)
+
+	@detail_route(methods=['PUT', 'POST'])
+	def update_amount(self, request, pk=None):
+		cart_item = CartItem.objects.get(pk=pk)
+		cart_item.amount = request.data['amount']
+		cart_item.save()
+		return Response(django_serializers.serialize('json', [cart_item,]), status=status.HTTP_201_CREATED)
+
 class CartViewSet(viewsets.ModelViewSet):
 	queryset = Cart.objects.all()
 	serializer_class = serializers.CartSerializer
@@ -351,8 +364,6 @@ class CartViewSet(viewsets.ModelViewSet):
 
 	@detail_route(methods=['POST'])
 	def add_item(self, request, pk=None):
-		print "Add Item Called!"
-		print request.data
 		attribute_list = []
 		cart = self.get_cart(request)
 

@@ -657,14 +657,14 @@ class CategorySerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 class CartItemSerializer(serializers.ModelSerializer):
-	product = ProductSerializer(read_only=True)
 	price = serializers.ReadOnlyField(source='get_total')
 	class Meta:
 		model = CartItem
-		depth = 1
 		fields = (
-			'amount', 
+			'id', 
+			'cart', 
 			'product', 
+			'amount', 
 			'attribute', 
 			'price',  
 		)
