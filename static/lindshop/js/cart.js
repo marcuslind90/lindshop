@@ -19,10 +19,10 @@ $(document).ready(function(){
 
 	// VoucherFields "Add" button. This is the button that submits the call
 	// and add the voucher to the cart.
-	$('.voucher-box .voucher-field button[name="add"]').click(function(e){
+	/*$('.voucher-box .voucher-field button[name="add"]').click(function(e){
 		e.preventDefault();
 		addVoucher($('input[name="voucher"]').val());
-	});
+	});*/
 
 	// The Voucher Field Close button. Push it to hide field and display the "Add Voucher"
 	// button again.

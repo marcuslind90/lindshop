@@ -5,6 +5,7 @@ from django.core import serializers as django_serializers
 from django.utils.text import slugify
 from django.db.models import Count
 from django.template.loader import render_to_string
+from django.utils.translation import ugettext as _
 
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
@@ -406,6 +407,19 @@ class CartViewSet(viewsets.ModelViewSet):
 		response['product_count'] = len(serializer.data['cartitem_set'])
 
 		return Response(response, status=status.HTTP_200_OK)
+
+	@detail_route(methods=['POST'])
+	def add_voucher(self, request, pk=None):
+		cart = self.get_cart(request)
+		try:
+			voucher = Voucher.objects.get(code=request.data.get("voucher", None))
+			cart.voucher = voucher
+			cart.save()
+
+			return Response(request.data, status=status.HTTP_200_OK)
+
+		except Voucher.DoesNotExist:
+			return Response(_("We could not find the voucher that you added."), status=status.HTTP_400_BAD_REQUEST)
 
 	def get_attributes(self, attributes):
 		attribute_list = []

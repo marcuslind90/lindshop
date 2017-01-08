@@ -77,8 +77,20 @@ var Lindshop = (function() {
 	/**
 	 * Add voucher to cart in Checkout.
 	 */
-	var addVoucher = function(voucher) {
-		console.log("addVoucher");
+	var addVoucher = function(voucher, success, error) {
+
+		$.ajax({
+			url: apiUrl+"carts/1/add_voucher/", 
+			data: {voucher: voucher}, 
+			success: function(response) {
+				success(response);
+			}, 
+			error: function(response) {
+				error(response);
+			}, 
+			dataType: "json", 
+			type: "POST"
+		});
 	}
 
 	/**
@@ -116,7 +128,8 @@ var Lindshop = (function() {
 		apiUrl: apiUrl, 
 		addItem: addItem, 
 		getCartHtml: getCartHtml, 
-		updateItemQuantity: updateItemQuantity
+		updateItemQuantity: updateItemQuantity, 
+		addVoucher: addVoucher
 	}
 
 }());
