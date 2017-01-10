@@ -483,7 +483,7 @@ class ProductSerializer(serializers.ModelSerializer):
 			self.add_productdata_data(instance, productdata_data)
 		if 'discount_set' in validated_data:
 			discount_data = validated_data.pop('discount_set')
-			self.add_discount_data(discount_data)
+			self.add_discount_data(instance, discount_data)
 
 		
 		#add_pricing_data(instance, pricing_data)
@@ -497,19 +497,19 @@ class ProductSerializer(serializers.ModelSerializer):
 
 		return instance
 
-	def add_discount_data(self, validated_data):
+	def add_discount_data(self, instance, validated_data):
 		data_ids = []
 		for discount in validated_data:
 			if 'id' in discount:
-				instance = Discount.objects.get(pk=discount['id'])
-				DiscountSerializer().update(instance, discount)
+				discountObj = Discount.objects.get(pk=discount['id'])
+				DiscountSerializer().update(discountObj, discount)
 			else:
-				instance = DiscountSerializer().create(discount)
+				discountObj = DiscountSerializer().create(discount)
 
-			data_ids.append(instance.id)
+			data_ids.append(discountObj.id)
 
 		# TODO: This can be refactored. This type of code is used a lot.
-		for data in Discount.objects.filter(product=instance.product):
+		for data in Discount.objects.filter(product=instance):
 			if data.id not in data_ids:
 				data.delete()
 

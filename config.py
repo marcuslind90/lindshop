@@ -14,6 +14,7 @@ shop_base_template 		= settings.LINDSHOP.get('shop_base_template', 'lindshop/bas
 cart_display_top		= settings.LINDSHOP.get('cart_display_top', True)
 cart_editable_amount	= settings.LINDSHOP.get('cart_editable_amount', True)
 cart_allow_delete		= settings.LINDSHOP.get('cart_allow_delete', True)
+cart_item_template		= settings.LINDSHOP.get('cart_item_template', "lindshop/cart/cart-dropdown-item.html")
 
 # Checkout Settings
 checkout_show_vat		= settings.LINDSHOP.get('checkout_show_vat', True)

@@ -13,7 +13,7 @@ class Product(models.Model):
 	description = models.TextField(blank=True, null=True)
 	slug = models.SlugField(unique=True)
 	category = models.ForeignKey('category.Category', null=True, related_name="product_category")  # This is the main home category
-	categories = models.ManyToManyField('category.Category', blank=True)  # This is all the categories that this product is displayed in
+	categories = models.ManyToManyField('category.Category', blank=True, related_name="product_categories")  # This is all the categories that this product is displayed in
 	active = models.BooleanField(default=False)
 	seo_title = models.CharField(max_length=100, blank=True, null=True)
 	seo_description = models.TextField(blank=True, null=True)

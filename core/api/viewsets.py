@@ -403,7 +403,7 @@ class CartViewSet(viewsets.ModelViewSet):
 		serializer = serializers.CartSerializer(cart)
 
 		response = {}
-		response['html'] = render_to_string("cart/cart-content.html", {'cart': cart, 'config': config})
+		response['html'] = render_to_string("cart/cart-content.html", {'cart': cart, 'config': config, 'item_template': config.cart_item_template})
 		response['product_count'] = len(serializer.data['cartitem_set'])
 
 		return Response(response, status=status.HTTP_200_OK)

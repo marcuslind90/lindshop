@@ -3,7 +3,7 @@
 <div class="itemlist">
 {% if cart.cartitem_set %}
 {% for item in cart.cartitem_set.all %}
-{% include "lindshop_frontend/cart-dropdown-item.html" with item=item %}	
+{% include item_template with item=item %}	
 {% endfor %}
 {% endif %}
 </div>

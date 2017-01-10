@@ -1,0 +1,48 @@
+{% load i18n %}
+{% load product_tags %}
+<li class="dropdown-product" data-id="{{item.id}}">
+	<div class="row nomargin">
+		<div class="col-xs-7 col-small-padding">
+			<div class="row">
+				<div class="col-xs-3">
+					<img src="{{item.product.get_featured.image.url}}" class="img-responsive img-thumbnail">
+				</div>
+				<div class="col-xs-9 col-small-padding">
+					<div class="row">
+						<div class="col-sm-12">
+							<a href="{{item.product.get_absolute_url}}" title="{{item.name}}">{{item.name}}</a>
+						</div>
+					</div>
+					{% if item.attribute.all %}
+					<div class="row">
+						<div class="col-sm-12">
+							<i>
+							{% for attribute in item.attribute.all %}{% if forloop.counter > 1 %}, {% endif %}{{attribute.value}}{% endfor %}
+							</i>
+						</div>
+					</div>
+					{% endif %}
+					<div class="row">
+						<div class="col-sm-12">{% format_price item.get_product_price %}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-2 col-small-padding">
+			{% if config.cart_editable_amount %}
+			<input type="text" name="amount" value="{{item.amount}}" class="form-control input-sm"/>
+			{% else %}
+			{{item.amount}} x
+			{% endif %}
+
+			{% if config.cart_allow_delete %}
+			<a name="remove" href="#" class="remove-product">
+				<i class="fa fa-trash"></i>
+			</a>
+			{% endif %}
+		</div>
+		<div class="col-xs-3 col-small-padding text-right">
+			{% format_price item.get_total %}
+		</div>
+	</div>
+</li>
