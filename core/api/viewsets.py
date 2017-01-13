@@ -398,15 +398,19 @@ class CartViewSet(viewsets.ModelViewSet):
 		return Response(request.data, status=status.HTTP_201_CREATED)
 
 	@detail_route(methods=['GET'])
-	def get_cart_html(self, request, pk=None):
+	def get_cart_html(self, request, pk=None, template="%s/cart/cart-content.html"):
 		cart = self.get_cart(request)
 		serializer = serializers.CartSerializer(cart)
 
 		response = {}
-		response['html'] = render_to_string("cart/cart-content.html", {'cart': cart, 'config': config, 'item_template': config.cart_item_template})
+		response['html'] = render_to_string(template % config.frontend, {'cart': cart, 'config': config})
 		response['product_count'] = len(serializer.data['cartitem_set'])
 
 		return Response(response, status=status.HTTP_200_OK)
+
+	@detail_route(methods=['GET'])
+	def get_cart_summary_html(self, request, pk=None):
+		return self.get_cart_html(request, pk, "%s/cart/cart-summary.html")
 
 	@detail_route(methods=['POST'])
 	def add_voucher(self, request, pk=None):

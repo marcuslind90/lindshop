@@ -9,6 +9,7 @@ shop_name 				= settings.LINDSHOP.get('shop_name', 'Lindshop')
 shop_logo 				= settings.LINDSHOP.get('shop_logo', None)
 shop_base_template 		= settings.LINDSHOP.get('shop_base_template', 'lindshop/base.html')
 
+frontend = settings.LINDSHOP.get('frontend', 'lindshop')
 
 # Cart Settings
 cart_display_top		= settings.LINDSHOP.get('cart_display_top', True)

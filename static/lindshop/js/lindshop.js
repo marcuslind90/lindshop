@@ -27,11 +27,21 @@ var Lindshop = (function() {
 	}
 
 	/**
-	 * Returns the HTML of the cart content. This is used to update the frontend 
+	 * Returns the HTML of the cart dropdown content. This is used to update the frontend 
 	 * cart after changes to the backend. For example after product have been added or deleted.
 	 */
 	var getCartHtml = function(id_cart, callback) {
 		$.get(apiUrl+"carts/"+id_cart+"/get_cart_html/", function(response) {
+			callback(response);
+		});
+	}
+
+	/**
+	 * Returns the HTML of the cart dropdown content. This is used to update the frontend 
+	 * cart after changes to the backend. For example after product have been added or deleted.
+	 */
+	var getCartSummaryHtml = function(id_cart, callback) {
+		$.get(apiUrl+"carts/"+id_cart+"/get_cart_summary_html/", function(response) {
 			callback(response);
 		});
 	}
@@ -58,7 +68,7 @@ var Lindshop = (function() {
 	 */
 	var deleteItem = function (id_item, callback) {
 		$.ajax({
-			url: apiUrl+"cartitems/"+data.id_item+"/", 
+			url: apiUrl+"cartitems/"+id_item+"/", 
 			success: function(response) {
 				callback(response);
 			}, 
@@ -128,8 +138,10 @@ var Lindshop = (function() {
 		apiUrl: apiUrl, 
 		addItem: addItem, 
 		getCartHtml: getCartHtml, 
+		getCartSummaryHtml: getCartSummaryHtml, 
 		updateItemQuantity: updateItemQuantity, 
-		addVoucher: addVoucher
+		addVoucher: addVoucher, 
+		deleteItem: deleteItem
 	}
 
 }());
